@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@arken/node": "workspace:*",
-    "@arken/evolution-shard-server": "workspace:*",
+    "@arken/seer": "workspace:*",
     "@arken/evolution-protocol": "workspace:*",
     "@truffle/hdwallet-provider": "^1.2.0",
     "@typechain/ethers-v4": "^1.0.0",
@@ -81,6 +81,7 @@
     "@ethersproject/providers": "^5.0.5",
     "@ethersproject/solidity": "^5.0.2",
     "@types/jest": "~29.5.12",
-    "ts-jest": "~29.2.3"
+    "ts-jest": "~29.2.3",
+    "zod": "~3.23.8"
   }
 }

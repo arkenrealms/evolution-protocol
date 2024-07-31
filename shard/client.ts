@@ -1,18 +1,16 @@
 import { z } from 'zod';
-import { initTRPC, TRPCError } from '@trpc/server';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
-import { inferAsyncReturnType } from '@trpc/server';
+import { inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
 import { transformer } from '@arken/node/util/rpc';
-import type { AppRouter } from '../app-router';
-import { ShardClient } from '../types';
+import { Client as ServiceClient } from './types';
 
-interface ShardClientContext {
-  client: ShardClient;
+interface ProcedureContext {
+  client: ServiceClient;
 }
 
 export const t = initTRPC
   .context<{
-    client: ShardClient;
+    client: ServiceClient;
   }>()
   .create();
 export const router = t.router;
@@ -40,26 +38,26 @@ export const createRouter = (handler) => {
   return router({
     onEvents: procedure
       .input(onEvents)
-      .mutation(({ input, ctx }: { input: OnEventsInput; ctx: ShardClientContext }) => handler(input, ctx)),
+      .mutation(({ input, ctx }: { input: OnEventsInput; ctx: ProcedureContext }) => handler(input, ctx)),
     onBroadcast: procedure
       .input(onBroadcast)
-      .mutation(({ input, ctx }: { input: OnBroadcastInput; ctx: ShardClientContext }) => handler(input, ctx)),
+      .mutation(({ input, ctx }: { input: OnBroadcastInput; ctx: ProcedureContext }) => handler(input, ctx)),
     onClearLeaderboard: procedure
       .input(onClearLeaderboard)
-      .mutation(({ input, ctx }: { input: OnClearLeaderboardInput; ctx: ShardClientContext }) => handler(input, ctx)),
+      .mutation(({ input, ctx }: { input: OnClearLeaderboardInput; ctx: ProcedureContext }) => handler(input, ctx)),
     onSpawnReward: procedure
       .input(onSpawnReward)
-      .mutation(({ input, ctx }: { input: OnSpawnRewardInput; ctx: ShardClientContext }) => handler(input, ctx)),
+      .mutation(({ input, ctx }: { input: OnSpawnRewardInput; ctx: ProcedureContext }) => handler(input, ctx)),
   });
 };
 
 export type Router = ReturnType<typeof createRouter>;
 
 export const create = (url: string) => {
-  return createTRPCProxyClient<AppRouter>({
+  return createTRPCProxyClient<Router>({
     links: [
       httpBatchLink({
-        url, // Example URL, update as needed
+        url,
       }),
     ],
     transformer,
