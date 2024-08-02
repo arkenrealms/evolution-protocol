@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const nothing = z.object({});
-export const signature = z.object({ signature: z.string(), hash: z.string() });
+export const signature = z.object({ signature: z.string(), hash: z.string(), address: z.string() });
 export const unsignedData = z.object({ data: z.any() });
 export const signedData = z.object({
   data: z.any(),

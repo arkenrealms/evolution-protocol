@@ -15,6 +15,7 @@ export const t = initTRPC
   .create();
 export const router = t.router;
 export const procedure = t.procedure;
+export const createCallerFactory = t.createCallerFactory;
 
 // Procedures here
 

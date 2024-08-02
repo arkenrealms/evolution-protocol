@@ -15,6 +15,7 @@ export const t = initTRPC
   .create();
 export const router = t.router;
 export const procedure = t.procedure;
+export const createCallerFactory = t.createCallerFactory;
 
 export const onEvents = z.array(z.object({ name: z.string(), args: z.array(z.any()) }));
 export const onBroadcast = z.object({ message: z.string(), priority: z.number() });

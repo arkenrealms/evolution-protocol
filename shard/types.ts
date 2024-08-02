@@ -5,11 +5,12 @@ import { Server as SocketServer } from 'socket.io';
 import { z } from 'zod';
 import * as schema from './schema';
 import { Position, Signature } from '@arken/node/types';
+export type { Router } from './server';
 
 export type SignatureInput = z.infer<typeof schema.signature>;
-export type DataInput = z.infer<typeof schema.data>;
-export type DataAndSignatureInput = z.infer<typeof schema.dataAndSignature>;
-export type MsgInput = z.infer<typeof schema.msg>;
+export type DataInput = z.infer<typeof schema.unsignedData>;
+export type DataAndSignatureInput = z.infer<typeof schema.signedData>;
+export type MsgInput = z.infer<typeof schema.nothing>;
 export type ConnectedInput = z.infer<typeof schema.connected>;
 export type ApiConnectedInput = z.infer<typeof schema.seerConnected>;
 export type ApiDisconnectedInput = z.infer<typeof schema.seerDisconnected>;
@@ -395,5 +396,5 @@ export type Event = {
 };
 
 export type Service = {
-  connected(input: ConnectedInput, ctx: Context): Promise<void>;
+  connected(input: ConnectedInput, ctx: Context): Promise<{ status: number }>;
 };

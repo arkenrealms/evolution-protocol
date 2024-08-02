@@ -6,6 +6,7 @@ export type * as Seer from '@arken/seer';
 import type * as Shard from '../shard/types';
 import type { Server as ShardServer } from '../shard/server';
 import type { Signature } from '@arken/node/types';
+export type { Router } from './server';
 
 export interface ApplicationConfig {
   testBanSystem: boolean;
@@ -113,7 +114,7 @@ export interface ApplicationRouterContext {
 }
 
 export interface Seer {
-  router: Seer.Router;
+  emit: Seer.Router;
 }
 
 export interface Profile {
@@ -145,7 +146,9 @@ export interface Client {
 type ServerResponse = { status: number };
 
 export type Server = {
-  auth({ signature }: { signature: Signature }): Promise<ServerResponse>;
+  seer: Seer;
+  subProcesses: any[];
+  auth({ signature }: { signature?: Signature }): Promise<ServerResponse>;
   ping(): Promise<ServerResponse>;
   setConfig({
     data,
@@ -183,7 +186,7 @@ export type Server = {
     data: { target: string; bannedReason: string; bannedUntil: string };
     signature: { address: string; hash: string };
   }): Promise<ServerResponse>;
-  bridgeState(): Promise<ServerResponse>;
+  // bridgeState(): Promise<ServerResponse>;
   unbanClient({
     data,
     signature,
@@ -191,12 +194,12 @@ export type Server = {
     data: { target: string };
     signature: { address: string; hash: string };
   }): Promise<ServerResponse>;
-  matchServer(): Promise<ServerResponse>;
-  call({
-    data,
-    signature,
-  }: {
-    data: { method: string };
-    signature: { address: string; hash: string };
-  }): Promise<ServerResponse>;
+  matchShard(): Promise<ServerResponse>;
+  // call({
+  //   data,
+  //   signature,
+  // }: {
+  //   data: { method: string };
+  //   signature: { address: string; hash: string };
+  // }): Promise<ServerResponse>;
 };
