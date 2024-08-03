@@ -9,7 +9,7 @@ import type { Signature } from '@arken/node/types';
 export type { Router } from './server';
 
 export interface ApplicationConfig {
-  testBanSystem: boolean;
+  maxClients: number;
   roundId: number;
   rewardItemAmountPerLegitPlayer: number;
   rewardItemAmountMax: number;
@@ -87,7 +87,6 @@ export interface ApplicationModules {
 
 export interface Application {
   config: ApplicationConfig;
-  maxClients: number;
   server: Express;
   isHttps: boolean;
   https?: HttpsServer;
@@ -183,7 +182,7 @@ export type Server = {
     data,
     signature,
   }: {
-    data: { target: string; bannedReason: string; bannedUntil: string };
+    data: { target: string; banReason: string; banExpireDate: string };
     signature: { address: string; hash: string };
   }): Promise<ServerResponse>;
   // bridgeState(): Promise<ServerResponse>;

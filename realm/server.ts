@@ -90,7 +90,7 @@ export const createRouter = (server: Server) => {
       .use(validateRequest(t))
       .input(
         z.object({
-          data: z.object({ target: z.string(), bannedReason: z.string(), bannedUntil: z.string() }),
+          data: z.object({ target: z.string(), banReason: z.string(), banExpireDate: z.string() }),
           signature: z.object({ address: z.string(), hash: z.string() }),
         })
       )

@@ -275,7 +275,7 @@ export interface Application {
   // sharedConfig: Partial<Config>;
   // baseConfig: Partial<Config>;
   // round: {
-  //   startedAt: number;
+  //   startedDate: number;
   //   endedAt: number | null;
   //   events: any[];
   //   states: any[];
@@ -351,7 +351,7 @@ export type RoundEvent = {
 
 export type Round = {
   id: string;
-  startedAt: number; // or Date if using Date objects
+  startedDate: number; // or Date if using Date objects
   endedAt: number | null;
   clients: Client[];
   events: RoundEvent[];
@@ -386,7 +386,25 @@ export type Preset = {
   [key: string]: any; // Additional properties as needed
 };
 
-export interface Context {
+export type ServiceInfo = {
+  id: string;
+  version: string;
+  port: string;
+  round: { id: string; startedDate: number };
+  clientCount: number;
+  // clientCount: this.clients.filter((c) => !c.isDead && !c.isSpectating).length,
+  spectatorCount: number;
+  recentClientsCount: number;
+  spritesCount: number;
+  connectedClients: any[];
+  rewardItemAmount: number;
+  rewardWinnerAmount: number;
+  gameMode: number;
+  orbs: Orb[];
+  currentReward: Reward;
+};
+
+export interface ServiceContext {
   client: Client;
 }
 
@@ -395,6 +413,10 @@ export type Event = {
   args: Array<any>;
 };
 
+export type ConnectedOutput = Promise<{ status: number }>;
+export type InfoOutput = Promise<{ status: number; data: ServiceInfo }>;
+
 export type Service = {
-  connected(input: ConnectedInput, ctx: Context): Promise<{ status: number }>;
+  connected(input: ConnectedInput, ctx: ServiceContext): ConnectedOutput;
+  info(input: InfoInput, ctx: ServiceContext): InfoOutput;
 };
