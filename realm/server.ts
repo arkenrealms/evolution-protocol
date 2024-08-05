@@ -51,7 +51,7 @@ export const createRouter = (server: Server) => {
 
     addMod: procedure
       .use(customErrorFormatter(t))
-      .use(hasRole('admin', t)(t))
+      .use(hasRole('admin', t))
       .use(validateRequest(t))
       .input(
         z.object({
@@ -96,11 +96,11 @@ export const createRouter = (server: Server) => {
       )
       .mutation(({ input }) => server.banUser(input)),
 
-    bridgeState: procedure
-      .use(hasRole('mod', t))
-      .use(customErrorFormatter(t))
-      .input(z.object({ signature: z.object({ address: z.string(), hash: z.string() }) }))
-      .mutation(() => server.bridgeState()),
+    // bridgeState: procedure
+    //   .use(hasRole('mod', t))
+    //   .use(customErrorFormatter(t))
+    //   .input(z.object({ signature: z.object({ address: z.string(), hash: z.string() }) }))
+    //   .mutation(() => server.bridgeState()),
 
     unbanClient: procedure
       .use(hasRole('mod', t))
@@ -117,19 +117,19 @@ export const createRouter = (server: Server) => {
       )
       .mutation(({ input }) => server.unbanClient(input)),
 
-    matchServer: procedure.input(z.void()).mutation(() => server.matchServer()),
+    matchShard: procedure.input(z.void()).mutation(() => server.matchShard()),
 
-    call: procedure
-      .use(customErrorFormatter(t))
-      .input(
-        z.object({
-          data: z.object({
-            method: z.string(),
-          }),
-          signature: z.object({ address: z.string(), hash: z.string() }),
-        })
-      )
-      .mutation(({ input }) => server.call(input)),
+    // call: procedure
+    //   .use(customErrorFormatter(t))
+    //   .input(
+    //     z.object({
+    //       data: z.object({
+    //         method: z.string(),
+    //       }),
+    //       signature: z.object({ address: z.string(), hash: z.string() }),
+    //     })
+    //   )
+    //   .mutation(({ input }) => server.call(input)),
   });
 };
 

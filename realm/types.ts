@@ -11,66 +11,66 @@ export type { Router } from './server';
 export interface ApplicationConfig {
   maxClients: number;
   roundId: number;
-  rewardItemAmountPerLegitPlayer: number;
-  rewardItemAmountMax: number;
-  rewardWinnerAmountPerLegitPlayer: number;
-  rewardWinnerAmountMax: number;
-  rewardItemAmount: number;
-  rewardWinnerAmount: number;
-  drops: {
-    guardian: number;
-    earlyAccess: number;
-    trinket: number;
-    santa: number;
-  };
-  totalLegitPlayers: number;
-  isBattleRoyale: boolean;
-  isGodParty: boolean;
-  level2open: boolean;
-  isRoundPaused: boolean;
-  gameMode: string;
-  maxEvolves: number;
-  pointsPerEvolve: number;
-  pointsPerKill: number;
-  decayPower: number;
-  dynamicDecayPower: boolean;
-  baseSpeed: number;
-  avatarSpeedMultiplier: Record<number, number>;
-  avatarDecayPower: Record<number, number>;
-  preventBadKills: boolean;
-  antifeed1: boolean;
-  antifeed2: boolean;
-  antifeed3: boolean;
-  noDecay: boolean;
-  noBoot: boolean;
-  rewardSpawnLoopSeconds: number;
-  orbOnDeathPercent: number;
-  orbTimeoutSeconds: number;
-  orbCutoffSeconds: number;
-  orbLookup: Record<string, any>;
-  roundLoopSeconds: number;
-  fastLoopSeconds: number;
-  leadercap: boolean;
-  hideMap: boolean;
-  checkPositionDistance: number;
-  checkInterval: number;
-  resetInterval: number;
-  loggableEvents: string[];
-  rewardSpawnPoints: { x: number; y: number }[];
-  rewardSpawnPoints2: { x: number; y: number }[];
-  mapBoundary: {
-    x: { min: number; max: number };
-    y: { min: number; max: number };
-  };
-  spawnBoundary1: {
-    x: { min: number; max: number };
-    y: { min: number; max: number };
-  };
-  spawnBoundary2: {
-    x: { min: number; max: number };
-    y: { min: number; max: number };
-  };
-  rewards: Record<string, any>;
+  //   rewardItemAmountPerLegitPlayer: number;
+  //   rewardItemAmountMax: number;
+  //   rewardWinnerAmountPerLegitPlayer: number;
+  //   rewardWinnerAmountMax: number;
+  //   rewardItemAmount: number;
+  //   rewardWinnerAmount: number;
+  //   drops: {
+  //     guardian: number;
+  //     earlyAccess: number;
+  //     trinket: number;
+  //     santa: number;
+  //   };
+  //   totalLegitPlayers: number;
+  //   isBattleRoyale: boolean;
+  //   isGodParty: boolean;
+  //   level2open: boolean;
+  //   isRoundPaused: boolean;
+  //   gameMode: string;
+  //   maxEvolves: number;
+  //   pointsPerEvolve: number;
+  //   pointsPerKill: number;
+  //   decayPower: number;
+  //   dynamicDecayPower: boolean;
+  //   baseSpeed: number;
+  //   avatarSpeedMultiplier: Record<number, number>;
+  //   avatarDecayPower: Record<number, number>;
+  //   preventBadKills: boolean;
+  //   antifeed1: boolean;
+  //   antifeed2: boolean;
+  //   antifeed3: boolean;
+  //   noDecay: boolean;
+  //   noBoot: boolean;
+  //   rewardSpawnLoopSeconds: number;
+  //   orbOnDeathPercent: number;
+  //   orbTimeoutSeconds: number;
+  //   orbCutoffSeconds: number;
+  //   orbLookup: Record<string, any>;
+  //   roundLoopSeconds: number;
+  //   fastLoopSeconds: number;
+  //   leadercap: boolean;
+  //   hideMap: boolean;
+  //   checkPositionDistance: number;
+  //   checkInterval: number;
+  //   resetInterval: number;
+  //   loggableEvents: string[];
+  //   rewardSpawnPoints: { x: number; y: number }[];
+  //   rewardSpawnPoints2: { x: number; y: number }[];
+  //   mapBoundary: {
+  //     x: { min: number; max: number };
+  //     y: { min: number; max: number };
+  //   };
+  //   spawnBoundary1: {
+  //     x: { min: number; max: number };
+  //     y: { min: number; max: number };
+  //   };
+  //   spawnBoundary2: {
+  //     x: { min: number; max: number };
+  //     y: { min: number; max: number };
+  //   };
+  //   rewards: Record<string, any>;
 }
 
 export interface ApplicationModule {
@@ -153,45 +153,45 @@ export type Server = {
     data,
     signature,
   }: {
-    data: { shardId: string; config: Record<string, any> };
-    signature: { address: string; hash: string };
+    data?: { shardId?: string; config?: Record<string, any> };
+    signature?: { address?: string; hash?: string };
   }): Promise<ServerResponse>;
   info(): Promise<ServerResponse>;
   addMod({
     data,
     signature,
   }: {
-    data: { target: string };
-    signature: { address: string; hash: string };
+    data?: { target?: string };
+    signature?: { address?: string; hash?: string };
   }): Promise<ServerResponse>;
   removeMod({
     data,
     signature,
   }: {
-    data: { target: string };
-    signature: { address: string; hash: string };
+    data?: { target?: string };
+    signature?: { address?: string; hash?: string };
   }): Promise<ServerResponse>;
   banClient({
     data,
     signature,
   }: {
-    data: { target: string };
-    signature: { address: string; hash: string };
+    data?: { target?: string };
+    signature?: { address?: string; hash?: string };
   }): Promise<ServerResponse>;
   banUser({
     data,
     signature,
   }: {
-    data: { target: string; banReason: string; banExpireDate: string };
-    signature: { address: string; hash: string };
+    data?: { target?: string; banReason?: string; banExpireDate?: string };
+    signature?: { address?: string; hash?: string };
   }): Promise<ServerResponse>;
   // bridgeState(): Promise<ServerResponse>;
   unbanClient({
     data,
     signature,
   }: {
-    data: { target: string };
-    signature: { address: string; hash: string };
+    data?: { target?: string };
+    signature?: { address?: string; hash?: string };
   }): Promise<ServerResponse>;
   matchShard(): Promise<ServerResponse>;
   // call({
@@ -199,6 +199,6 @@ export type Server = {
   //   signature,
   // }: {
   //   data: { method: string };
-  //   signature: { address: string; hash: string };
+  //   signature?: { address?: string; hash?: string };
   // }): Promise<ServerResponse>;
 };
