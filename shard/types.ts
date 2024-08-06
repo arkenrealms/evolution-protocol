@@ -6,6 +6,8 @@ import { z } from 'zod';
 import * as schema from './schema';
 import { Position, Signature } from '@arken/node/types';
 export type { Router } from './server';
+import type { ShardClientRouter, Realm } from '../types';
+import { createRouter as createShardRouter } from './server';
 
 export type SignatureInput = z.infer<typeof schema.signature>;
 export type DataInput = z.infer<typeof schema.unsignedData>;
@@ -151,6 +153,7 @@ export interface Client {
   socket: any;
   name: string;
   id: string;
+  emit: any; // ShardClientRouter;
   startedRoundAt: number | null;
   avatar: number | null;
   network: string | null;
@@ -310,7 +313,7 @@ export type Orb = {
   type: number;
   points: number;
   scale: number;
-  enabledAt: number; // Timestamp or milliseconds
+  enabledDate: number; // Timestamp or milliseconds
   position: Position;
 };
 
@@ -325,7 +328,8 @@ export type Reward = {
   rewardItemName: string;
   quantity: number;
   position: Position;
-  winner?: Client;
+  winner?: string;
+  enabledDate: number;
 };
 
 export type PowerUp = {
@@ -413,8 +417,8 @@ export type Event = {
   args: Array<any>;
 };
 
-export type ConnectedOutput = Promise<{ status: number }>;
-export type InfoOutput = Promise<{ status: number; data: ServiceInfo }>;
+export type ConnectedOutput = Promise<{ status?: number }>;
+export type InfoOutput = Promise<{ status?: number; data?: ServiceInfo }>;
 
 export type Service = {
   connected(input: ConnectedInput, ctx: ServiceContext): ConnectedOutput;

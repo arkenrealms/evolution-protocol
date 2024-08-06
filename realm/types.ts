@@ -11,6 +11,7 @@ export type { Router } from './server';
 export interface ApplicationConfig {
   maxClients: number;
   roundId: number;
+  shardKey: string;
   //   rewardItemAmountPerLegitPlayer: number;
   //   rewardItemAmountMax: number;
   //   rewardWinnerAmountPerLegitPlayer: number;
@@ -142,7 +143,7 @@ export interface Client {
   };
 }
 
-type ServerResponse = { status: number };
+type ServerResponse = { status?: number };
 
 export type Server = {
   seer: Seer;

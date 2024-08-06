@@ -35,6 +35,10 @@ export type OnBroadcastInput = z.infer<typeof onBroadcast>;
 export type OnClearLeaderboardInput = z.infer<typeof onBroadcast>;
 export type OnSpawnRewardInput = z.infer<typeof onSpawnReward>;
 
+// class ShardClient {
+
+// }
+
 export const createRouter = (handler) => {
   return router({
     onEvents: procedure
