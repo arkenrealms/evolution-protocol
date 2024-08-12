@@ -2,7 +2,8 @@ import express, { Express } from 'express';
 import { Server as HttpServer } from 'http';
 import { Server as HttpsServer } from 'https';
 import { Server as SocketServer } from 'socket.io';
-export type * as Seer from '@arken/seer';
+import { httpBatchLink, createTRPCProxyClient, loggerLink } from '@trpc/client';
+import type { Router as SeerRouter } from '@arken/seer';
 import type * as Shard from '../shard/types';
 import type { Server as ShardServer } from '../shard/server';
 import type { Signature } from '@arken/node/types';
@@ -114,7 +115,7 @@ export interface ApplicationRouterContext {
 }
 
 export interface Seer {
-  emit: Seer.Router;
+  emit: ReturnType<typeof createTRPCProxyClient<SeerRouter>>;
 }
 
 export interface Profile {

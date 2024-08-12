@@ -30,13 +30,13 @@ export const createRouter = (service: Schema.Service) => {
       .use(hasRole('realm', t))
       .use(customErrorFormatter(t))
       .input(schema.seerConnected)
-      .mutation(({ input, ctx }) => service.seerConnected(input as Schema.ApiConnectedInput, ctx)),
+      .mutation(({ input, ctx }) => service.seerConnected(input as Schema.SeerConnectedInput, ctx)),
 
     seerDisconnected: procedure
       .use(hasRole('realm', t))
       .use(customErrorFormatter(t))
       .input(schema.seerDisconnected)
-      .mutation(({ input, ctx }) => service.seerDisconnected(input as Schema.ApiDisconnectedInput, ctx)),
+      .mutation(({ input, ctx }) => service.seerDisconnected(input as Schema.SeerDisconnectedInput, ctx)),
 
     setCharacter: procedure
       .use(hasRole('realm', t))
