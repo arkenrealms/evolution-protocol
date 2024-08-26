@@ -154,8 +154,10 @@ export type Config = {
 export interface Client {
   socket: any;
   name: string;
+  roles: string[];
+  shardId?: string;
   id: string;
-  emit: any; // ShardClientRouter;
+  emit: ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
   startedRoundAt: number | null;
   avatar: number | null;
   network: string | null;
@@ -418,6 +420,7 @@ export type Event = {
   name: string;
   args: Array<any>;
 };
+
 export type ConnectedOutput = Promise<{ status?: number }>;
 export type InfoOutput = Promise<{ status?: number; data?: ServiceInfo }>;
 export type SetCharacterOutput = Promise<{ status?: number }>;

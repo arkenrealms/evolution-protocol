@@ -16,8 +16,6 @@ export const router = t.router;
 export const procedure = t.procedure;
 export const createCallerFactory = t.createCallerFactory;
 
-export const create = () => {};
-
 export const createRouter = (service: Schema.Service) => {
   return router({
     connected: procedure

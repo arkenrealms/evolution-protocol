@@ -1,13 +1,16 @@
 import { z } from 'zod';
 
 export const nothing = z.object({});
-export const signature = z.object({ signature: z.string(), hash: z.string(), address: z.string() });
+export const signature = z.object({ hash: z.string(), address: z.string() });
 export const unsignedData = z.object({ data: z.any() });
 export const signedData = z.object({
   data: z.any(),
   signature,
 });
-export const connected = signature;
+export const connected = z.object({
+  data: z.object({ id: z.string() }),
+  signature,
+});
 export const seerConnected = signature;
 export const seerDisconnected = signature;
 export const setCharacter = unsignedData;
