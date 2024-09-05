@@ -20,7 +20,6 @@
   "devDependencies": {
     "@arken/evolution-protocol": "workspace:*",
     "@arken/node": "workspace:*",
-    "@arken/seer": "workspace:*",
     "@ethersproject/address": "^5",
     "@ethersproject/contracts": "^5",
     "@ethersproject/networks": "^5",
