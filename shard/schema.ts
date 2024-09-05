@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+export const anything = z.any();
 export const nothing = z.object({});
 export const signature = z.object({ hash: z.string(), address: z.string() });
 export const unsignedData = z.object({ data: z.any() });
@@ -16,9 +17,9 @@ export const seerDisconnected = signature;
 export const setCharacter = unsignedData;
 export const setConfig = unsignedData;
 export const getConfig = nothing;
-export const load = signature;
+export const load = nothing; //signature;
 export const spectate = nothing;
-export const login = unsignedData;
+export const login = anything;
 export const join = nothing;
 export const updateMyself = unsignedData;
 export const restart = signature;
