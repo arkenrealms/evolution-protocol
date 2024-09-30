@@ -16,7 +16,7 @@ export const router = t.router;
 export const procedure = t.procedure;
 export const createCallerFactory = t.createCallerFactory;
 
-export const createRouter = (service: Service) => {
+export const createRouter = (service?: Service) => {
   return router({
     auth: procedure
       .use(customErrorFormatter(t))
@@ -41,7 +41,7 @@ export const createRouter = (service: Service) => {
 
     getShards: procedure
       .use(customErrorFormatter(t))
-      .use(validateRequest(t))
+      // .use(validateRequest(t))
       .input(Schema.getQueryInput(Shard))
       .output(Schema.getQueryOutput(z.array(Shard)))
       .query(({ input, ctx }) => (service.getShards as any)(input, ctx)),
@@ -68,7 +68,7 @@ export const createRouter = (service: Service) => {
     info: procedure
       .use(customErrorFormatter(t))
       // .use(hasRole('mod', t))
-      .use(validateRequest(t))
+      // .use(validateRequest(t))
       // .input(Schema.OnlySignatureInput)
       .output(
         Schema.getQueryOutput(
