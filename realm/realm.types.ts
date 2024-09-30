@@ -3,11 +3,12 @@ import { Server as HttpServer } from 'http';
 import { Server as HttpsServer } from 'https';
 import { Server as SocketServer } from 'socket.io';
 import { httpBatchLink, createTRPCProxyClient, loggerLink } from '@trpc/client';
-import type { Router as SeerRouter } from './seer';
-import type * as Shard from '../shard/types';
-import type { Server as ShardServer } from '../shard/server';
-import type { Signature } from '@arken/node/types';
-export type { Router } from './server';
+import type { Router as SeerRouter } from './seer.router';
+import type * as Shard from '../shard/shard.types';
+import type { Service as ShardService } from '../shard/shard.service';
+
+export type { Router, RouterInput, RouterOutput } from './realm.router';
+export type { Service } from './realm.service';
 
 export interface ApplicationConfig {
   maxClients: number;
@@ -103,7 +104,7 @@ export interface Application {
   sockets: Record<string, any>;
   version: string;
   endpoint: string;
-  shards: Record<string, ShardServer>;
+  shards: Record<string, ShardService>;
   profiles: Record<string, Profile>;
   web3: any; // Assume web3 is a configured instance
   secrets: any; // Secrets for signing
@@ -115,6 +116,7 @@ export interface ApplicationRouterContext {
 }
 
 export interface Seer {
+  client: any;
   emit: ReturnType<typeof createTRPCProxyClient<SeerRouter>>;
 }
 
@@ -134,6 +136,9 @@ export interface Client {
   id: string;
   name: string;
   ip: string;
+  socket: any;
+  endpoint: string;
+  ioCallbacks: any;
   info: any;
   lastReportedTime: number;
   isMod: boolean;
@@ -144,63 +149,6 @@ export interface Client {
   };
 }
 
-type ServerResponse = { status?: number };
-
-export type Server = {
-  seer: Seer;
-  subProcesses: any[];
-  auth({ signature }: { signature?: Signature }): Promise<ServerResponse>;
-  ping(): Promise<ServerResponse>;
-  setConfig({
-    data,
-    signature,
-  }: {
-    data?: { shardId?: string; config?: Record<string, any> };
-    signature?: { address?: string; hash?: string };
-  }): Promise<ServerResponse>;
-  info(): Promise<ServerResponse>;
-  addMod({
-    data,
-    signature,
-  }: {
-    data?: { target?: string };
-    signature?: { address?: string; hash?: string };
-  }): Promise<ServerResponse>;
-  removeMod({
-    data,
-    signature,
-  }: {
-    data?: { target?: string };
-    signature?: { address?: string; hash?: string };
-  }): Promise<ServerResponse>;
-  banClient({
-    data,
-    signature,
-  }: {
-    data?: { target?: string };
-    signature?: { address?: string; hash?: string };
-  }): Promise<ServerResponse>;
-  banUser({
-    data,
-    signature,
-  }: {
-    data?: { target?: string; banReason?: string; banExpireDate?: string };
-    signature?: { address?: string; hash?: string };
-  }): Promise<ServerResponse>;
-  // bridgeState(): Promise<ServerResponse>;
-  unbanClient({
-    data,
-    signature,
-  }: {
-    data?: { target?: string };
-    signature?: { address?: string; hash?: string };
-  }): Promise<ServerResponse>;
-  matchShard(): Promise<ServerResponse>;
-  // call({
-  //   data,
-  //   signature,
-  // }: {
-  //   data: { method: string };
-  //   signature?: { address?: string; hash?: string };
-  // }): Promise<ServerResponse>;
-};
+export interface ServiceContext {
+  client: Client;
+}

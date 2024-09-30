@@ -2,17 +2,10 @@ import { z } from 'zod';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import { inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
 import { transformer } from '@arken/node/util/rpc';
-import { RealmClient } from '../types';
 
-interface RealmClientContext {
-  client: RealmClient;
-}
+interface ClientContext {}
 
-export const t = initTRPC
-  .context<{
-    client: RealmClient;
-  }>()
-  .create();
+export const t = initTRPC.context<ClientContext>().create();
 export const router = t.router;
 export const procedure = t.procedure;
 export const createCallerFactory = t.createCallerFactory;

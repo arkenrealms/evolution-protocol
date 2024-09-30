@@ -3,51 +3,14 @@ import { Server as HttpServer } from 'http';
 import { Server as HttpsServer } from 'https';
 import { Server as SocketServer } from 'socket.io';
 import { z } from 'zod';
-import * as schema from './schema';
+import * as schema from './shard.schema';
 import { Position, Signature } from '@arken/node/types';
-export type { Router } from './server';
-import type { ShardClientRouter, Realm } from '../types';
-import { createRouter as createShardRouter } from './server';
+export type { Router } from './shard.router';
+import type { RouterInput, RouterOutput } from './shard.router';
+import * as Schema from './shard.schema';
 
-export type SignatureInput = z.infer<typeof schema.signature>;
-export type DataInput = z.infer<typeof schema.unsignedData>;
-export type DataAndSignatureInput = z.infer<typeof schema.signedData>;
-export type MsgInput = z.infer<typeof schema.nothing>;
-export type ConnectedInput = z.infer<typeof schema.connected>;
-export type SeerConnectedInput = z.infer<typeof schema.seerConnected>;
-export type SeerDisconnectedInput = z.infer<typeof schema.seerDisconnected>;
-export type SetCharacterInput = z.infer<typeof schema.setCharacter>;
-export type SetConfigInput = z.infer<typeof schema.setConfig>;
-export type GetConfigInput = z.infer<typeof schema.getConfig>;
-export type LoadInput = z.infer<typeof schema.load>;
-export type SpectateInput = z.infer<typeof schema.spectate>;
-export type LoginInput = z.infer<typeof schema.login>;
-export type JoinInput = z.infer<typeof schema.join>;
-export type UpdateMyselfInput = z.infer<typeof schema.updateMyself>;
-export type RestartInput = z.infer<typeof schema.restart>;
-export type MaintenanceInput = z.infer<typeof schema.maintenance>;
-export type UnmaintenanceInput = z.infer<typeof schema.unmaintenance>;
-export type StartBattleRoyaleInput = z.infer<typeof schema.startBattleRoyale>;
-export type StopBattleRoyaleInput = z.infer<typeof schema.stopBattleRoyale>;
-export type PauseRoundInput = z.infer<typeof schema.pauseRound>;
-export type StartRoundInput = z.infer<typeof schema.startRound>;
-export type EnableForceLevel2Input = z.infer<typeof schema.enableForceLevel2>;
-export type DisableForceLevel2Input = z.infer<typeof schema.disableForceLevel2>;
-export type StartGodPartyInput = z.infer<typeof schema.startGodParty>;
-export type StopGodPartyInput = z.infer<typeof schema.stopGodParty>;
-export type StartRoyaleInput = z.infer<typeof schema.startRoyale>;
-export type PauseRoyaleInput = z.infer<typeof schema.pauseRoyale>;
-export type UnpauseRoyaleInput = z.infer<typeof schema.unpauseRoyale>;
-export type StopRoyaleInput = z.infer<typeof schema.stopRoyale>;
-export type MakeBattleHarderInput = z.infer<typeof schema.makeBattleHarder>;
-export type MakeBattleEasierInput = z.infer<typeof schema.makeBattleEasier>;
-export type ResetBattleDifficultyInput = z.infer<typeof schema.resetBattleDifficulty>;
-export type MessageUserInput = z.infer<typeof schema.messageUser>;
-export type ChangeUserInput = z.infer<typeof schema.changeUser>;
-export type BroadcastInput = z.infer<typeof schema.broadcast>;
-export type KickClientInput = z.infer<typeof schema.kickClient>;
-export type InfoInput = z.infer<typeof schema.info>;
-export type AuthInput = z.infer<typeof schema.auth>;
+export type Shard = z.infer<typeof Schema.Shard>;
+export type ShardDocument = Shard & Document;
 
 export type Config = {
   id?: string;
@@ -156,8 +119,9 @@ export interface Client {
   name: string;
   roles: string[];
   shardId?: string;
+  ioCallbacks: any;
   id: string;
-  emit: ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
+  emit: any; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
   startedRoundAt: number | null;
   avatar: number | null;
   network: string | null;
@@ -421,76 +385,63 @@ export type Event = {
   args: Array<any>;
 };
 
-export type ConnectedOutput = Promise<{ status?: number }>;
-export type InfoOutput = Promise<{ status?: number; data?: ServiceInfo }>;
-export type SetCharacterOutput = Promise<{ status?: number }>;
-export type SeerConnectedOutput = Promise<{ status?: number }>;
-export type SeerDisconnectedOutput = Promise<{ status?: number }>;
-export type SetConfigOutput = Promise<{ status?: number }>;
-export type GetConfigOutput = Promise<{ status?: number; data?: Partial<Config> }>;
-export type LoadOutput = Promise<{ status?: number }>;
-export type SpectateOutput = Promise<{ status?: number }>;
-export type LoginOutput = Promise<{ status?: number; token?: string }>;
-export type AuthOutput = Promise<{ status?: number }>;
-export type JoinOutput = Promise<{ status?: number }>;
-export type UpdateMyselfOutput = Promise<{ status?: number }>;
-export type RestartOutput = Promise<{ status?: number }>;
-export type MaintenanceOutput = Promise<{ status?: number }>;
-export type UnmaintenanceOutput = Promise<{ status?: number }>;
-export type StartBattleRoyaleOutput = Promise<{ status?: number }>;
-export type StopBattleRoyaleOutput = Promise<{ status?: number }>;
-export type PauseRoundOutput = Promise<{ status?: number }>;
-export type StartRoundOutput = Promise<{ status?: number }>;
-export type EnableForceLevel2Output = Promise<{ status?: number }>;
-export type DisableForceLevel2Output = Promise<{ status?: number }>;
-export type StartGodPartyOutput = Promise<{ status?: number }>;
-export type StopGodPartyOutput = Promise<{ status?: number }>;
-export type StartRoyaleOutput = Promise<{ status?: number }>;
-export type PauseRoyaleOutput = Promise<{ status?: number }>;
-export type UnpauseRoyaleOutput = Promise<{ status?: number }>;
-export type StopRoyaleOutput = Promise<{ status?: number }>;
-export type MakeBattleHarderOutput = Promise<{ status?: number }>;
-export type MakeBattleEasierOutput = Promise<{ status?: number }>;
-export type ResetBattleDifficultyOutput = Promise<{ status?: number }>;
-export type MessageUserOutput = Promise<{ status?: number }>;
-export type ChangeUserOutput = Promise<{ status?: number }>;
-export type BroadcastOutput = Promise<{ status?: number }>;
-export type KickClientOutput = Promise<{ status?: number }>;
-
 export type Service = {
-  connected(input: ConnectedInput, ctx: ServiceContext): ConnectedOutput;
-  info(input: InfoInput, ctx: ServiceContext): InfoOutput;
-  seerConnected(input: SeerConnectedInput, ctx: ServiceContext): SeerConnectedOutput;
-  seerDisconnected(input: SeerDisconnectedInput, ctx: ServiceContext): SeerDisconnectedOutput;
-  setCharacter(input: SetCharacterInput, ctx: ServiceContext): SetCharacterOutput;
-  setConfig(input: SetConfigInput, ctx: ServiceContext): SetConfigOutput;
-  getConfig(input: GetConfigInput, ctx: ServiceContext): GetConfigOutput;
-  load(input: LoadInput, ctx: ServiceContext): LoadOutput;
-  spectate(input: SpectateInput, ctx: ServiceContext): SpectateOutput;
-  login(input: LoginInput, ctx: ServiceContext): LoginOutput;
-  auth(input: AuthInput, ctx: ServiceContext): AuthOutput;
-  join(input: JoinInput, ctx: ServiceContext): JoinOutput;
-  updateMyself(input: UpdateMyselfInput, ctx: ServiceContext): UpdateMyselfOutput;
-  restart(input: RestartInput, ctx: ServiceContext): RestartOutput;
-  maintenance(input: MaintenanceInput, ctx: ServiceContext): MaintenanceOutput;
-  unmaintenance(input: UnmaintenanceInput, ctx: ServiceContext): UnmaintenanceOutput;
-  startBattleRoyale(input: StartBattleRoyaleInput, ctx: ServiceContext): StartBattleRoyaleOutput;
-  stopBattleRoyale(input: StopBattleRoyaleInput, ctx: ServiceContext): StopBattleRoyaleOutput;
-  pauseRound(input: PauseRoundInput, ctx: ServiceContext): PauseRoundOutput;
-  startRound(input: StartRoundInput, ctx: ServiceContext): StartRoundOutput;
-  enableForceLevel2(input: EnableForceLevel2Input, ctx: ServiceContext): EnableForceLevel2Output;
-  disableForceLevel2(input: DisableForceLevel2Input, ctx: ServiceContext): DisableForceLevel2Output;
-  startGodParty(input: StartGodPartyInput, ctx: ServiceContext): StartGodPartyOutput;
-  stopGodParty(input: StopGodPartyInput, ctx: ServiceContext): StopGodPartyOutput;
-  startRoyale(input: StartRoyaleInput, ctx: ServiceContext): StartRoyaleOutput;
-  pauseRoyale(input: PauseRoyaleInput, ctx: ServiceContext): PauseRoyaleOutput;
-  unpauseRoyale(input: UnpauseRoyaleInput, ctx: ServiceContext): UnpauseRoyaleOutput;
-  stopRoyale(input: StopRoyaleInput, ctx: ServiceContext): StopRoyaleOutput;
-  makeBattleHarder(input: MakeBattleHarderInput, ctx: ServiceContext): MakeBattleHarderOutput;
-  makeBattleEasier(input: MakeBattleEasierInput, ctx: ServiceContext): MakeBattleEasierOutput;
-  resetBattleDifficulty(input: ResetBattleDifficultyInput, ctx: ServiceContext): ResetBattleDifficultyOutput;
-  messageUser(input: MessageUserInput, ctx: ServiceContext): MessageUserOutput;
-  changeUser(input: ChangeUserInput, ctx: ServiceContext): ChangeUserOutput;
-  broadcast(input: BroadcastInput, ctx: ServiceContext): BroadcastOutput;
-  kickClient(input: KickClientInput, ctx: ServiceContext): KickClientOutput;
+  connected(input: RouterInput['connected'], ctx: ServiceContext): Promise<RouterOutput['connected']>;
+  info(input: RouterInput['info'], ctx: ServiceContext): Promise<RouterOutput['info']>;
+  seerConnected(input: RouterInput['seerConnected'], ctx: ServiceContext): Promise<RouterOutput['seerConnected']>;
+  seerDisconnected(
+    input: RouterInput['seerDisconnected'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['seerDisconnected']>;
+  setCharacter(input: RouterInput['setCharacter'], ctx: ServiceContext): Promise<RouterOutput['setCharacter']>;
+  setConfig(input: RouterInput['setConfig'], ctx: ServiceContext): Promise<RouterOutput['setConfig']>;
+  getConfig(input: RouterInput['getConfig'], ctx: ServiceContext): Promise<RouterOutput['getConfig']>;
+  load(input: RouterInput['load'], ctx: ServiceContext): Promise<RouterOutput['load']>;
+  spectate(input: RouterInput['spectate'], ctx: ServiceContext): Promise<RouterOutput['spectate']>;
+  login(input: RouterInput['login'], ctx: ServiceContext): Promise<RouterOutput['login']>;
+  auth(input: RouterInput['auth'], ctx: ServiceContext): Promise<RouterOutput['auth']>;
+  join(input: RouterInput['join'], ctx: ServiceContext): Promise<RouterOutput['join']>;
+  restart(input: RouterInput['restart'], ctx: ServiceContext): Promise<RouterOutput['restart']>;
+  maintenance(input: RouterInput['maintenance'], ctx: ServiceContext): Promise<RouterOutput['maintenance']>;
+  unmaintenance(input: RouterInput['unmaintenance'], ctx: ServiceContext): Promise<RouterOutput['unmaintenance']>;
+  startBattleRoyale(
+    input: RouterInput['startBattleRoyale'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['startBattleRoyale']>;
+  stopBattleRoyale(
+    input: RouterInput['stopBattleRoyale'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['stopBattleRoyale']>;
+  pauseRound(input: RouterInput['pauseRound'], ctx: ServiceContext): Promise<RouterOutput['pauseRound']>;
+  startRound(input: RouterInput['startRound'], ctx: ServiceContext): Promise<RouterOutput['startRound']>;
+  enableForceLevel2(
+    input: RouterInput['enableForceLevel2'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['enableForceLevel2']>;
+  disableForceLevel2(
+    input: RouterInput['disableForceLevel2'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['disableForceLevel2']>;
+  startGodParty(input: RouterInput['startGodParty'], ctx: ServiceContext): Promise<RouterOutput['startGodParty']>;
+  stopGodParty(input: RouterInput['stopGodParty'], ctx: ServiceContext): Promise<RouterOutput['stopGodParty']>;
+  startRoyale(input: RouterInput['startRoyale'], ctx: ServiceContext): Promise<RouterOutput['startRoyale']>;
+  pauseRoyale(input: RouterInput['pauseRoyale'], ctx: ServiceContext): Promise<RouterOutput['pauseRoyale']>;
+  unpauseRoyale(input: RouterInput['unpauseRoyale'], ctx: ServiceContext): Promise<RouterOutput['unpauseRoyale']>;
+  stopRoyale(input: RouterInput['stopRoyale'], ctx: ServiceContext): Promise<RouterOutput['stopRoyale']>;
+  makeBattleHarder(
+    input: RouterInput['makeBattleHarder'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['makeBattleHarder']>;
+  makeBattleEasier(
+    input: RouterInput['makeBattleEasier'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['makeBattleEasier']>;
+  resetBattleDifficulty(
+    input: RouterInput['resetBattleDifficulty'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['resetBattleDifficulty']>;
+  messageUser(input: RouterInput['messageUser'], ctx: ServiceContext): Promise<RouterOutput['messageUser']>;
+  changeUser(input: RouterInput['changeUser'], ctx: ServiceContext): Promise<RouterOutput['changeUser']>;
+  broadcast(input: RouterInput['broadcast'], ctx: ServiceContext): Promise<RouterOutput['broadcast']>;
+  kickClient(input: RouterInput['kickClient'], ctx: ServiceContext): Promise<RouterOutput['kickClient']>;
 };
