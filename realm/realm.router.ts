@@ -19,23 +19,23 @@ export const createCallerFactory = t.createCallerFactory;
 export const createRouter = (service?: Service) => {
   return router({
     auth: procedure
+      .input(Schema.SignedData)
       .use(customErrorFormatter(t))
       .use(validateRequest(t))
-      .input(Schema.OnlySignatureInput)
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.auth as any)(input, ctx)),
 
     connectSeer: procedure
       .use(customErrorFormatter(t))
-      .use(validateRequest(t))
-      .input(Schema.OnlySignatureInput)
+      // .use(validateRequest(t))
+      // .input(Schema.OnlySignatureInput)
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.connectSeer as any)(input, ctx)),
 
     createShard: procedure
       .use(customErrorFormatter(t))
-      .use(validateRequest(t))
-      .input(Schema.OnlySignatureInput)
+      // .use(validateRequest(t))
+      // .input(Schema.OnlySignatureInput)
       .output(Schema.getQueryOutput(Shard))
       .mutation(({ input, ctx }) => (service.createShard as any)(input, ctx)),
 
