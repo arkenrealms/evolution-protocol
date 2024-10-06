@@ -28,7 +28,7 @@ export const router = t.router({
     .input(z.object({ data: z.any(), signature: z.object({ hash: z.string(), address: z.string() }) }))
     // .output(z.object({ status: z.number(), config: z.any() }))
     .mutation(({ input, ctx }) => {
-      return { status: 1, config: {} };
+      return { status: 0, data: {} };
     }),
 
   saveRound: procedure

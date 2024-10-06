@@ -5,10 +5,13 @@ import { Server as SocketServer } from 'socket.io';
 import { z } from 'zod';
 import * as schema from './shard.schema';
 import { Position, Signature } from '@arken/node/types';
-export type { Router } from './shard.router';
-import type { RouterInput, RouterOutput } from './shard.router';
+import { createTRPCProxyClient } from '@trpc/client';
+import type { Router } from './shard.router';
+import { createCallerFactory } from './shard.router';
+import type { createRouter, RouterInput, RouterOutput } from './shard.router';
 import * as Schema from './shard.schema';
 
+export type { Router, RouterInput, RouterOutput };
 export type Shard = z.infer<typeof Schema.Shard>;
 export type ShardDocument = Shard & Document;
 
@@ -121,7 +124,7 @@ export interface Client {
   shardId?: string;
   ioCallbacks: any;
   id: string;
-  emit: any; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
+  emit: ReturnType<ReturnType<typeof createCallerFactory>>; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
   startedRoundAt: number | null;
   avatar: number | null;
   network: string | null;
@@ -401,6 +404,14 @@ export type Service = {
   login(input: RouterInput['login'], ctx: ServiceContext): Promise<RouterOutput['login']>;
   auth(input: RouterInput['auth'], ctx: ServiceContext): Promise<RouterOutput['auth']>;
   join(input: RouterInput['join'], ctx: ServiceContext): Promise<RouterOutput['join']>;
+  isMechanicEnabled(
+    input: RouterInput['isMechanicEnabled'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['isMechanicEnabled']>;
+  broadcastMechanics(
+    input: RouterInput['broadcastMechanics'],
+    ctx: ServiceContext
+  ): Promise<RouterOutput['broadcastMechanics']>;
   restart(input: RouterInput['restart'], ctx: ServiceContext): Promise<RouterOutput['restart']>;
   maintenance(input: RouterInput['maintenance'], ctx: ServiceContext): Promise<RouterOutput['maintenance']>;
   unmaintenance(input: RouterInput['unmaintenance'], ctx: ServiceContext): Promise<RouterOutput['unmaintenance']>;

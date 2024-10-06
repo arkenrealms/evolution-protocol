@@ -13,7 +13,12 @@ export type { Service } from './realm.service';
 export interface ApplicationConfig {
   maxClients: number;
   roundId: number;
+  gameMode: string;
   shardKey: string;
+  isRoundPaused: boolean;
+  isBattleRoyale: boolean;
+  isGodParty: boolean;
+  level2open: boolean;
   //   rewardItemAmountPerLegitPlayer: number;
   //   rewardItemAmountMax: number;
   //   rewardWinnerAmountPerLegitPlayer: number;

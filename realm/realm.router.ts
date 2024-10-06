@@ -76,7 +76,14 @@ export const createRouter = (service?: Service) => {
             playerCount: z.number(),
             speculatorCount: z.number(),
             version: z.string(),
+            isSeerConnected: z.boolean(),
             games: z.any(),
+            roundId: z.number(),
+            gameMode: z.string(),
+            isRoundPaused: z.boolean(),
+            isBattleRoyale: z.boolean(),
+            isGodParty: z.boolean(),
+            level2open: z.boolean(),
           })
         )
       )

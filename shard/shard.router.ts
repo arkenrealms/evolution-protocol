@@ -1,6 +1,6 @@
 // shard.router.ts
 
-import { z as zod } from 'zod';
+import { z } from 'zod';
 import { initTRPC } from '@trpc/server';
 import { customErrorFormatter, hasRole } from '@arken/node/util/rpc';
 import { inferRouterInputs, inferRouterOutputs } from '@arken/node/schema';
@@ -21,21 +21,21 @@ export const createCallerFactory = t.createCallerFactory;
 export const createRouter = (service: Types.Service) =>
   router({
     connected: procedure
-      .use(hasRole('realm', t))
-      .use(customErrorFormatter(t))
       .input(
-        zod.object({
-          data: zod.object({ id: zod.string() }),
+        z.object({
+          data: z.object({ id: z.string() }),
           signature: Schema.Signature,
         })
       )
+      .use(customErrorFormatter(t))
+      // .use(hasRole('realm', t))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.connected as any)(input, ctx)),
 
     info: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
-      .output(Schema.NoDataOutput)
+      .output(Schema.AnyDataOutput)
       .mutation(({ input, ctx }) => (service.info as any)(input, ctx)),
 
     auth: procedure
@@ -55,6 +55,21 @@ export const createRouter = (service: Types.Service) =>
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.join as any)(input, ctx)),
 
+    broadcastMechanics: procedure
+      .use(customErrorFormatter(t))
+      .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.broadcastMechanics as any)(input, ctx)),
+
+    isMechanicEnabled: procedure
+      .use(customErrorFormatter(t))
+      .input(
+        z.object({
+          id: z.number(),
+        })
+      )
+      .output(z.boolean())
+      .mutation(({ input, ctx }) => (service.isMechanicEnabled as any)(input, ctx)),
+
     seerConnected: procedure
       .use(hasRole('realm', t))
       .use(customErrorFormatter(t))
@@ -71,8 +86,9 @@ export const createRouter = (service: Types.Service) =>
       .use(hasRole('realm', t))
       .use(customErrorFormatter(t))
       .input(
-        zod.object({
-          data: zod.any(),
+        z.object({
+          character: z.any(),
+          address: z.string(),
         })
       )
       .output(Schema.NoDataOutput)
@@ -82,8 +98,8 @@ export const createRouter = (service: Types.Service) =>
       .use(hasRole('realm', t))
       .use(customErrorFormatter(t))
       .input(
-        zod.object({
-          data: zod.any(),
+        z.object({
+          data: z.any(),
         })
       )
       .output(Schema.NoDataOutput)
@@ -92,7 +108,7 @@ export const createRouter = (service: Types.Service) =>
     getConfig: procedure
       .use(hasRole('realm', t))
       .use(customErrorFormatter(t))
-      .output(Schema.NoDataOutput)
+      .output(Schema.AnyDataOutput)
       .query(({ input, ctx }) => (service.getConfig as any)(input, ctx)),
 
     load: procedure.use(customErrorFormatter(t)).mutation(({ input, ctx }) => (service.load as any)(input, ctx)),
@@ -140,6 +156,13 @@ export const createRouter = (service: Types.Service) =>
     startRound: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
+      .input(
+        z.object({
+          data: z.object({
+            gameMode: z.string(),
+          }),
+        })
+      )
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.startRound as any)(input, ctx)),
 
@@ -212,22 +235,26 @@ export const createRouter = (service: Types.Service) =>
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
       .output(Schema.NoDataOutput)
+      .input(z.object({ data: z.object({ target: z.string(), message: z.string() }) }))
       .mutation(({ input, ctx }) => (service.messageUser as any)(input, ctx)),
 
     changeUser: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
+      .input(z.object({ data: z.object({ target: z.string(), config: z.any() }) }))
       .mutation(({ input, ctx }) => (service.changeUser as any)(input, ctx)),
 
     broadcast: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
+      .input(z.object({ data: z.object({ message: z.string() }) }))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.broadcast as any)(input, ctx)),
 
     kickClient: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
+      .input(z.object({ data: z.object({ target: z.string() }) }))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.kickClient as any)(input, ctx)),
   });
