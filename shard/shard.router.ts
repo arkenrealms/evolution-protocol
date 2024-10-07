@@ -18,7 +18,7 @@ export const router = t.router;
 export const procedure = t.procedure;
 export const createCallerFactory = t.createCallerFactory;
 
-export const createRouter = (service: Types.Service) =>
+export const createRouter = (service: any) =>
   router({
     connected: procedure
       .input(
@@ -35,7 +35,28 @@ export const createRouter = (service: Types.Service) =>
     info: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
-      .output(Schema.AnyDataOutput)
+      .output(
+        z.object({
+          status: z.number(),
+          data: z.object({
+            id: z.string(),
+            version: z.string(),
+            // port: z.number(),
+            round: z.object({ id: z.number(), startedDate: z.number() }),
+            clientCount: z.number(),
+            // clientCount: this.clients.filter((c) => !c.isDead && !c.isSpectating).length,
+            spectatorCount: z.number(),
+            recentClientsCount: z.number(),
+            spritesCount: z.number(),
+            connectedClients: z.array(z.string()),
+            rewardItemAmount: z.number(),
+            rewardWinnerAmount: z.number(),
+            gameMode: z.string(),
+            orbs: z.any(),
+            currentReward: z.any(),
+          }),
+        })
+      )
       .mutation(({ input, ctx }) => (service.info as any)(input, ctx)),
 
     auth: procedure
@@ -47,6 +68,16 @@ export const createRouter = (service: Types.Service) =>
 
     login: procedure
       .use(customErrorFormatter(t))
+      .input(
+        z.object({
+          name: z.string(),
+          network: z.string(),
+          address: z.string(),
+          device: z.string(),
+          signature: z.string(),
+          version: z.string(),
+        })
+      )
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.login as any)(input, ctx)),
 

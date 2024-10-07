@@ -37,7 +37,7 @@ export const createRouter = (service: any) => {
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onJoinGame as any)(input, ctx)),
     onRoundWinner: procedure
-      .input(z.string())
+      .input(z.tuple([z.string()]))
       .output(z.string())
       .mutation(({ input, ctx }) => (service.onRoundWinner as any)(input, ctx)),
     onClearLeaderboard: procedure
@@ -80,7 +80,7 @@ export const createRouter = (service: any) => {
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onLogin as any)(input, ctx)),
     onMaintenance: procedure
-      .input(Schema.AnyInput)
+      .input(z.tuple([z.boolean()]))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onMaintenance as any)(input, ctx)),
     onUpdateEvolution: procedure
@@ -100,7 +100,7 @@ export const createRouter = (service: any) => {
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onSetRoundInfo as any)(input, ctx)),
     onLoaded: procedure
-      .input(Schema.AnyInput)
+      .input(z.tuple([]))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onLoaded as any)(input, ctx)),
     onOpenLevel2: procedure
@@ -123,7 +123,7 @@ export const createRouter = (service: any) => {
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onRoundPaused as any)(input, ctx)),
     onUnmaintenance: procedure
-      .input(z.boolean())
+      .input(z.tuple([z.boolean()]))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onUnmaintenance as any)(input, ctx)),
     onSetPositionMonitor: procedure
