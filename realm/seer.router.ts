@@ -7,49 +7,39 @@ const t = initTRPC.context<{}>().create();
 
 export async function monitorEvolutionRealms(app) {}
 
-class Service {}
-
-export const service = new Service();
-
 export const procedure = t.procedure;
 
-export const router = t.router({
-  banUser: procedure
-    .input(z.object({ target: z.string(), banReason: z.string(), banExpireDate: z.string() }))
-    .mutation(({ input, ctx }) => {
-      return { status: 1 };
-    }),
+export const createRouter = (service: any) =>
+  t.router({
+    info: procedure.query(({ input, ctx }) => (service.info as any)(input, ctx)),
 
-  info: procedure.query(({ input, ctx }) => {
-    return { status: 1, data: { stuff: 1 } };
-  }),
+    banUser: procedure
+      .input(z.object({ target: z.string(), banReason: z.string(), banExpireDate: z.string() }))
+      .mutation(({ input, ctx }) => (service.banUser as any)(input, ctx)),
 
-  auth: procedure
-    .input(z.object({ data: z.any(), signature: z.object({ hash: z.string(), address: z.string() }) }))
-    // .output(z.object({ status: z.number(), config: z.any() }))
-    .mutation(({ input, ctx }) => {
-      return { status: 0, data: {} };
-    }),
+    // TODO: utilize service
+    auth: procedure
+      .input(z.object({ data: z.any(), signature: z.object({ hash: z.string(), address: z.string() }) }))
+      .output(z.object({ roundId: z.number() }))
+      .mutation(({ input, ctx }) => (service.auth as any)(input, ctx)),
 
-  saveRound: procedure
-    .input(
-      z.object({
-        shardId: z.string(),
-        roundId: z.number(),
-        round: z.any(),
-        rewardWinnerAmount: z.number(),
-        lastClients: z.any(),
-      })
-    )
-    .mutation(({ input, ctx }) => {
-      return { status: 1 };
-    }),
+    saveRound: procedure
+      .input(
+        z.object({
+          shardId: z.string(),
+          roundId: z.string(),
+          round: z.any(),
+          rewardWinnerAmount: z.number(),
+          lastClients: z.any(),
+        })
+      )
+      .mutation(({ input, ctx }) => (service.saveRound as any)(input, ctx)),
 
-  getProfile: procedure.input(z.string()).query(({ input, ctx }) => {
-    return { status: 1, data: {} };
-  }),
-});
+    getProfile: procedure.input(z.string()).query(({ input, ctx }) => (service.getProfile as any)(input, ctx)),
 
-export type Router = typeof router;
+    updateRealm: procedure.input(z.any()).mutation(({ input, ctx }) => (service.updateRealm as any)(input, ctx)),
+  });
+
+export type Router = ReturnType<typeof createRouter>;
 export type RouterInput = inferRouterInputs<Router>;
 export type RouterOutput = inferRouterOutputs<Router>;

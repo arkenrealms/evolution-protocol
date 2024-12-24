@@ -67,10 +67,10 @@ export const createRouter = (service: any) => {
       .input(z.tuple([z.string(), z.number(), z.number()]))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onSpectate as any)(input, ctx)),
-    onUserDisconnected: procedure
+    onDisconnected: procedure
       .input(Schema.AnyInput)
       .output(Schema.NoDataOutput)
-      .mutation(({ input, ctx }) => (service.onUserDisconnected as any)(input, ctx)),
+      .mutation(({ input, ctx }) => (service.onDisconnected as any)(input, ctx)),
     onBanned: procedure
       .input(Schema.AnyInput)
       .output(Schema.NoDataOutput)
@@ -100,7 +100,7 @@ export const createRouter = (service: any) => {
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onSetRoundInfo as any)(input, ctx)),
     onLoaded: procedure
-      .input(z.tuple([]))
+      .input(z.tuple([z.number()]))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onLoaded as any)(input, ctx)),
     onOpenLevel2: procedure

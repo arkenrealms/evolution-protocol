@@ -3,7 +3,7 @@ import { Server as HttpServer } from 'http';
 import { Server as HttpsServer } from 'https';
 import { Server as SocketServer } from 'socket.io';
 import { httpBatchLink, createTRPCProxyClient, loggerLink } from '@trpc/client';
-import type { Router as SeerRouter } from './seer.router';
+import type { Types as SeerTypes } from '@arken/seer-protocol';
 import type * as Shard from '../shard/shard.types';
 import type { Service as ShardService } from '../shard/shard.service';
 
@@ -122,7 +122,7 @@ export interface ApplicationRouterContext {
 
 export interface Seer {
   client: any;
-  emit: ReturnType<typeof createTRPCProxyClient<SeerRouter>>;
+  emit: ReturnType<typeof createTRPCProxyClient<SeerTypes.Router>>;
 }
 
 export interface Profile {

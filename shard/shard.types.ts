@@ -29,6 +29,7 @@ export type Config = {
   level2open: boolean;
   level3open: boolean;
   hideMap: boolean;
+  mechanicsAllowed?: boolean;
   dynamicDecayPower: boolean;
   decayPowerPerMaxEvolvedClients: number;
   pickupCheckPositionDistance: number;
@@ -124,7 +125,7 @@ export interface Client {
   shardId?: string;
   ioCallbacks: any;
   id: string;
-  emit: ReturnType<ReturnType<typeof createCallerFactory>>; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
+  emit: ReturnType<ReturnType<typeof createClientCallerFactory>>; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
   startedRoundAt: number | null;
   avatar: number | null;
   network: string | null;
@@ -396,6 +397,7 @@ export type Service = {
     input: RouterInput['seerDisconnected'],
     ctx: ServiceContext
   ): Promise<RouterOutput['seerDisconnected']>;
+  updateMyself(input: RouterInput['updateMyself'], ctx: ServiceContext): Promise<RouterOutput['updateMyself']>;
   setCharacter(input: RouterInput['setCharacter'], ctx: ServiceContext): Promise<RouterOutput['setCharacter']>;
   setConfig(input: RouterInput['setConfig'], ctx: ServiceContext): Promise<RouterOutput['setConfig']>;
   getConfig(input: RouterInput['getConfig'], ctx: ServiceContext): Promise<RouterOutput['getConfig']>;
@@ -404,10 +406,7 @@ export type Service = {
   login(input: RouterInput['login'], ctx: ServiceContext): Promise<RouterOutput['login']>;
   auth(input: RouterInput['auth'], ctx: ServiceContext): Promise<RouterOutput['auth']>;
   join(input: RouterInput['join'], ctx: ServiceContext): Promise<RouterOutput['join']>;
-  isMechanicEnabled(
-    input: RouterInput['isMechanicEnabled'],
-    ctx: ServiceContext
-  ): Promise<RouterOutput['isMechanicEnabled']>;
+  isMechanicEnabled(input: RouterInput['isMechanicEnabled'], ctx: ServiceContext): RouterOutput['isMechanicEnabled'];
   broadcastMechanics(
     input: RouterInput['broadcastMechanics'],
     ctx: ServiceContext

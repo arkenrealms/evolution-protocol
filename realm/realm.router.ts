@@ -22,28 +22,28 @@ export const createRouter = (service?: Service) => {
       .input(Schema.SignedData)
       .use(customErrorFormatter(t))
       .use(validateRequest(t))
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.auth as any)(input, ctx)),
 
     connectSeer: procedure
       .use(customErrorFormatter(t))
       // .use(validateRequest(t))
       // .input(Schema.OnlySignatureInput)
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.connectSeer as any)(input, ctx)),
 
     createShard: procedure
       .use(customErrorFormatter(t))
       // .use(validateRequest(t))
       // .input(Schema.OnlySignatureInput)
-      .output(Schema.getQueryOutput(Shard))
+      .output(Shard) // Schema.getQueryOutput(Shard))
       .mutation(({ input, ctx }) => (service.createShard as any)(input, ctx)),
 
     getShards: procedure
       .use(customErrorFormatter(t))
       // .use(validateRequest(t))
       .input(Schema.getQueryInput(Shard))
-      .output(Schema.getQueryOutput(z.array(Shard)))
+      .output(z.array(Shard)) // Schema.getQueryOutput(z.array(Shard)))
       .query(({ input, ctx }) => (service.getShards as any)(input, ctx)),
 
     setConfig: procedure
@@ -51,18 +51,19 @@ export const createRouter = (service?: Service) => {
       .use(hasRole('mod', t))
       .use(validateRequest(t))
       .input(
-        z.object({
-          data: z.object({ shardId: z.string(), config: z.record(z.any()) }),
-          signature: Schema.Signature,
-        })
+        z.object({ shardId: z.string(), config: z.record(z.any()) })
+        // z.object({
+        //   data: z.object({ shardId: z.string(), config: z.record(z.any()) }),
+        //   signature: Schema.Signature,
+        // })
       )
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.setConfig as any)(input, ctx)),
 
     ping: procedure
       .use(customErrorFormatter(t))
       .input(z.object({ id: z.string() }))
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.ping as any)(input, ctx)),
 
     info: procedure
@@ -71,20 +72,20 @@ export const createRouter = (service?: Service) => {
       // .use(validateRequest(t))
       // .input(Schema.OnlySignatureInput)
       .output(
-        Schema.getQueryOutput(
-          z.object({
-            playerCount: z.number(),
-            speculatorCount: z.number(),
-            version: z.string(),
-            authorizedProfile: z
-              .object({
-                id: z.string(),
-              })
-              .optional(),
-            isSeerConnected: z.boolean(),
-            games: z.any(),
-          })
-        )
+        // Schema.getQueryOutput(
+        z.object({
+          playerCount: z.number(),
+          speculatorCount: z.number(),
+          version: z.string(),
+          authorizedProfile: z
+            .object({
+              id: z.string(),
+            })
+            .optional(),
+          isSeerConnected: z.boolean(),
+          games: z.any(),
+        })
+        // )
       )
       .query(({ input, ctx }) => (service.info as any)(input, ctx)),
 
@@ -93,12 +94,13 @@ export const createRouter = (service?: Service) => {
       .use(hasRole('admin', t))
       .use(validateRequest(t))
       .input(
-        z.object({
-          data: z.object({ target: z.string() }),
-          signature: Schema.Signature,
-        })
+        z.object({ target: z.string() })
+        // z.object({
+        //   data: z.object({ target: z.string() }),
+        //   signature: Schema.Signature,
+        // })
       )
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.addMod as any)(input, ctx)),
 
     removeMod: procedure
@@ -106,10 +108,11 @@ export const createRouter = (service?: Service) => {
       .use(hasRole('admin', t))
       .use(validateRequest(t))
       .input(
-        z.object({
-          data: z.object({ target: z.string() }),
-          signature: Schema.Signature,
-        })
+        z.object({ target: z.string() })
+        // z.object({
+        //   data: z.object({ target: z.string() }),
+        //   signature: Schema.Signature,
+        // })
       )
       .mutation(({ input, ctx }) => (service.removeMod as any)(input, ctx)),
 
@@ -117,12 +120,13 @@ export const createRouter = (service?: Service) => {
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
       .input(
-        z.object({
-          data: z.object({ target: z.string() }),
-          signature: Schema.Signature,
-        })
+        z.object({ target: z.string() })
+        // z.object({
+        //   data: z.object({ target: z.string() }),
+        //   signature: Schema.Signature,
+        // })
       )
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.banClient as any)(input, ctx)),
 
     banUser: procedure
@@ -130,12 +134,13 @@ export const createRouter = (service?: Service) => {
       .use(hasRole('admin', t))
       .use(validateRequest(t))
       .input(
-        z.object({
-          data: z.object({ target: z.string(), banReason: z.string(), banExpireDate: z.string() }),
-          signature: Schema.Signature,
-        })
+        z.object({ target: z.string(), banReason: z.string(), banExpireDate: z.string() })
+        // z.object({
+        //   data: z.object({ target: z.string(), banReason: z.string(), banExpireDate: z.string() }),
+        //   signature: Schema.Signature,
+        // })
       )
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.banUser as any)(input, ctx)),
 
     // bridgeState: procedure
@@ -149,15 +154,20 @@ export const createRouter = (service?: Service) => {
       .use(customErrorFormatter(t))
       .input(
         z.object({
-          data: z.object({
-            target: z.string().refine(isEthereumAddress, {
-              message: 'Target must be a valid Ethereum address',
-            }),
+          target: z.string().refine(isEthereumAddress, {
+            message: 'Target must be a valid Ethereum address',
           }),
-          signature: Schema.Signature,
         })
+        // z.object({
+        //   data: z.object({
+        //     target: z.string().refine(isEthereumAddress, {
+        //       message: 'Target must be a valid Ethereum address',
+        //     }),
+        //   }),
+        //   signature: Schema.Signature,
+        // })
       )
-      .output(Schema.NoDataOutput)
+      // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.unbanClient as any)(input, ctx)),
 
     matchShard: procedure.input(z.void()).mutation(({ input, ctx }) => (service.matchShard as any)(input, ctx)),
