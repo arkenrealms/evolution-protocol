@@ -327,6 +327,7 @@ export type RoundEvent = {
 
 export type Round = {
   id: string;
+  gameMode: string;
   startedDate: number; // or Date if using Date objects
   endedAt: number | null;
   clients: Client[];
