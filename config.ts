@@ -116,7 +116,7 @@ export const sharedConfig: Partial<Types.Shard.Config> = {
   avatarSpeedMultiplier0: 1,
   avatarSpeedMultiplier1: 1,
   avatarSpeedMultiplier2: 0.85,
-  baseSpeed: 3,
+  baseSpeed: 0.75,
   cameraSize: 3,
   checkConnectionLoopSeconds: 2,
   checkInterval: 1,
