@@ -1,7 +1,5 @@
 import { z } from 'zod';
-import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
-import { inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
-import { transformer } from '@arken/node/util/rpc';
+import { initTRPC } from '@trpc/server';
 import { inferRouterInputs, inferRouterOutputs } from '@arken/node/schema';
 import * as Schema from '@arken/node/schema';
 import { Client } from '../shard/shard.types';
@@ -163,16 +161,3 @@ export const createRouter = (service: any) => {
 export type Router = ReturnType<typeof createRouter>;
 export type RouterInput = inferRouterInputs<Router>;
 export type RouterOutput = inferRouterOutputs<Router>;
-
-// export const create = (url: string) => {
-//   return createTRPCProxyClient<Router>({
-//     links: [
-//       httpBatchLink({
-//         url,
-//       }),
-//     ],
-//     transformer,
-//   });
-// };
-
-// export type Client = inferAsyncReturnType<typeof create>;
