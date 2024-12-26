@@ -154,7 +154,7 @@ export const sharedConfig: Partial<Types.Shard.Config> = {
   rewardSpawnLoopSeconds: testMode ? 1 : (3 * 60) / 20,
   rewardWinnerAmount: 0,
   rewardWinnerName: 'PEPE',
-  roundLoopSeconds: 30, //testMode ? 1 * 60 : 5 * 60,
+  roundLoopSeconds: 5 * 60, //testMode ? 1 * 60 : 5 * 60,
   sendUpdateLoopSeconds: 3,
   slowLoopSeconds: 1,
   spritesPerClientCount: 1,

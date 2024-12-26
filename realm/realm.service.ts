@@ -1,6 +1,7 @@
 import { RouterInput, RouterOutput } from './realm.router';
 import { ServiceContext, Seer } from './realm.types';
 
+// TODO: this is wrong
 export type Service = {
   seer: Seer;
   subProcesses: any[];
