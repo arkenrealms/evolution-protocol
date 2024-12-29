@@ -116,6 +116,7 @@ export type Config = {
   spritesStartCount: number;
   spritesTotal: number;
   guide: string[];
+  maxClients?: number;
 };
 
 export interface Client {

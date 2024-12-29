@@ -103,6 +103,7 @@ export const baseConfig: Types.Shard.Config = {
   spritesStartCount: 0,
   spritesTotal: 0,
   guide: [],
+  maxClients: 100,
 };
 
 export const sharedConfig: Partial<Types.Shard.Config> = {

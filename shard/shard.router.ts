@@ -82,6 +82,11 @@ export const createRouter = (service: any) =>
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.login as any)(input, ctx)),
 
+    forceJoin: procedure
+      .use(customErrorFormatter(t))
+      .use(hasRole(['admin', 'mod'], t))
+      .mutation(({ input, ctx }) => (service.forceJoin as any)(input, ctx)),
+
     join: procedure
       .use(customErrorFormatter(t))
       // .output(Schema.NoDataOutput)
