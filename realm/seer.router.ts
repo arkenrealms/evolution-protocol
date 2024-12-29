@@ -29,8 +29,6 @@ export const createRouter = (service: any) =>
           shardId: z.string(),
           roundId: z.string(),
           round: z.any(),
-          rewardWinnerAmount: z.number(),
-          lastClients: z.any(),
         })
       )
       .mutation(({ input, ctx }) => (service.saveRound as any)(input, ctx)),
