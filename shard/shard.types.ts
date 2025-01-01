@@ -123,6 +123,7 @@ export interface Client {
   socket: any;
   name: string;
   roles: string[];
+  ui: string[];
   shardId?: string;
   ioCallbacks: any;
   id: string;

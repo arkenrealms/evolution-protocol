@@ -213,6 +213,11 @@ export const createRouter = (service: any) =>
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.startRound as any)(input, ctx)),
 
+    nextRound: procedure
+      .use(hasRole('admin', t))
+      .use(customErrorFormatter(t))
+      .mutation(({ input, ctx }) => (service.nextRound as any)(input, ctx)),
+
     enableForceLevel2: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
@@ -294,7 +299,7 @@ export const createRouter = (service: any) =>
     broadcast: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
-      .input(z.object({ message: z.string() }))
+      .input(z.string())
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.broadcast as any)(input, ctx)),
 
