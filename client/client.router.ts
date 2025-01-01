@@ -152,11 +152,11 @@ export const createRouter = (service: any) => {
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onSpawnClient as any)(input, ctx)),
     onShowUI: procedure
-      .input(z.object({ key: z.string() }))
+      .input(z.string())
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onShowUI as any)(input, ctx)),
     onHideUI: procedure
-      .input(z.object({ key: z.string() }))
+      .input(z.string())
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onHideUI as any)(input, ctx)),
     onUpdateRegression: procedure
