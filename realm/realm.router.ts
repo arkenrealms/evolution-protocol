@@ -177,7 +177,7 @@ export const createRouter = (service?: Service) => {
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.unbanClient as any)(input, ctx)),
 
-    matchShard: procedure.input(z.void()).mutation(({ input, ctx }) => (service.matchShard as any)(input, ctx)),
+    matchShard: procedure.input(z.any()).mutation(({ input, ctx }) => (service.matchShard as any)(input, ctx)),
 
     // call: procedure
     //   .use(customErrorFormatter(t))
