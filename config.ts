@@ -64,7 +64,7 @@ export const baseConfig: Types.Shard.Config = {
   checkPositionDistance: 0,
   claimingRewards: false,
   decayPower: 0,
-  disconnectClientSeconds: 60,
+  disconnectClientSeconds: 120,
   disconnectPositionJumps: false,
   fastestLoopSeconds: 0,
   fastLoopSeconds: 0.08,

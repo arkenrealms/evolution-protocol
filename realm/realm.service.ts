@@ -13,6 +13,7 @@ export type Service = {
   info(input: RouterInput['info'], ctx: ServiceContext): Promise<RouterOutput['info']>;
   createShard(input: RouterInput['createShard'], ctx: ServiceContext): Promise<RouterOutput['createShard']>;
   getShards(input: RouterInput['getShards'], ctx: ServiceContext): Promise<RouterOutput['getShards']>;
+  broadcast(input: RouterInput['broadcast'], ctx: ServiceContext): Promise<RouterOutput['broadcast']>;
   addMod(input: RouterInput['addMod'], ctx: ServiceContext): Promise<RouterOutput['addMod']>;
   removeMod(input: RouterInput['removeMod'], ctx: ServiceContext): Promise<RouterOutput['removeMod']>;
   banClient(input: RouterInput['banClient'], ctx: ServiceContext): Promise<RouterOutput['banClient']>;

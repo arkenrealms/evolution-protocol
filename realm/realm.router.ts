@@ -89,6 +89,13 @@ export const createRouter = (service?: Service) => {
       )
       .query(({ input, ctx }) => (service.info as any)(input, ctx)),
 
+    broadcast: procedure
+      .use(hasRole('mod', t))
+      .use(customErrorFormatter(t))
+      .input(z.string())
+      // .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.broadcast as any)(input, ctx)),
+
     addMod: procedure
       .use(customErrorFormatter(t))
       .use(hasRole('admin', t))
