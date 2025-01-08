@@ -124,7 +124,7 @@ export const sharedConfig: Partial<Types.Shard.Config> = {
   checkPositionDistance: 2,
   claimingRewards: false,
   decayPower: 2,
-  disconnectClientSeconds: testMode ? 999 : 30,
+  disconnectClientSeconds: testMode ? 999 : 120,
   disconnectPositionJumps: true,
   fastestLoopSeconds: 0.02,
   fastLoopSeconds: 0.08,
