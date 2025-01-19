@@ -104,6 +104,11 @@ export const createRouter = (service: any) =>
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.updateMyself as any)(input, ctx)),
 
+    useAbility: procedure
+      .use(customErrorFormatter(t))
+      // .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.useAbility as any)(input, ctx)),
+
     broadcastMechanics: procedure
       .use(customErrorFormatter(t))
       // .output(Schema.NoDataOutput)

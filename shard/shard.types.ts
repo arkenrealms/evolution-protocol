@@ -401,6 +401,7 @@ export type Service = {
     ctx: ServiceContext
   ): Promise<RouterOutput['seerDisconnected']>;
   updateMyself(input: RouterInput['updateMyself'], ctx: ServiceContext): Promise<RouterOutput['updateMyself']>;
+  useAbility(input: RouterInput['useAbility'], ctx: ServiceContext): Promise<RouterOutput['useAbility']>;
   setCharacter(input: RouterInput['setCharacter'], ctx: ServiceContext): Promise<RouterOutput['setCharacter']>;
   setConfig(input: RouterInput['setConfig'], ctx: ServiceContext): Promise<RouterOutput['setConfig']>;
   getConfig(input: RouterInput['getConfig'], ctx: ServiceContext): Promise<RouterOutput['getConfig']>;
