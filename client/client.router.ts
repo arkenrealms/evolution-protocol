@@ -159,6 +159,14 @@ export const createRouter = (service: any) => {
       .input(z.string())
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onHideUI as any)(input, ctx)),
+    onEmote: procedure
+      .input(z.tuple([z.string(), z.string()]))
+      .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.onEmote as any)(input, ctx)),
+    onAction: procedure
+      .input(z.tuple([z.string(), z.string()]))
+      .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.onAction as any)(input, ctx)),
     onUpdateRegression: procedure
       .input(z.tuple([z.string(), z.number(), z.number()]))
       .output(Schema.NoDataOutput)

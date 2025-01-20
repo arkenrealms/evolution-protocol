@@ -92,6 +92,12 @@ export const createRouter = (service: any) =>
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.join as any)(input, ctx)),
 
+    emote: procedure
+      .use(customErrorFormatter(t))
+      .input(z.string())
+      // .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.emote as any)(input, ctx)),
+
     updateMyself: procedure
       .use(customErrorFormatter(t))
       .input(
@@ -104,10 +110,11 @@ export const createRouter = (service: any) =>
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.updateMyself as any)(input, ctx)),
 
-    useAbility: procedure
+    action: procedure
       .use(customErrorFormatter(t))
+      .input(z.string())
       // .output(Schema.NoDataOutput)
-      .mutation(({ input, ctx }) => (service.useAbility as any)(input, ctx)),
+      .mutation(({ input, ctx }) => (service.action as any)(input, ctx)),
 
     broadcastMechanics: procedure
       .use(customErrorFormatter(t))

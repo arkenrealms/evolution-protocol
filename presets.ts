@@ -7,6 +7,8 @@ export const presets = [
     pointsPerPowerup: 1,
     pointsPerKill: 20,
     pointsPerReward: 5,
+    upgrades: true,
+    isEnabled: true,
   },
   {
     gameMode: 'Lets Be Friends',
@@ -18,6 +20,7 @@ export const presets = [
     antifeed2: false,
     calcRoundRewards: false,
     preventBadKills: false,
+    isEnabled: true,
     guide: ['Game Mode - Lets Be Friends', '-200 Points Per Kill', 'No Death Orbs'],
   },
   {
@@ -33,6 +36,8 @@ export const presets = [
     cameraSize: 2.5,
     hideMap: true,
     orbOnDeathPercent: 0,
+    upgrades: true,
+    isEnabled: true,
     guide: ['Game Mode - Indiana Jones', '+100 Points Per Treasure Found'],
   },
   {
@@ -44,7 +49,8 @@ export const presets = [
     pointsPerKill: 1,
     pointsPerReward: 50,
     pointsPerOrb: 1,
-    isOmit: true,
+    upgrades: true,
+    isEnabled: false,
   },
   {
     gameMode: 'Mix Game 2',
@@ -53,7 +59,8 @@ export const presets = [
     pointsPerEvolve: 10,
     pointsPerKill: 200,
     pointsPerReward: 20,
-    isOmit: true,
+    upgrades: true,
+    isEnabled: false,
   },
   {
     gameMode: 'Deathmatch',
@@ -67,6 +74,8 @@ export const presets = [
     pointsPerOrb: 0,
     baseSpeed: 3.5,
     antifeed1: false,
+    upgrades: true,
+    isEnabled: true,
     // dynamicDecayPower: true,
     // decayPowerPerMaxEvolvedClients: 0.2,
     guide: ['Game Mode - Deathmatch', '+300 Points Per Kill (Per Evolve)', 'No Death Orbs', 'Faster Decay'],
@@ -81,6 +90,8 @@ export const presets = [
     pointsPerReward: 0,
     pointsPerOrb: 0,
     orbOnDeathPercent: 0,
+    upgrades: true,
+    isEnabled: true,
     guide: ['Game Mode - Evolution', '+1 Points Per Evolution'],
   },
   {
@@ -91,6 +102,7 @@ export const presets = [
     pointsPerPowerup: 0,
     pointsPerReward: 0,
     pointsPerOrb: 0,
+    isEnabled: true,
     guide: ['Game Mode - Evolution', '+10 Points Per Evolution'],
   },
   {
@@ -105,6 +117,7 @@ export const presets = [
     pointsPerPowerup: 1,
     pointsPerKill: 0,
     orbCutoffSeconds: 0,
+    isEnabled: true,
     guide: [
       'Game Mode - Orb Master',
       '+200 Points Per Orb Pickup',
@@ -132,9 +145,11 @@ export const presets = [
     pointsPerOrb: 0,
     immunitySeconds: 2,
     orbOnDeathPercent: 0,
+    upgrades: true,
+    isEnabled: true,
     guide: [
       'Game Mode - Sprite Leader',
-      '+3 Sprites Per Client',
+      '+3 Sprites Per Player',
       'No Points Per Kill, Evolve, etc.',
       'No Orbs',
       'Faster Decay',
@@ -155,6 +170,8 @@ export const presets = [
     orbOnDeathPercent: 0,
     spritesPerClientCount: 20,
     level2forced: true,
+    upgrades: true,
+    isEnabled: true,
     guide: ['Game Mode - Fast Drake', '+50% Speed as Black Drake', 'Faster Decay', 'Longer Immunity'],
   },
   {
@@ -166,6 +183,8 @@ export const presets = [
     decayPower: 2.8,
     pointsPerKill: 500,
     level2forced: true,
+    upgrades: true,
+    isEnabled: true,
     guide: ['Game Mode - Bird Eye', 'Faster Movement', 'Faster Decay'],
   },
   {
@@ -188,6 +207,7 @@ export const presets = [
     spriteXpMultiplier: -1,
     spritesPerClientCount: 10,
     preventBadKills: false,
+    isEnabled: true,
     guide: [
       'Game Mode - Friendly Reverse',
       '-200 Points Per Kill (Per Evolve)',
@@ -213,6 +233,7 @@ export const presets = [
     // avatarDecayPower1: 2.5,
     // avatarDecayPower2: 3,
     spriteXpMultiplier: -2,
+    isEnabled: true,
     // avatarDirection: -1,
     guide: ['Game Mode - Reverse Evolve', 'Evolution is reversed'],
   },
@@ -249,6 +270,8 @@ export const presets = [
   {
     gameMode: 'Leadercap',
     leadercap: true,
+    isEnabled: true,
+    upgrades: true,
     weight: 1,
     guide: ['Game Mode - Leadercap', 'Kill the last round leader', 'Leader -20% Speed', 'Leader 75% Death Orb'],
   },
@@ -260,7 +283,8 @@ export const presets = [
     colliderBuffer: 0,
     pointsPerKill: 50,
     pointsPerOrb: 100,
-    isOmit: true,
+    isEnabled: false,
+    upgrades: true,
     guide: ['Game Mode - Sticky Mode', 'Sticky islands'],
   },
   {
@@ -271,8 +295,10 @@ export const presets = [
     spritesStartCount: 25,
     spritesTotal: 25,
     decayPowerPerMaxEvolvedClients: 2,
+    upgrades: true,
+    isEnabled: true,
     // antifeed1: false,
-    // isOmit: true,
+    // isEnabled: false,
     guide: [
       'Game Mode - Sprite Juice',
       // 'Sprites have side effects!',
@@ -285,7 +311,7 @@ export const presets = [
   // {
   //   gameMode: 'Friendly Pandamonium',
   //   weight: 1,
-  //   isOmit: true,
+  //   isEnabled: false,
   //   guide: [
   //     'Game Mode - Friendly Pandamonium',
   //     'Beware the Panda'
@@ -294,7 +320,7 @@ export const presets = [
   {
     gameMode: 'Pandamonium',
     weight: 2,
-    isOmit: true,
+    isEnabled: false,
     isBattleRoyale: true,
     avatarSpeedMultiplier0: 1,
     avatarSpeedMultiplier1: 1,
@@ -309,7 +335,7 @@ export const presets = [
     weight: 2,
     level2forced: true,
     decayPower: 3.6,
-    isOmit: true,
+    isEnabled: false,
     guide: ['Game Mode - Hayai', 'You feel energy growing around you...'],
   },
   {
@@ -317,6 +343,6 @@ export const presets = [
     leadercap: false,
     weight: 10,
     fortnight: true,
-    isOmit: true,
+    isEnabled: false,
   },
 ];

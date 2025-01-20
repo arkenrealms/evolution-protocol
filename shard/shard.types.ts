@@ -117,6 +117,7 @@ export type Config = {
   spritesTotal: number;
   guide: string[];
   maxClients?: number;
+  upgrades?: boolean;
 };
 
 export interface Client {
@@ -127,7 +128,7 @@ export interface Client {
   shardId?: string;
   ioCallbacks: any;
   id: string;
-  emit: ReturnType<ReturnType<typeof createClientCallerFactory>>; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
+  emit: ReturnType<ReturnType<typeof createCallerFactory>>; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
   startedRoundAt: number | null;
   avatar: number | null;
   network: string | null;
@@ -339,7 +340,7 @@ export type Round = {
 
 export type Preset = {
   gameMode: string;
-  isOmit?: boolean;
+  isEnabled?: boolean;
   maxEvolves?: number;
   pointsPerEvolve?: number;
   pointsPerKill?: number;
@@ -400,8 +401,9 @@ export type Service = {
     input: RouterInput['seerDisconnected'],
     ctx: ServiceContext
   ): Promise<RouterOutput['seerDisconnected']>;
+  emote(input: RouterInput['emote'], ctx: ServiceContext): Promise<RouterOutput['emote']>;
   updateMyself(input: RouterInput['updateMyself'], ctx: ServiceContext): Promise<RouterOutput['updateMyself']>;
-  useAbility(input: RouterInput['useAbility'], ctx: ServiceContext): Promise<RouterOutput['useAbility']>;
+  action(input: RouterInput['action'], ctx: ServiceContext): Promise<RouterOutput['action']>;
   setCharacter(input: RouterInput['setCharacter'], ctx: ServiceContext): Promise<RouterOutput['setCharacter']>;
   setConfig(input: RouterInput['setConfig'], ctx: ServiceContext): Promise<RouterOutput['setConfig']>;
   getConfig(input: RouterInput['getConfig'], ctx: ServiceContext): Promise<RouterOutput['getConfig']>;
