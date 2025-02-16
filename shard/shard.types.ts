@@ -140,6 +140,9 @@ export interface Client {
   clientTarget: Position;
   phasedPosition: Position;
   rotation: any;
+  upgradesPending: number;
+  upgradeRerolls: number;
+  upgrades: any;
   xp: number;
   maxHp: number;
   latency: number;
@@ -156,7 +159,6 @@ export interface Client {
   isSeer: boolean;
   isAdmin: boolean;
   isBanned: boolean;
-  isMasterClient: boolean;
   isDisconnected: boolean;
   isDead: boolean;
   isJoining: boolean;
@@ -164,6 +166,7 @@ export interface Client {
   isStuck: boolean;
   isGod: boolean;
   isRealm: boolean;
+  isMaster: boolean;
   isGuest: boolean;
   isInvincible: boolean;
   isPhased: boolean;
@@ -394,7 +397,8 @@ export type Event = {
 };
 
 export type Service = {
-  connected(input: RouterInput['connected'], ctx: ServiceContext): Promise<RouterOutput['connected']>;
+  initMaster(input: RouterInput['initMaster'], ctx: ServiceContext): Promise<RouterOutput['initMaster']>;
+  initRealm(input: RouterInput['initRealm'], ctx: ServiceContext): Promise<RouterOutput['initRealm']>;
   info(input: RouterInput['info'], ctx: ServiceContext): Promise<RouterOutput['info']>;
   seerConnected(input: RouterInput['seerConnected'], ctx: ServiceContext): Promise<RouterOutput['seerConnected']>;
   seerDisconnected(

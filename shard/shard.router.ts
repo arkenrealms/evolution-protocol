@@ -24,7 +24,19 @@ export const createCallerFactory = t.createCallerFactory;
 
 export const createRouter = (service: any) =>
   router({
-    connected: procedure
+    initMaster: procedure
+      .input(
+        z.object({
+          data: z.object({ id: z.string() }),
+          signature: Schema.Signature,
+        })
+      )
+      .use(customErrorFormatter(t))
+      // .use(hasRole('Master', t))
+      // .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.initMaster as any)(input, ctx)),
+
+    initRealm: procedure
       .input(
         z.object({
           data: z.object({ id: z.string() }),
@@ -34,7 +46,7 @@ export const createRouter = (service: any) =>
       .use(customErrorFormatter(t))
       // .use(hasRole('realm', t))
       // .output(Schema.NoDataOutput)
-      .mutation(({ input, ctx }) => (service.connected as any)(input, ctx)),
+      .mutation(({ input, ctx }) => (service.initRealm as any)(input, ctx)),
 
     info: procedure
       .use(hasRole(['admin', 'mod'], t))
@@ -115,6 +127,12 @@ export const createRouter = (service: any) =>
       .input(z.string())
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.action as any)(input, ctx)),
+
+    chooseUpgrade: procedure
+      .use(customErrorFormatter(t))
+      .input(z.string())
+      // .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.chooseUpgrade as any)(input, ctx)),
 
     broadcastMechanics: procedure
       .use(customErrorFormatter(t))

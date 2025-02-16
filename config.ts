@@ -108,17 +108,17 @@ export const baseConfig: Types.Shard.Config = {
 };
 
 export const sharedConfig: Partial<Types.Shard.Config> = {
-  antifeed1: true,
-  avatarDecayPower0: 1.5,
-  avatarDecayPower1: 2.5,
-  avatarDecayPower2: 3,
-  avatarTouchDistance0: 0.25,
-  avatarTouchDistance1: 0.45,
-  avatarTouchDistance2: 0.65,
-  avatarSpeedMultiplier0: 1,
-  avatarSpeedMultiplier1: 1,
-  avatarSpeedMultiplier2: 0.85,
-  baseSpeed: 3,
+  antifeed1: true, // 0
+  avatarDecayPower0: 1.5, // 1
+  avatarDecayPower1: 2.5, // 2
+  avatarDecayPower2: 3, // 3
+  avatarTouchDistance0: 0.25, // 4
+  avatarTouchDistance1: 0.45, // 5
+  avatarTouchDistance2: 0.65, // 6
+  avatarSpeedMultiplier0: 1, // 7
+  avatarSpeedMultiplier1: 1, // 8
+  avatarSpeedMultiplier2: 0.85, // 9
+  baseSpeed: 3, // 10
   cameraSize: 3,
   checkConnectionLoopSeconds: 2,
   checkInterval: 1,
