@@ -9,7 +9,7 @@ export const baseConfig: Types.Shard.Config = {
   periodicReboots: false,
   startAvatar: 0,
   spriteXpMultiplier: 1,
-  forcedLatency: 20,
+  forcedLatency: 10,
   isRoundPaused: false,
   level2forced: false,
   level2allowed: true,

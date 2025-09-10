@@ -97,6 +97,10 @@ export const createRouter = (service: any) => {
       .input(z.tuple([z.number(), z.string(), z.string()]))
       .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.onSetRoundInfo as any)(input, ctx)),
+    onChangeGame: procedure
+      .input(z.string())
+      .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.onChangeGame as any)(input, ctx)),
     onLoaded: procedure
       .input(z.tuple([z.number()]))
       .output(Schema.NoDataOutput)
