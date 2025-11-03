@@ -149,6 +149,7 @@ export interface Client {
   isMod: boolean;
   isAdmin: boolean;
   isSeer: boolean;
+  roles: string[];
   log: {
     clientDisconnected: number;
   };
