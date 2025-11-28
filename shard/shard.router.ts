@@ -1,4 +1,4 @@
-// shard.router.ts
+// evolution/packages/protocol/shard/shard.router.ts
 
 import { z } from 'zod';
 import { initTRPC } from '@trpc/server';
@@ -146,7 +146,7 @@ export const createRouter = (service: any) =>
           id: z.number(),
         })
       )
-      .output(z.boolean())
+      // .output(z.boolean())
       .mutation(({ input, ctx }) => (service.isMechanicEnabled as any)(input, ctx)),
 
     seerConnected: procedure
