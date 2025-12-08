@@ -25,6 +25,18 @@ export const createRouter = (service?: Service) => {
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.auth as any)(input, ctx)),
 
+    claimMaster: procedure
+      .input(
+        z.object({
+          data: z.object({ id: z.string() }),
+          signature: Schema.Signature,
+        })
+      )
+      .use(customErrorFormatter(t))
+      // .use(hasRole('Master', t))
+      // .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.claimMaster as any)(input, ctx)),
+
     connectSeer: procedure
       .use(customErrorFormatter(t))
       // .use(validateRequest(t))

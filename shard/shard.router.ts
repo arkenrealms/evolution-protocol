@@ -24,17 +24,19 @@ export const createCallerFactory = t.createCallerFactory;
 
 export const createRouter = (service: any) =>
   router({
-    initMaster: procedure
-      .input(
-        z.object({
-          data: z.object({ id: z.string() }),
-          signature: Schema.Signature,
-        })
-      )
+    onPlayerUpdates: procedure
+      .input(z.any())
       .use(customErrorFormatter(t))
       // .use(hasRole('Master', t))
       // .output(Schema.NoDataOutput)
-      .mutation(({ input, ctx }) => (service.initMaster as any)(input, ctx)),
+      .mutation(({ input, ctx }) => (service.onPlayerUpdates as any)(input, ctx)),
+
+    claimMaster: procedure
+      .input(z.any())
+      .use(customErrorFormatter(t))
+      // .use(hasRole('Master', t))
+      // .output(Schema.NoDataOutput)
+      .mutation(({ input, ctx }) => (service.claimMaster as any)(input, ctx)),
 
     initRealm: procedure
       .input(

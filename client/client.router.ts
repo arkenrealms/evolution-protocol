@@ -15,6 +15,9 @@ export const createCallerFactory = t.createCallerFactory;
 
 export const createRouter = (service: any) => {
   return router({
+    onGetPlayerUpdates: procedure
+      .input(z.any())
+      .mutation(({ input, ctx }) => (service.onGetPlayerUpdates as any)(input, ctx)),
     onEvents: procedure
       .input(z.array(z.object({ name: z.string(), args: z.array(z.any()) })))
       .mutation(({ input, ctx }) => (service.onEvents as any)(input, ctx)),

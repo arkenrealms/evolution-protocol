@@ -397,7 +397,8 @@ export type Event = {
 };
 
 export type Service = {
-  initMaster(input: RouterInput['initMaster'], ctx: ServiceContext): Promise<RouterOutput['initMaster']>;
+  onPlayerUpdates(input: RouterInput['onPlayerUpdates'], ctx: ServiceContext): Promise<RouterOutput['onPlayerUpdates']>;
+  claimMaster(input: RouterInput['claimMaster'], ctx: ServiceContext): Promise<RouterOutput['claimMaster']>;
   initRealm(input: RouterInput['initRealm'], ctx: ServiceContext): Promise<RouterOutput['initRealm']>;
   info(input: RouterInput['info'], ctx: ServiceContext): Promise<RouterOutput['info']>;
   seerConnected(input: RouterInput['seerConnected'], ctx: ServiceContext): Promise<RouterOutput['seerConnected']>;

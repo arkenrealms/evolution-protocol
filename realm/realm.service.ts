@@ -7,6 +7,7 @@ export type Service = {
   subProcesses: any[];
 
   auth(input: RouterInput['auth'], ctx: ServiceContext): Promise<RouterOutput['auth']>;
+  claimMaster(input: RouterInput['claimMaster'], ctx: ServiceContext): Promise<RouterOutput['claimMaster']>;
   connectSeer(input: RouterInput['connectSeer'], ctx: ServiceContext): Promise<RouterOutput['connectSeer']>;
   ping(input: RouterInput['ping'], ctx: ServiceContext): Promise<RouterOutput['ping']>;
   setConfig(input: RouterInput['setConfig'], ctx: ServiceContext): Promise<RouterOutput['setConfig']>;
