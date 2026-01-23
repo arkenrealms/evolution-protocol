@@ -1,2 +1,2 @@
-export * as realm from './realm/schema';
-export * as shard from './shard/schema';
+export * as realm from './realm/realm.schema';
+export * as shard from './shard/shard.schema';

@@ -1,6 +1,5 @@
 import { initTRPC } from '@trpc/server';
-import type * as Arken from '@arken/node/types';
-import { inferRouterInputs, inferRouterOutputs } from '@arken/node/schema';
+import { inferRouterInputs, inferRouterOutputs } from '../util/schema';
 import { z } from 'zod';
 
 const t = initTRPC.context<{}>().create();

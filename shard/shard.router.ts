@@ -2,9 +2,9 @@
 
 import { z } from 'zod';
 import { initTRPC } from '@trpc/server';
-import { customErrorFormatter, hasRole } from '@arken/node/util/rpc';
-import { inferRouterInputs, inferRouterOutputs } from '@arken/node/schema';
-import * as Schema from '@arken/node/schema';
+import { customErrorFormatter, hasRole } from '../util/rpc';
+import { inferRouterInputs, inferRouterOutputs } from '../util/schema';
+import * as Schema from '../util/schema';
 import { Character, Application, Client } from './shard.types';
 import type * as Types from './shard.types';
 

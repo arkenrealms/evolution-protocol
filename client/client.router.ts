@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { initTRPC } from '@trpc/server';
-import { inferRouterInputs, inferRouterOutputs } from '@arken/node/schema';
-import * as Schema from '@arken/node/schema';
+import { inferRouterInputs, inferRouterOutputs } from '../util/schema';
+import * as Schema from '../util/schema';
 import { Client } from '../shard/shard.types';
 
 export const t = initTRPC

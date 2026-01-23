@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "module": "CommonJS",
-    "lib": ["ES2020"],
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM"],
     "noImplicitAny": false,
     "outDir": "build",
     "preserveSymlinks": false,
@@ -19,24 +19,26 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["jest", "node", "@trpc/server"],
-    "typeRoots": ["./node_modules/@types", "./types"],
-    "paths": {
-      "~/*": ["./src/*"]
-    },
-    "baseUrl": "./",
+    "types": ["jest", "node"],
+    "paths": {},
     "allowJs": true,
-    "declaration": false,
+    "declaration": true,
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
-    "noEmit": true,
-    "noImplicitReturns": false,
-    "noImplicitThis": false,
-    "alwaysStrict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "pretty": true
+    "noEmit": false,
+    "composite": true
   },
-  "include": ["./src"],
+  "include": [
+    "./realm/**/*",
+    "./shard/**/*",
+    "./client/**/*",
+    "./util/**/*",
+    "./config.ts",
+    "./index.ts",
+    "./models.ts",
+    "./presets.ts",
+    "./schema.ts",
+    "./types.ts"
+  ],
   "exclude": ["node_modules", "build"]
 }

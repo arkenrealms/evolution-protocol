@@ -1,10 +1,14 @@
 import z from 'zod';
 import { initTRPC } from '@trpc/server';
-import { log, logError, getTime, isEthereumAddress } from '@arken/node/util';
-import { customErrorFormatter, transformer, hasRole, validateRequest } from '@arken/node/util/rpc';
-import * as Schema from '@arken/node/schema';
+import { customErrorFormatter, transformer, hasRole, validateRequest } from '../util/rpc';
+import * as Schema from '../util/schema';
 import { Shard } from '../shard/shard.schema';
 import type { Service, Client } from './realm.types';
+
+export const isEthereumAddress = (address: string) => {
+  // Regular expression to check if the string is a valid Ethereum address
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+};
 
 const t = initTRPC
   .context<{

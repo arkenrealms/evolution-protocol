@@ -1,11 +1,9 @@
-import express, { Express } from 'express';
-import { Server as HttpServer } from 'http';
-import { Server as HttpsServer } from 'https';
-import { Server as SocketServer } from 'socket.io';
 import { z } from 'zod';
+// import type { EffectOp, PatchOp } from '@arken/seer-protocol/types';
+import { Document } from 'mongoose';
 import * as schema from './shard.schema';
-import { Position, Signature } from '@arken/node/types';
-import { createTRPCProxyClient } from '@trpc/client';
+// import { Position, Signature } from '@arken/seer-protocol/types';
+// import { createTRPCProxyClient } from '@trpc/client';
 import type { Router } from './shard.router';
 import { createCallerFactory } from './shard.router';
 import type { createRouter, RouterInput, RouterOutput } from './shard.router';
@@ -14,6 +12,12 @@ import * as Schema from './shard.schema';
 export type { Router, RouterInput, RouterOutput };
 export type Shard = z.infer<typeof Schema.Shard>;
 export type ShardDocument = Shard & Document;
+
+export type Position = {
+  x: number;
+  y: number;
+  z?: number;
+};
 
 export type Config = {
   id?: string;
@@ -225,6 +229,7 @@ export interface Client {
     spectating: number;
     addressProblem: number;
   };
+  ops: any; // EffectOp[];
 }
 
 export interface Application {

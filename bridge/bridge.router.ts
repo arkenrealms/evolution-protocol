@@ -1,6 +1,6 @@
 import z from 'zod';
 import { initTRPC, TRPCError } from '@trpc/server';
-import * as Schema from '@arken/node/schema';
+import * as Schema from '../util/schema';
 import { Client, Service } from './bridge.types';
 
 export type RouterContext = {

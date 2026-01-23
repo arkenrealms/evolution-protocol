@@ -1,10 +1,10 @@
-import express, { Express } from 'express';
-import { Server as HttpServer } from 'http';
-import { Server as HttpsServer } from 'https';
-import { Server as SocketServer } from 'socket.io';
-import { httpBatchLink, createTRPCProxyClient, loggerLink } from '@trpc/client';
-import type { Types as SeerTypes } from '@arken/seer-protocol';
-import type * as Shard from '../shard/shard.types';
+// import express, { Express } from 'express';
+// import { Server as HttpServer } from 'http';
+// import { Server as HttpsServer } from 'https';
+// import { Server as SocketServer } from 'socket.io';
+// import { httpBatchLink, createTRPCProxyClient, loggerLink } from '@trpc/client';
+// import type { Types as SeerTypes } from '@arken/seer-protocol';
+// import type * as Shard from '../shard/shard.types';
 import type { Service as ShardService } from '../shard/shard.service';
 
 export type { Router, RouterInput, RouterOutput } from './realm.router';
@@ -95,11 +95,11 @@ export interface ApplicationModules {
 
 export interface Application {
   config: ApplicationConfig;
-  server: Express;
+  server: any; // Express;
   isHttps: boolean;
-  https?: HttpsServer;
-  http?: HttpServer;
-  io: SocketServer;
+  https?: any; //HttpsServer;
+  http?: any; //HttpServer;
+  io: any; //SocketServer;
   subProcesses: any[];
   moduleConfig: ApplicationModule[];
   modules: Record<string, ApplicationModule>;
@@ -122,7 +122,7 @@ export interface ApplicationRouterContext {
 
 export interface Seer {
   client: any;
-  emit: ReturnType<typeof createTRPCProxyClient<SeerTypes.Router>>;
+  emit: any; //ReturnType<typeof createTRPCProxyClient<SeerTypes.Router>>;
 }
 
 export interface Profile {

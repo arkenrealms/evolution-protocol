@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import { inferAsyncReturnType, initTRPC, TRPCError } from '@trpc/server';
-import { transformer } from '@arken/node/util/rpc';
+import { transformer } from '../util/rpc';
 
 interface ClientContext {}
 
