@@ -140,6 +140,7 @@ export class Realm {
 export interface Client {
   id: string;
   name: string;
+  address: string;
   ip: string;
   socket: any;
   endpoint: string;
@@ -150,6 +151,9 @@ export interface Client {
   isAdmin: boolean;
   isSeer: boolean;
   roles: string[];
+  status: 'None' | 'Disconnected' | 'Connected';
+  permissions: any;
+  profile: any;
   log: {
     clientDisconnected: number;
   };

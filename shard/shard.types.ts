@@ -131,6 +131,7 @@ export interface Client {
   ui: string[];
   shardId?: string;
   ioCallbacks: any;
+  questDirty: boolean;
   id: string;
   emit: ReturnType<ReturnType<typeof createCallerFactory>>; // ReturnType<typeof createShardRouter>; //any; // ShardClientRouter;
   startedRoundAt: number | null;
@@ -215,6 +216,7 @@ export interface Client {
     clientDisconnected: number;
     positionJump: number;
     pauses: number;
+    errors: number;
     connects: number;
     path: string;
     positions: number;

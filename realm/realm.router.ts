@@ -45,14 +45,14 @@ export const createRouter = (service?: Service) => {
       .use(customErrorFormatter(t))
       // .use(validateRequest(t))
       // .input(Schema.OnlySignatureInput)
-      // .output(Schema.NoDataOutput)
+      .output(z.object({ message: z.string() }))
       .mutation(({ input, ctx }) => (service.connectSeer as any)(input, ctx)),
 
     createShard: procedure
       .use(customErrorFormatter(t))
       // .use(validateRequest(t))
       // .input(Schema.OnlySignatureInput)
-      .output(Shard) // Schema.getQueryOutput(Shard))
+      .output(z.object({ data: Shard.optional(), message: z.string().optional(), error: z.string().optional() })) // Schema.getQueryOutput(Shard))
       .mutation(({ input, ctx }) => (service.createShard as any)(input, ctx)),
 
     getShards: procedure

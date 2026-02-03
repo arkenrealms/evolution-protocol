@@ -1,7 +1,5 @@
-import express, { Express } from 'express';
 import { Server as HttpServer } from 'http';
 import { Server as HttpsServer } from 'https';
-import { Server as SocketServer } from 'socket.io';
 import { z } from 'zod';
 
 export type { Router } from './bridge.router';
