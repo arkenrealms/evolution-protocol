@@ -335,6 +335,13 @@ export const createRouter = (service: any) =>
       // .output(Schema.NoDataOutput)
       .mutation(({ input, ctx }) => (service.broadcast as any)(input, ctx)),
 
+    heartbeat: procedure
+      .use(hasRole('mod', t))
+      .use(customErrorFormatter(t))
+      .input(z.any())
+      // .output(Schema.NoDataOutput)
+      .query(({ input, ctx }) => (service.heartbeat as any)(input, ctx)),
+
     kickClient: procedure
       .use(hasRole('mod', t))
       .use(customErrorFormatter(t))
