@@ -1,9 +1,10 @@
 # Protocol for Arken: Evolution Isles
 
-A battle for supremecy takes place amongst the dragons of Haerra.
+A battle for supremacy takes place amongst the dragons of Haerra.
 
 ## Setup
 
+(Repo setup docs are currently minimal; see `ANALYSIS.md` for current maintenance notes and blockers.)
 
 ## Handshake
 
