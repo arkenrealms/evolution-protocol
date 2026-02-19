@@ -11,3 +11,4 @@
 - `createPrismaWhereSchema` now accepts nested Prisma-style `not` operator objects (e.g. `{ not: { in: [...] } }`) in addition to scalar `not` values.
 - `createPrismaWhereSchema` and `QueryWhereSchema` now accept top-level `NOT` as either a single filter object or an array of filter objects for Prisma compatibility.
 - `createPrismaWhereSchema` now accepts top-level `AND` / `OR` as either single filter objects or arrays to tolerate clients that send Prisma enumerable forms as plain objects.
+- `QueryWhereSchema` now also accepts top-level `AND` / `OR` as either single objects or arrays, aligning exported `Query` behavior with `getQueryInput` to prevent logical-filter rejection drift.

@@ -1,7 +1,7 @@
 // arken/packages/evolution/packages/protocol/test/schema.test.ts
 //
 import { z } from 'zod';
-import { getQueryInput } from '../util/schema';
+import { getQueryInput, Query } from '../util/schema';
 
 describe('util/schema getQueryInput pagination aliases', () => {
   const queryInput = getQueryInput(
@@ -139,6 +139,48 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
           status: {
             equals: 'Pending',
           },
+        },
+      },
+    });
+  });
+});
+
+describe('util/schema Query where logical operators', () => {
+  it('accepts top-level AND as a single object', () => {
+    const parsed = Query.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+
+    expect(parsed.where).toMatchObject({
+      AND: {
+        status: {
+          equals: 'Active',
+        },
+      },
+    });
+  });
+
+  it('accepts top-level OR as a single object', () => {
+    const parsed = Query.parse({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+
+    expect(parsed.where).toMatchObject({
+      OR: {
+        status: {
+          equals: 'Pending',
         },
       },
     });

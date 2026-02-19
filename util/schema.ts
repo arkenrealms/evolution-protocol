@@ -89,8 +89,8 @@ const QueryFilterOperators = z.object({
 
 const QueryWhereSchema = z.lazy(() =>
   z.object({
-    AND: z.array(QueryWhereSchema).optional(),
-    OR: z.array(QueryWhereSchema).optional(),
+    AND: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
+    OR: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
     NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
     id: QueryFilterOperators.optional(),
     key: QueryFilterOperators.optional(),

@@ -53,3 +53,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Tightened pagination validation in `util/schema.ts`: pagination fields now require finite, non-negative integers.
 - Added regression tests for negative and infinite/overflow pagination inputs.
 - Verified tests: `npm test` ✅ (6/6).
+
+## 2026-02-19 flattened-slot-9 follow-up
+
+- Aligned exported `Query` logical-operator compatibility with `getQueryInput` by allowing single-object forms for top-level `where.AND` and `where.OR`.
+- Added regression tests confirming `Query.parse` accepts single-object `AND`/`OR` payloads.
+- Verified tests: `rushx test` ✅ (1 suite, 13 tests).
