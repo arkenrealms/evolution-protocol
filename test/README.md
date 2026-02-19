@@ -8,3 +8,4 @@ Current coverage includes:
 - Pagination bounds validation (reject negative and infinite/overflow values).
 - Prisma-compatible `where.<field>.not` handling for both scalar and nested-operator object forms.
 - Top-level `where.NOT` compatibility for both single-object and array forms.
+- Regression coverage now includes single-object logical operands for top-level `where.AND` / `where.OR` in both `getQueryInput` and exported `Query` parsing.

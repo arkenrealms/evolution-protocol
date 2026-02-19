@@ -53,3 +53,10 @@ Under the source-change test gate, source edits were not retained this run.
 - Tightened pagination validation in `util/schema.ts`: pagination fields now require finite, non-negative integers.
 - Added regression tests for negative and infinite/overflow pagination inputs.
 - Verified tests: `npm test` ✅ (6/6).
+
+## 2026-02-19 flattened-slot-9 follow-up (AND/OR shape parity)
+
+- Revalidated branch hygiene (`git fetch origin` + merge `origin/main`) before edits.
+- Fixed a schema parity bug where recursive where parsing accepted `NOT` as object-or-array but still required `AND`/`OR` arrays on one path.
+- Updated both `createPrismaWhereSchema` and exported `QueryWhereSchema` to accept singular-object logical operands for `AND`/`OR`.
+- Added tests in `test/schema.test.ts` to lock single-object compatibility for `getQueryInput` and exported `Query`.

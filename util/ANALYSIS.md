@@ -10,3 +10,9 @@
 - Non-numeric strings, negatives, and overflow-to-infinity values are rejected by schema validation.
 - `createPrismaWhereSchema` now accepts nested Prisma-style `not` operator objects (e.g. `{ not: { in: [...] } }`) in addition to scalar `not` values.
 - `createPrismaWhereSchema` and `QueryWhereSchema` now accept top-level `NOT` as either a single filter object or an array of filter objects for Prisma compatibility.
+
+## 2026-02-19 follow-up (logical operator shape alignment)
+
+- Fixed a behavior gap in recursive where parsing: `createPrismaWhereSchema` now accepts top-level `AND` / `OR` as either a single object or an array (matching existing `NOT` flexibility and Prisma enumerable patterns).
+- Aligned `QueryWhereSchema` to the same logical-operand shape (`object | object[]`) for `AND` / `OR` / `NOT`.
+- This prevents clients that submit singular logical operands from being rejected on one code path while accepted on another.

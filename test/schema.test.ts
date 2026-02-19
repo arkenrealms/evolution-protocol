@@ -1,7 +1,7 @@
 // arken/packages/evolution/packages/protocol/test/schema.test.ts
 //
 import { z } from 'zod';
-import { getQueryInput } from '../util/schema';
+import { getQueryInput, Query } from '../util/schema';
 
 describe('util/schema getQueryInput pagination aliases', () => {
   const queryInput = getQueryInput(
@@ -94,6 +94,96 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
         NOT: {
           status: {
             equals: 'Archived',
+          },
+        },
+      },
+    });
+  });
+
+  it('accepts top-level AND as a single object', () => {
+    const parsed = queryInput.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+  });
+
+  it('accepts top-level OR as a single object', () => {
+    const parsed = queryInput.parse({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+  });
+});
+
+describe('util/schema exported Query logical compatibility', () => {
+  it('accepts single-object where.AND', () => {
+    const parsed = Query.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+  });
+
+  it('accepts single-object where.OR', () => {
+    const parsed = Query.parse({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
           },
         },
       },

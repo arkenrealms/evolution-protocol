@@ -13,3 +13,4 @@
   - scalar `not` values remain valid.
   - nested operator-object `not` values (e.g. `{ not: { in: [...] } }`) are accepted.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).
+- Added regression checks to ensure top-level `where.AND` and `where.OR` accept single-object forms (not only arrays) for both query-input and exported `Query` schema paths.

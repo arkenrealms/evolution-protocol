@@ -87,18 +87,20 @@ const QueryFilterOperators = z.object({
   mode: z.enum(['default', 'insensitive']).optional(),
 });
 
-const QueryWhereSchema = z.lazy(() =>
-  z.object({
-    AND: z.array(QueryWhereSchema).optional(),
-    OR: z.array(QueryWhereSchema).optional(),
-    NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
+const QueryWhereSchema = z.lazy(() => {
+  const logicalOperand = z.union([QueryWhereSchema, z.array(QueryWhereSchema)]);
+
+  return z.object({
+    AND: logicalOperand.optional(),
+    OR: logicalOperand.optional(),
+    NOT: logicalOperand.optional(),
     id: QueryFilterOperators.optional(),
     key: QueryFilterOperators.optional(),
     name: QueryFilterOperators.optional(),
     email: QueryFilterOperators.optional(),
     status: QueryFilterOperators.optional(),
-  })
-);
+  });
+});
 
 export const Query = z.object({
   skip: z.number().default(0).optional(),
@@ -250,10 +252,12 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
 
   const recursiveWhere = zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1));
 
+  const logicalOperand = zod.union([recursiveWhere, zod.array(recursiveWhere)]);
+
   return zod.object({
-    AND: zod.array(recursiveWhere).optional(),
-    OR: zod.array(recursiveWhere).optional(),
-    NOT: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
+    AND: logicalOperand.optional(),
+    OR: logicalOperand.optional(),
+    NOT: logicalOperand.optional(),
     ...fieldFilters,
   });
 };
