@@ -60,3 +60,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Fixed a schema parity bug where recursive where parsing accepted `NOT` as object-or-array but still required `AND`/`OR` arrays on one path.
 - Updated both `createPrismaWhereSchema` and exported `QueryWhereSchema` to accept singular-object logical operands for `AND`/`OR`.
 - Added tests in `test/schema.test.ts` to lock single-object compatibility for `getQueryInput` and exported `Query`.
+
+## 2026-02-19 flattened-slot-9 follow-up (Query pagination parity)
+
+- Hardened exported `Query` pagination parsing (`skip`, `take`) to align with `getQueryInput` behavior.
+- `Query` now coerces numeric-string pagination inputs and rejects negative/infinite values.
+- Added regression tests in `test/schema.test.ts` for numeric-string coercion and negative/infinite rejection on the exported `Query` path.

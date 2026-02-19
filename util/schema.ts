@@ -102,9 +102,17 @@ const QueryWhereSchema = z.lazy(() => {
   });
 });
 
+const numericPaginationValue = zod.preprocess((value) => {
+  if (typeof value === 'string' && value.trim() !== '') {
+    return Number(value);
+  }
+
+  return value;
+}, zod.number().int().nonnegative().finite());
+
 export const Query = z.object({
-  skip: z.number().default(0).optional(),
-  take: z.number().default(10).optional(),
+  skip: numericPaginationValue.default(0).optional(),
+  take: numericPaginationValue.default(10).optional(),
   cursor: z.record(z.any()).optional(),
   where: QueryWhereSchema.optional(),
   orderBy: z.record(z.enum(['asc', 'desc'])).optional(),

@@ -10,3 +10,4 @@ Shared schema helpers for protocol routers.
 - Top-level `where.NOT` now accepts either a single filter object or an array of filter objects, matching Prisma-style semantics.
 - Top-level `where.AND` / `where.OR` now accept either a single filter object or an array in the recursive query schema builder.
 - Exported `Query` schema accepts `where.AND` / `where.OR` as single objects or arrays, keeping public schema behavior aligned with `getQueryInput`.
+- Exported `Query` pagination fields (`skip`, `take`) now accept numeric strings and enforce finite, non-negative integers for safer envelope parsing parity with `getQueryInput`.

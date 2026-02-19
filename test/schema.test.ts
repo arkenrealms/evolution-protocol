@@ -189,4 +189,32 @@ describe('util/schema exported Query logical compatibility', () => {
       },
     });
   });
+
+  it('coerces numeric-string pagination values', () => {
+    const parsed = Query.parse({
+      skip: '2',
+      take: '7',
+    });
+
+    expect(parsed).toMatchObject({
+      skip: 2,
+      take: 7,
+    });
+  });
+
+  it('rejects negative pagination values', () => {
+    expect(() =>
+      Query.parse({
+        skip: -1,
+      })
+    ).toThrow();
+  });
+
+  it('rejects infinite pagination values', () => {
+    expect(() =>
+      Query.parse({
+        take: Number.POSITIVE_INFINITY,
+      })
+    ).toThrow();
+  });
 });

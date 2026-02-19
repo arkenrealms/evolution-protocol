@@ -16,3 +16,10 @@
 - Fixed a behavior gap in recursive where parsing: `createPrismaWhereSchema` now accepts top-level `AND` / `OR` as either a single object or an array (matching existing `NOT` flexibility and Prisma enumerable patterns).
 - Aligned `QueryWhereSchema` to the same logical-operand shape (`object | object[]`) for `AND` / `OR` / `NOT`.
 - This prevents clients that submit singular logical operands from being rejected on one code path while accepted on another.
+
+## 2026-02-19 follow-up (Query pagination parser parity)
+
+- Hardened exported `Query` pagination parsing to match `getQueryInput` behavior:
+  - accepts numeric-string pagination values via preprocess coercion,
+  - enforces finite, non-negative integer constraints for `skip` and `take`.
+- Added tests to prevent regressions on negative and infinite pagination inputs for the exported schema path.
