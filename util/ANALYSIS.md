@@ -8,3 +8,4 @@
 - Added numeric-string coercion (`"7" -> 7`) for `skip`/`limit`/`take` in `getQueryInput` to improve transport compatibility for query-string backed callers.
 - Added pagination bounds hardening: `skip`/`limit`/`take` now must be finite, non-negative integers.
 - Non-numeric strings, negatives, and overflow-to-infinity values are rejected by schema validation.
+- `createPrismaWhereSchema` now accepts nested Prisma-style `not` operator objects (e.g. `{ not: { in: [...] } }`) in addition to scalar `not` values.

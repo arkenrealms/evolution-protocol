@@ -6,3 +6,4 @@ Current coverage includes:
 - `util/schema.ts` query pagination alias behavior (`take` and `limit`).
 - Pagination coercion behavior for numeric strings and rejection of non-numeric strings.
 - Pagination bounds validation (reject negative and infinite/overflow values).
+- Prisma-compatible `where.<field>.not` handling for both scalar and nested-operator object forms.
