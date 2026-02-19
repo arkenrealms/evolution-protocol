@@ -41,6 +41,16 @@ describe('util/schema getQueryInput pagination aliases', () => {
     expect(() => queryInput.parse({ limit: Number.POSITIVE_INFINITY })).toThrow();
     expect(() => queryInput.parse({ take: '1e309' })).toThrow();
   });
+
+  it('normalizes orderBy direction casing and whitespace', () => {
+    const parsed = queryInput.parse({ orderBy: { createdDate: ' DESC ' } });
+
+    expect(parsed).toMatchObject({ orderBy: { createdDate: 'desc' } });
+  });
+
+  it('rejects invalid orderBy direction values', () => {
+    expect(() => queryInput.parse({ orderBy: { createdDate: 'descending' } })).toThrow();
+  });
 });
 
 describe('util/schema getQueryInput where not-operator compatibility', () => {
@@ -214,6 +224,30 @@ describe('util/schema exported Query logical compatibility', () => {
     expect(() =>
       Query.parse({
         take: Number.POSITIVE_INFINITY,
+      })
+    ).toThrow();
+  });
+
+  it('normalizes Query orderBy direction casing and whitespace', () => {
+    const parsed = Query.parse({
+      orderBy: {
+        createdDate: ' ASC ',
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      orderBy: {
+        createdDate: 'asc',
+      },
+    });
+  });
+
+  it('rejects invalid Query orderBy direction values', () => {
+    expect(() =>
+      Query.parse({
+        orderBy: {
+          createdDate: 'ascending',
+        },
       })
     ).toThrow();
   });

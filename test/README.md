@@ -10,3 +10,4 @@ Current coverage includes:
 - Top-level `where.NOT` compatibility for both single-object and array forms.
 - Regression coverage now includes single-object logical operands for top-level `where.AND` / `where.OR` in both `getQueryInput` and exported `Query` parsing.
 - Exported `Query` pagination parsing now has coverage for numeric-string coercion and rejection of negative/infinite values.
+- Both `getQueryInput` and exported `Query` now include regression coverage for `orderBy` direction normalization (`trim/lowercase`) and invalid direction rejection.

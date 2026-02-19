@@ -23,3 +23,9 @@
   - accepts numeric-string pagination values via preprocess coercion,
   - enforces finite, non-negative integer constraints for `skip` and `take`.
 - Added tests to prevent regressions on negative and infinite pagination inputs for the exported schema path.
+
+## 2026-02-19 follow-up (orderBy direction normalization)
+
+- Hardened `orderBy` parsing in both `getQueryInput` and exported `Query` by normalizing direction tokens with `trim().toLowerCase()` before enum validation.
+- This preserves strict `asc|desc` constraints while making the schema tolerant of transport/user formatting noise (e.g., `' DESC '`).
+- Invalid semantic values (e.g., `ascending`) remain rejected.

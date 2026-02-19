@@ -110,12 +110,20 @@ const numericPaginationValue = zod.preprocess((value) => {
   return value;
 }, zod.number().int().nonnegative().finite());
 
+const orderDirection = zod.preprocess((value) => {
+  if (typeof value === 'string') {
+    return value.trim().toLowerCase();
+  }
+
+  return value;
+}, z.enum(['asc', 'desc']));
+
 export const Query = z.object({
   skip: numericPaginationValue.default(0).optional(),
   take: numericPaginationValue.default(10).optional(),
   cursor: z.record(z.any()).optional(),
   where: QueryWhereSchema.optional(),
-  orderBy: z.record(z.enum(['asc', 'desc'])).optional(),
+  orderBy: z.record(orderDirection).optional(),
   include: z.record(z.boolean()).optional(),
   select: z.record(z.boolean()).optional(),
 });
@@ -311,7 +319,7 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       // only valid for object schemas
       where: isObjectSchema ? whereSchema.optional() : zod.undefined().optional(),
 
-      orderBy: zod.record(zod.enum(['asc', 'desc'])).optional(),
+      orderBy: zod.record(orderDirection).optional(),
       include: zod.record(zod.boolean()).optional(),
       select: zod.record(zod.boolean()).optional(),
     })
