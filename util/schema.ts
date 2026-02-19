@@ -267,7 +267,7 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
     }
 
     return value;
-  }, zod.number());
+  }, zod.number().int().nonnegative().finite());
 
   // Only object schemas get "where" support.
   const isObjectSchema = schema instanceof zod.ZodObject;

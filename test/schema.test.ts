@@ -30,4 +30,13 @@ describe('util/schema getQueryInput pagination aliases', () => {
   it('rejects non-numeric string pagination values', () => {
     expect(() => queryInput.parse({ limit: 'ten' })).toThrow();
   });
+
+  it('rejects negative pagination values', () => {
+    expect(() => queryInput.parse({ skip: -1 })).toThrow();
+  });
+
+  it('rejects infinite pagination values', () => {
+    expect(() => queryInput.parse({ limit: Number.POSITIVE_INFINITY })).toThrow();
+    expect(() => queryInput.parse({ take: '1e309' })).toThrow();
+  });
 });

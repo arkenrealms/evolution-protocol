@@ -7,4 +7,6 @@
   - explicit `limit` is preserved when both are present.
   - numeric-string pagination inputs (`take`/`skip`) are coerced to numbers.
   - non-numeric strings are rejected.
+  - negative values are rejected.
+  - infinite/overflow values are rejected.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).
