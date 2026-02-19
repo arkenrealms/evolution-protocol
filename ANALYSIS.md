@@ -14,8 +14,21 @@
 
 Under the source-change test gate, source edits were not retained this run.
 
-## Next actionable fix (once test runtime is restored)
+## 2026-02-18 late maintenance pass (slot 10)
 
-1. Add/enable a runnable Jest+TS `test` script in this package.
-2. Add coverage for `getQueryInput` pagination alias compatibility (`take` + `limit`).
-3. Apply minimal source patch to support both fields without introducing tRPC wrapper layers.
+- Re-read local markdown first (`README.md`, this `ANALYSIS.md`) before source verification.
+- Re-verified direct-repo branch hygiene: `git fetch origin` + `git merge --no-edit origin/main` completed cleanly.
+- Deepest-first re-check focused on leaf `util/schema.ts` and router call surfaces in `realm/realm.router.ts` and `shard/shard.router.ts`.
+- Confirmed the package currently has **no `test` script** in `package.json`, so unit tests are not runnable via repo-defined script in this checkout.
+
+## Blockers (current)
+
+- `rushx test` fails at workspace load due to missing checkout path for `@arken/cerebro-hub` (`/arken/cerebro/hub/package.json`).
+- `npm test` fails because `package.json` has no `test` script in this package.
+- Under the source-change test gate, source edits remain disallowed until a runnable test command exists.
+
+## Next actionable fix (once runtime/workspace blockers are resolved)
+
+1. Add/enable a Jest+TS `test` script in this package (prefer repo-standard command path).
+2. Add targeted tests for query-envelope compatibility (`take` + `limit`) in `util/schema.ts`.
+3. Apply minimal source patch only after tests are runnable and passing (no extra tRPC wrapper abstraction).

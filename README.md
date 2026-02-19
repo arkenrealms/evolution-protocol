@@ -4,7 +4,9 @@ A battle for supremacy takes place amongst the dragons of Haerra.
 
 ## Setup
 
-(Repo setup docs are currently minimal; see `ANALYSIS.md` for current maintenance notes and blockers.)
+- This package currently does not expose a `test` script in `package.json`.
+- `rushx test` in this checkout is blocked by workspace package-map drift (`@arken/cerebro-hub` missing path).
+- See `ANALYSIS.md` for current maintenance notes/blockers and planned Jest+TS harness follow-up.
 
 ## Handshake
 
