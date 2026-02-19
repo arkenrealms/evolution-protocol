@@ -1,4 +1,4 @@
-// arken/packages/node/schema.ts
+// arken/packages/evolution/packages/protocol/util/schema.ts
 //
 import Mongoose, { Types } from 'mongoose';
 import { z as zod, ZodTypeAny, ZodLazy, ZodObject, ZodArray } from 'zod';
@@ -261,6 +261,14 @@ export const getQueryOutput = <T extends zod.ZodTypeAny>(data: T) => {
 export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { partialData?: boolean } = {}) => {
   const { partialData = true } = options;
 
+  const numericQueryValue = zod.preprocess((value) => {
+    if (typeof value === 'string' && value.trim() !== '') {
+      return Number(value);
+    }
+
+    return value;
+  }, zod.number());
+
   // Only object schemas get "where" support.
   const isObjectSchema = schema instanceof zod.ZodObject;
 
@@ -279,9 +287,9 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       data: dataSchema,
 
       // keep your query envelope fields
-      skip: zod.number().default(0).optional(),
-      limit: zod.number().default(10).optional(),
-      take: zod.number().optional(),
+      skip: numericQueryValue.default(0).optional(),
+      limit: numericQueryValue.default(10).optional(),
+      take: numericQueryValue.optional(),
       cursor: zod.record(zod.any()).optional(),
 
       // only valid for object schemas

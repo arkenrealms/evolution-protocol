@@ -20,4 +20,14 @@ describe('util/schema getQueryInput pagination aliases', () => {
 
     expect(parsed).toMatchObject({ take: 25, limit: 10 });
   });
+
+  it('coerces numeric string pagination values', () => {
+    const parsed = queryInput.parse({ take: '7', skip: '2' });
+
+    expect(parsed).toMatchObject({ take: 7, limit: 7, skip: 2 });
+  });
+
+  it('rejects non-numeric string pagination values', () => {
+    expect(() => queryInput.parse({ limit: 'ten' })).toThrow();
+  });
 });
