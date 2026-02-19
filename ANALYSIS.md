@@ -32,3 +32,10 @@ Under the source-change test gate, source edits were not retained this run.
 1. Add/enable a Jest+TS `test` script in this package (prefer repo-standard command path).
 2. Add targeted tests for query-envelope compatibility (`take` + `limit`) in `util/schema.ts`.
 3. Apply minimal source patch only after tests are runnable and passing (no extra tRPC wrapper abstraction).
+
+## 2026-02-18 late-night slot-10 follow-up
+- Re-ran branch hygiene (`git fetch origin` + merge `origin/main`) and verified leaf-first files (`util/schema.ts`, then `realm/*.router.ts` and `shard/*.router.ts`).
+- Revalidated test gate blockers:
+  - `rushx test` ❌ Rush workspace path drift (`@arken/cerebro-hub` expected at `arken/cerebro/hub/package.json`)
+  - `npm test` ❌ missing script (`Missing script: "test"`)
+- No source edits were made pending runnable package-local tests.
