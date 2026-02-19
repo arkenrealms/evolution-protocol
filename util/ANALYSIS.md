@@ -9,3 +9,4 @@
 - Added pagination bounds hardening: `skip`/`limit`/`take` now must be finite, non-negative integers.
 - Non-numeric strings, negatives, and overflow-to-infinity values are rejected by schema validation.
 - `createPrismaWhereSchema` now accepts nested Prisma-style `not` operator objects (e.g. `{ not: { in: [...] } }`) in addition to scalar `not` values.
+- `createPrismaWhereSchema` and `QueryWhereSchema` now accept top-level `NOT` as either a single filter object or an array of filter objects for Prisma compatibility.

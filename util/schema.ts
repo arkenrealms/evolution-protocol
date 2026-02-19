@@ -91,7 +91,7 @@ const QueryWhereSchema = z.lazy(() =>
   z.object({
     AND: z.array(QueryWhereSchema).optional(),
     OR: z.array(QueryWhereSchema).optional(),
-    NOT: z.array(QueryWhereSchema).optional(),
+    NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
     id: QueryFilterOperators.optional(),
     key: QueryFilterOperators.optional(),
     name: QueryFilterOperators.optional(),
@@ -248,10 +248,12 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
     });
   }
 
+  const recursiveWhere = zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1));
+
   return zod.object({
-    AND: zod.array(zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1))).optional(),
-    OR: zod.array(zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1))).optional(),
-    NOT: zod.array(zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1))).optional(),
+    AND: zod.array(recursiveWhere).optional(),
+    OR: zod.array(recursiveWhere).optional(),
+    NOT: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
     ...fieldFilters,
   });
 };
