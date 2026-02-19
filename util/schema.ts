@@ -251,8 +251,8 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
   const recursiveWhere = zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1));
 
   return zod.object({
-    AND: zod.array(recursiveWhere).optional(),
-    OR: zod.array(recursiveWhere).optional(),
+    AND: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
+    OR: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
     NOT: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
     ...fieldFilters,
   });

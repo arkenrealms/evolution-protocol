@@ -99,4 +99,48 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
       },
     });
   });
+
+  it('accepts top-level AND as a single object', () => {
+    const parsed = queryInput.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+  });
+
+  it('accepts top-level OR as a single object', () => {
+    const parsed = queryInput.parse({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+  });
 });
