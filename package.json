@@ -7,6 +7,7 @@
     "clean": "del-cli ./build && make-dir ./build",
     "dist": "npm-run-all clean tsc:*",
     "publish": "npm publish --access=public",
+    "test": "jest --runInBand",
     "tsc:1": "rm -rf ./build && mkdir ./build && cp package.json ./build && NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 tsc --project tsconfig.build.json"
   },
   "main": "build/index.js",
@@ -78,6 +79,7 @@
     "mongoose": "^8",
     "make-dir-cli": "^3",
     "npm-run-all": "^4",
-    "ts-jest": "^29"
+    "ts-jest": "^29",
+    "typescript": "^5"
   }
 }

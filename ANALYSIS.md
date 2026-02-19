@@ -39,3 +39,11 @@ Under the source-change test gate, source edits were not retained this run.
   - `rushx test` ❌ Rush workspace path drift (`@arken/cerebro-hub` expected at `arken/cerebro/hub/package.json`)
   - `npm test` ❌ missing script (`Missing script: "test"`)
 - No source edits were made pending runnable package-local tests.
+
+## 2026-02-19 slot-10 maintenance pass
+
+- Completed branch hygiene in direct repo (`git fetch origin` + merge `origin/main`) before edits.
+- Added package-local Jest+TS harness (`npm test` script + `jest.config.js`) to satisfy source-change test gate.
+- Implemented pagination compatibility fix in `util/schema.ts`: `getQueryInput` now accepts `take` and normalizes `take -> limit` when `limit` is absent.
+- Added regression tests in `test/schema.test.ts` for alias behavior and explicit `limit` precedence.
+- Verified tests: `npm test` ✅ (2/2).

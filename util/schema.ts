@@ -281,6 +281,7 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       // keep your query envelope fields
       skip: zod.number().default(0).optional(),
       limit: zod.number().default(10).optional(),
+      take: zod.number().optional(),
       cursor: zod.record(zod.any()).optional(),
 
       // only valid for object schemas
@@ -290,7 +291,14 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       include: zod.record(zod.boolean()).optional(),
       select: zod.record(zod.boolean()).optional(),
     })
-    .partial();
+    .partial()
+    .transform((query) => {
+      if (query.take !== undefined && query.limit === undefined) {
+        return { ...query, limit: query.take };
+      }
+
+      return query;
+    });
 
   return zod.union([querySchema, zod.undefined()]);
 };
