@@ -77,4 +77,26 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
       },
     });
   });
+
+  it('accepts top-level NOT as a single object', () => {
+    const parsed = queryInput.parse({
+      where: {
+        NOT: {
+          status: {
+            equals: 'Archived',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        NOT: {
+          status: {
+            equals: 'Archived',
+          },
+        },
+      },
+    });
+  });
 });

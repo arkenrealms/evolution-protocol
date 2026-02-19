@@ -7,3 +7,4 @@ Current coverage includes:
 - Pagination coercion behavior for numeric strings and rejection of non-numeric strings.
 - Pagination bounds validation (reject negative and infinite/overflow values).
 - Prisma-compatible `where.<field>.not` handling for both scalar and nested-operator object forms.
+- Top-level `where.NOT` compatibility for both single-object and array forms.
