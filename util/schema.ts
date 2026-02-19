@@ -204,10 +204,12 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
    *   - OR a raw value shorthand: 'foo'  -> { equals: 'foo' }
    */
   const makeFieldFilter = (value: zod.ZodTypeAny) => {
-    const opsSchema = zod
+    let opsSchema: zod.ZodTypeAny;
+
+    opsSchema = zod
       .object({
         equals: value.optional(),
-        not: value.optional(),
+        not: zod.union([value, zod.lazy(() => opsSchema)]).optional(),
         in: zod.array(value).optional(),
         notIn: zod.array(value).optional(),
         lt: value.optional(),
@@ -267,7 +269,7 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
     }
 
     return value;
-  }, zod.number());
+  }, zod.number().int().nonnegative().finite());
 
   // Only object schemas get "where" support.
   const isObjectSchema = schema instanceof zod.ZodObject;

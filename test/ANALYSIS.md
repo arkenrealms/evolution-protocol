@@ -7,4 +7,9 @@
   - explicit `limit` is preserved when both are present.
   - numeric-string pagination inputs (`take`/`skip`) are coerced to numbers.
   - non-numeric strings are rejected.
+  - negative values are rejected.
+  - infinite/overflow values are rejected.
+- Added coverage for Prisma-style `where.<field>.not` filters:
+  - scalar `not` values remain valid.
+  - nested operator-object `not` values (e.g. `{ not: { in: [...] } }`) are accepted.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).

@@ -47,3 +47,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Implemented pagination compatibility fix in `util/schema.ts`: `getQueryInput` now accepts `take` and normalizes `take -> limit` when `limit` is absent.
 - Added regression tests in `test/schema.test.ts` for alias behavior and explicit `limit` precedence.
 - Verified tests: `npm test` ✅ (2/2).
+
+## 2026-02-19 slot-10 follow-up hardening
+
+- Tightened pagination validation in `util/schema.ts`: pagination fields now require finite, non-negative integers.
+- Added regression tests for negative and infinite/overflow pagination inputs.
+- Verified tests: `npm test` ✅ (6/6).
