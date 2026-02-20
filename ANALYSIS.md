@@ -83,3 +83,12 @@ Under the source-change test gate, source edits were not retained this run.
 - Preserved explicit `take` precedence when both `limit` and `take` are provided.
 - Rationale: router query envelopes already support `limit` aliasing via `getQueryInput`, but direct `Query.parse(...)` callers could still drop pagination intent when sending `limit` only.
 - Added focused regressions in `test/schema.test.ts` for `limit -> take` mapping and precedence behavior.
+
+## 2026-02-20 slot-9 projection-map validation parity follow-up
+
+- Hardened `util/schema.ts` by introducing shared `include`/`select` map guards used by both exported `Query` and `getQueryInput`.
+- Validation now rejects:
+  - empty projection maps (`{}`),
+  - blank or whitespace-only projection keys.
+- Added regression tests in `test/schema.test.ts` for both parser paths (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: projection envelopes with empty/blank keys are caller-shape bugs that previously passed silently and could produce no-op or confusing query behavior; fail-fast parity reduces debugging time and keeps direct schema callers aligned with router input semantics.

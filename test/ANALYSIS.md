@@ -31,4 +31,5 @@
   - rejects blank/whitespace `orderBy` keys,
   - accepts numeric-string pagination by coercing to validated integers,
   - accepts `limit` alias and normalizes it to `take` when `take` is absent (while preserving explicit `take` precedence).
+- Added parity regressions for `include`/`select` maps across both `Query` and `getQueryInput` (empty maps and blank field names now rejected consistently).
 - Rationale: direct `Query.parse(...)` callers previously had a looser envelope contract than router query inputs, so parity tests now lock the stricter shared behavior.

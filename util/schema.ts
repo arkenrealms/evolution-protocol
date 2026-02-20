@@ -117,6 +117,17 @@ const QueryPaginationValue = z.preprocess((value) => {
   return value;
 }, z.number().int().nonnegative().finite());
 
+const hasNonBlankKeys = (value: Record<string, unknown>) => Object.keys(value).every((key) => key.trim().length > 0);
+
+const NonEmptyBooleanMap = z
+  .record(z.boolean())
+  .refine((value) => Object.keys(value).length > 0, {
+    message: 'map must include at least one field',
+  })
+  .refine((value) => hasNonBlankKeys(value), {
+    message: 'map field names must be non-empty',
+  });
+
 export const Query = z
   .object({
     skip: QueryPaginationValue.default(0).optional(),
@@ -133,8 +144,8 @@ export const Query = z
         message: 'orderBy field names must be non-empty',
       })
       .optional(),
-    include: z.record(z.boolean()).optional(),
-    select: z.record(z.boolean()).optional(),
+    include: NonEmptyBooleanMap.optional(),
+    select: NonEmptyBooleanMap.optional(),
   })
   .transform((query) => {
     if (query.limit !== undefined && query.take === undefined) {
@@ -350,8 +361,8 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
           message: 'orderBy field names must be non-empty',
         })
         .optional(),
-      include: zod.record(zod.boolean()).optional(),
-      select: zod.record(zod.boolean()).optional(),
+      include: NonEmptyBooleanMap.optional(),
+      select: NonEmptyBooleanMap.optional(),
     })
     .partial()
     .transform((query) => {

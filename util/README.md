@@ -14,3 +14,4 @@ Shared schema helpers for protocol routers.
 - `orderBy` now also rejects blank/whitespace field names to prevent malformed sort maps from slipping through validation.
 - Exported `Query` now applies the same pagination coercion/validation and `orderBy` guards (`non-empty`, non-blank keys) as `getQueryInput` so direct `Query.parse(...)` callers behave consistently.
 - Exported `Query` also accepts `limit` as a pagination alias and normalizes it to `take` when `take` is absent (keeping explicit `take` authoritative when both are provided).
+- `include` and `select` maps now reject empty objects and blank field names in both `Query` and `getQueryInput` to avoid silent no-op projection envelopes.

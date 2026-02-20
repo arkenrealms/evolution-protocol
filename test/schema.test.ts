@@ -81,6 +81,16 @@ describe('util/schema Query pagination and sort envelope validation', () => {
     expect(() => Query.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
     expect(() => Query.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
   });
+
+  it('rejects empty include/select maps', () => {
+    expect(() => Query.parse({ include: {} })).toThrow('map must include at least one field');
+    expect(() => Query.parse({ select: {} })).toThrow('map must include at least one field');
+  });
+
+  it('rejects blank include/select field names', () => {
+    expect(() => Query.parse({ include: { '': true } })).toThrow('map field names must be non-empty');
+    expect(() => Query.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty');
+  });
 });
 
 describe('util/schema getQueryInput pagination aliases', () => {
@@ -135,6 +145,16 @@ describe('util/schema getQueryInput pagination aliases', () => {
   it('rejects blank orderBy field names', () => {
     expect(() => queryInput.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
     expect(() => queryInput.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
+  });
+
+  it('rejects empty include/select maps', () => {
+    expect(() => queryInput.parse({ include: {} })).toThrow('map must include at least one field');
+    expect(() => queryInput.parse({ select: {} })).toThrow('map must include at least one field');
+  });
+
+  it('rejects blank include/select field names', () => {
+    expect(() => queryInput.parse({ include: { '': true } })).toThrow('map field names must be non-empty');
+    expect(() => queryInput.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty');
   });
 });
 
