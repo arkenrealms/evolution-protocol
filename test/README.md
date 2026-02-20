@@ -10,4 +10,4 @@ Current coverage includes:
 - Top-level `where.NOT` compatibility for both single-object and array forms.
 - Top-level `where.AND`/`where.OR` single-object normalization to array form.
 - Query string-filter mode validation (`default`/`insensitive` accepted; invalid modes rejected).
-- `orderBy` validation behavior (empty object rejected; non-empty object accepted).
+- `orderBy` validation behavior (empty object rejected; non-empty object accepted; blank/whitespace field names rejected).

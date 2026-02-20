@@ -51,6 +51,11 @@ describe('util/schema getQueryInput pagination aliases', () => {
 
     expect(parsed).toMatchObject({ orderBy: { createdDate: 'desc' } });
   });
+
+  it('rejects blank orderBy field names', () => {
+    expect(() => queryInput.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
+    expect(() => queryInput.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
+  });
 });
 
 describe('util/schema getQueryInput where not-operator compatibility', () => {
