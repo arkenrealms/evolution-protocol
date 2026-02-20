@@ -19,4 +19,5 @@
   - accepts `where.AND` as a single object and normalizes to array form.
   - accepts `where.OR` as a single object and normalizes to array form.
 - Added `orderBy` envelope coverage to ensure empty sort maps are rejected and non-empty sort maps continue to pass.
+- Expanded `orderBy` coverage to reject blank/whitespace-only field names so malformed sort maps fail fast with an explicit validation error.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).

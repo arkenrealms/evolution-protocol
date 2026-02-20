@@ -13,3 +13,4 @@
 - `createPrismaWhereSchema` now also accepts single-object forms for top-level `AND`/`OR` and normalizes them to arrays to reduce client-shape mismatch failures.
 - Hardened `createPrismaWhereSchema` string filter `mode` validation to the Prisma-compatible enum (`default` | `insensitive`) instead of permissive free-form strings.
 - Tightened `getQueryInput` `orderBy` handling: empty objects are now rejected with a clear validation message so callers cannot send ambiguous no-op ordering envelopes.
+- Added field-name validation for `orderBy`: blank or whitespace-only keys are now rejected (`orderBy field names must be non-empty`) to avoid malformed sort envelopes that can bypass downstream assumptions.
