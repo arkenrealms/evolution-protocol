@@ -27,3 +27,5 @@
 - Rationale (include/select guards): empty or blank-key projection maps are almost always caller-shape mistakes and can silently degrade fetch paths, so validation now fails fast with explicit errors.
 - Added truthy-projection guard for `include`/`select` maps (`at least one true field` required).
 - Rationale: all-false projection envelopes are effectively no-op/misconfigured and usually indicate inverted caller logic; rejecting them avoids silent data-shape surprises and keeps projection intent explicit.
+- Added non-empty logical-clause enforcement for top-level `where.AND`/`where.OR` arrays in both exported `Query` and recursive `createPrismaWhereSchema` paths.
+- Rationale: empty logical arrays are semantic no-ops that can hide caller-side query-builder bugs; rejecting them preserves fail-fast behavior and keeps logical filters intentional.

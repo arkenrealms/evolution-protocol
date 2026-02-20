@@ -99,3 +99,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Applied consistently to both exported `Query` and `getQueryInput` in `util/schema.ts`.
 - Added regressions in `test/schema.test.ts` for both parser paths to lock this behavior.
 - Rationale: all-false projection maps are effectively no-op envelopes and usually indicate inverted caller logic; rejecting them early avoids silent data-shape surprises.
+
+## 2026-02-20 slot-9 logical-array non-empty enforcement
+
+- Hardened logical filter validation by requiring non-empty `where.AND`/`where.OR` arrays in both exported `Query` and recursive `createPrismaWhereSchema` handling.
+- Added parity regressions in `test/schema.test.ts` to verify empty logical arrays are rejected for both direct `Query.parse(...)` and `getQueryInput(...).parse` paths.
+- Rationale: empty logical arrays are no-op filters that often mask upstream query-builder bugs; failing fast avoids silently degraded filtering semantics.

@@ -88,13 +88,16 @@ const QueryFilterOperators = z.object({
 });
 
 const normalizeLogicalArray = (schema: zod.ZodTypeAny) =>
-  z.preprocess((input) => {
-    if (input === undefined) {
-      return input;
-    }
+  z.preprocess(
+    (input) => {
+      if (input === undefined) {
+        return input;
+      }
 
-    return Array.isArray(input) ? input : [input];
-  }, z.array(schema));
+      return Array.isArray(input) ? input : [input];
+    },
+    z.array(schema).nonempty('logical filters must include at least one clause')
+  );
 
 const QueryWhereSchema = z.lazy(() =>
   z.object({
@@ -298,13 +301,16 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
 
   const recursiveWhere = zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1));
 
-  const normalizeLogicalArray = zod.preprocess((input) => {
-    if (input === undefined) {
-      return input;
-    }
+  const normalizeLogicalArray = zod.preprocess(
+    (input) => {
+      if (input === undefined) {
+        return input;
+      }
 
-    return Array.isArray(input) ? input : [input];
-  }, zod.array(recursiveWhere));
+      return Array.isArray(input) ? input : [input];
+    },
+    zod.array(recursiveWhere).nonempty('logical filters must include at least one clause')
+  );
 
   return zod.object({
     AND: normalizeLogicalArray.optional(),
