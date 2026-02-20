@@ -61,6 +61,18 @@ describe('util/schema Query pagination and sort envelope validation', () => {
     expect(parsed).toMatchObject({ skip: 2, take: 5 });
   });
 
+  it('maps limit to take when take is not provided', () => {
+    const parsed = Query.parse({ limit: '4', skip: '1' });
+
+    expect(parsed).toMatchObject({ skip: 1, limit: 4, take: 4 });
+  });
+
+  it('keeps explicit take when both limit and take are provided', () => {
+    const parsed = Query.parse({ limit: '4', take: '7' });
+
+    expect(parsed).toMatchObject({ limit: 4, take: 7 });
+  });
+
   it('rejects empty orderBy objects', () => {
     expect(() => Query.parse({ orderBy: {} })).toThrow('orderBy must include at least one field');
   });

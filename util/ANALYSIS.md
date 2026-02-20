@@ -20,4 +20,6 @@
 
 - Extended exported `Query` pagination handling to match `getQueryInput` by coercing numeric-string `skip`/`take` values and enforcing finite, non-negative integers.
 - Added exported `Query` `orderBy` guards for empty map rejection and blank-key rejection.
+- Added exported `Query` pagination alias parity by accepting `limit` and normalizing it to `take` when `take` is absent.
 - Rationale: these protections already existed in `getQueryInput`; bringing them to `Query` removes a mismatch where direct `Query.parse(...)` consumers could bypass validation expected by router-backed callers.
+- Rationale (limit alias): some callers still send legacy `limit`; normalizing to `take` in `Query.parse(...)` keeps direct-schema consumers aligned with `getQueryInput` and avoids silent pagination drops.

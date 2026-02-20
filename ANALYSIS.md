@@ -76,3 +76,10 @@ Under the source-change test gate, source edits were not retained this run.
 - Rationale: `getQueryInput` already enforced these constraints, but direct `Query.parse(...)` callers could still pass malformed envelopes; this created avoidable behavior drift between two public entry paths.
 - Added focused tests in `test/schema.test.ts` to lock `Query` pagination coercion and `orderBy` guard behavior.
 - Verified with `rushx test` (Node `20.11.1`) ✅ (1 suite, 21 tests).
+
+## 2026-02-20 slot-9 pagination-alias parity follow-up
+
+- Extended exported `Query` to accept `limit` as a legacy pagination alias and normalize it to `take` when `take` is absent.
+- Preserved explicit `take` precedence when both `limit` and `take` are provided.
+- Rationale: router query envelopes already support `limit` aliasing via `getQueryInput`, but direct `Query.parse(...)` callers could still drop pagination intent when sending `limit` only.
+- Added focused regressions in `test/schema.test.ts` for `limit -> take` mapping and precedence behavior.

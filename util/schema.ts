@@ -117,23 +117,32 @@ const QueryPaginationValue = z.preprocess((value) => {
   return value;
 }, z.number().int().nonnegative().finite());
 
-export const Query = z.object({
-  skip: QueryPaginationValue.default(0).optional(),
-  take: QueryPaginationValue.default(10).optional(),
-  cursor: z.record(z.any()).optional(),
-  where: QueryWhereSchema.optional(),
-  orderBy: z
-    .record(z.enum(['asc', 'desc']))
-    .refine((value) => Object.keys(value).length > 0, {
-      message: 'orderBy must include at least one field',
-    })
-    .refine((value) => Object.keys(value).every((key) => key.trim().length > 0), {
-      message: 'orderBy field names must be non-empty',
-    })
-    .optional(),
-  include: z.record(z.boolean()).optional(),
-  select: z.record(z.boolean()).optional(),
-});
+export const Query = z
+  .object({
+    skip: QueryPaginationValue.default(0).optional(),
+    take: QueryPaginationValue.default(10).optional(),
+    limit: QueryPaginationValue.optional(),
+    cursor: z.record(z.any()).optional(),
+    where: QueryWhereSchema.optional(),
+    orderBy: z
+      .record(z.enum(['asc', 'desc']))
+      .refine((value) => Object.keys(value).length > 0, {
+        message: 'orderBy must include at least one field',
+      })
+      .refine((value) => Object.keys(value).every((key) => key.trim().length > 0), {
+        message: 'orderBy field names must be non-empty',
+      })
+      .optional(),
+    include: z.record(z.boolean()).optional(),
+    select: z.record(z.boolean()).optional(),
+  })
+  .transform((query) => {
+    if (query.limit !== undefined && query.take === undefined) {
+      return { ...query, take: query.limit };
+    }
+
+    return query;
+  });
 
 // // Operators for filtering in a Prisma-like way
 // type PrismaFilterOperators<T extends ZodTypeAny> = zod.ZodObject<
