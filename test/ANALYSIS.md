@@ -12,4 +12,10 @@
 - Added coverage for Prisma-style `where.<field>.not` filters:
   - scalar `not` values remain valid.
   - nested operator-object `not` values (e.g. `{ not: { in: [...] } }`) are accepted.
+- Added explicit enum coverage for Prisma string-filter `mode`:
+  - accepts supported values (`insensitive`, `default`).
+  - rejects unsupported values (e.g. `loose`) to prevent ambiguous matching behavior.
+- Added normalization coverage for top-level logical operators:
+  - accepts `where.AND` as a single object and normalizes to array form.
+  - accepts `where.OR` as a single object and normalizes to array form.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).

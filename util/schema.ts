@@ -219,7 +219,7 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
         contains: zod.string().optional(),
         startsWith: zod.string().optional(),
         endsWith: zod.string().optional(),
-        mode: zod.string().optional(),
+        mode: zod.enum(['default', 'insensitive']).optional(),
       })
       .partial();
 
@@ -250,9 +250,17 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
 
   const recursiveWhere = zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1));
 
+  const normalizeLogicalArray = zod.preprocess((input) => {
+    if (input === undefined) {
+      return input;
+    }
+
+    return Array.isArray(input) ? input : [input];
+  }, zod.array(recursiveWhere));
+
   return zod.object({
-    AND: zod.array(recursiveWhere).optional(),
-    OR: zod.array(recursiveWhere).optional(),
+    AND: normalizeLogicalArray.optional(),
+    OR: normalizeLogicalArray.optional(),
     NOT: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
     ...fieldFilters,
   });
