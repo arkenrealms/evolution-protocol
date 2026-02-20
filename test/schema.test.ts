@@ -1,7 +1,57 @@
 // arken/packages/evolution/packages/protocol/test/schema.test.ts
 //
 import { z } from 'zod';
-import { getQueryInput } from '../util/schema';
+import { getQueryInput, Query } from '../util/schema';
+
+describe('util/schema Query logical-operator normalization', () => {
+  it('normalizes top-level AND single objects to arrays', () => {
+    const parsed = Query.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: [
+          {
+            status: {
+              equals: 'Active',
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('normalizes top-level OR single objects to arrays', () => {
+    const parsed = Query.parse({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        OR: [
+          {
+            status: {
+              equals: 'Pending',
+            },
+          },
+        ],
+      },
+    });
+  });
+});
 
 describe('util/schema getQueryInput pagination aliases', () => {
   const queryInput = getQueryInput(

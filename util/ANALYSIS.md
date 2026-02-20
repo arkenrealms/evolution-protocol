@@ -11,6 +11,7 @@
 - `createPrismaWhereSchema` now accepts nested Prisma-style `not` operator objects (e.g. `{ not: { in: [...] } }`) in addition to scalar `not` values.
 - `createPrismaWhereSchema` and `QueryWhereSchema` now accept top-level `NOT` as either a single filter object or an array of filter objects for Prisma compatibility.
 - `createPrismaWhereSchema` now also accepts single-object forms for top-level `AND`/`OR` and normalizes them to arrays to reduce client-shape mismatch failures.
+- Exported `Query` schema now mirrors the same top-level `AND`/`OR` normalization behavior so direct `Query.parse(...)` callers and `getQueryInput(...)` callers share consistent logical-filter handling.
 - Hardened `createPrismaWhereSchema` string filter `mode` validation to the Prisma-compatible enum (`default` | `insensitive`) instead of permissive free-form strings.
 - Tightened `getQueryInput` `orderBy` handling: empty objects are now rejected with a clear validation message so callers cannot send ambiguous no-op ordering envelopes.
 - Added field-name validation for `orderBy`: blank or whitespace-only keys are now rejected (`orderBy field names must be non-empty`) to avoid malformed sort envelopes that can bypass downstream assumptions.

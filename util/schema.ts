@@ -87,10 +87,19 @@ const QueryFilterOperators = z.object({
   mode: z.enum(['default', 'insensitive']).optional(),
 });
 
+const normalizeLogicalArray = (schema: zod.ZodTypeAny) =>
+  z.preprocess((input) => {
+    if (input === undefined) {
+      return input;
+    }
+
+    return Array.isArray(input) ? input : [input];
+  }, z.array(schema));
+
 const QueryWhereSchema = z.lazy(() =>
   z.object({
-    AND: z.array(QueryWhereSchema).optional(),
-    OR: z.array(QueryWhereSchema).optional(),
+    AND: normalizeLogicalArray(QueryWhereSchema).optional(),
+    OR: normalizeLogicalArray(QueryWhereSchema).optional(),
     NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
     id: QueryFilterOperators.optional(),
     key: QueryFilterOperators.optional(),

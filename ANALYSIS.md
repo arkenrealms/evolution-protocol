@@ -60,3 +60,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Rationale: `{ orderBy: {} }` previously validated but represents an ambiguous no-op sort envelope and can mask caller bugs.
 - Added regression tests to verify empty `orderBy` rejection and non-empty acceptance.
 - Verified tests: `rushx test` ✅ (15/15).
+
+## 2026-02-20 slot-9 parity hardening pass
+
+- Aligned exported `Query` schema logical operator behavior with `getQueryInput` by normalizing object-form `where.AND`/`where.OR` to array form.
+- Rationale: `getQueryInput` already normalized these shapes via `createPrismaWhereSchema`, but direct callers of `Query.parse(...)` still required arrays; this inconsistency caused avoidable client-shape mismatches.
+- Added focused tests in `test/schema.test.ts` to verify `Query`-level normalization for both `AND` and `OR`.
