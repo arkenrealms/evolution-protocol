@@ -99,4 +99,37 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
       },
     });
   });
+
+  it('accepts valid case-sensitivity mode values', () => {
+    const parsed = queryInput.parse({
+      where: {
+        status: {
+          contains: 'arc',
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        status: {
+          contains: 'arc',
+          mode: 'insensitive',
+        },
+      },
+    });
+  });
+
+  it('rejects invalid case-sensitivity mode values', () => {
+    expect(() =>
+      queryInput.parse({
+        where: {
+          status: {
+            contains: 'arc',
+            mode: 'loose',
+          },
+        },
+      })
+    ).toThrow();
+  });
 });
