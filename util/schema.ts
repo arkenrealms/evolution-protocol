@@ -87,10 +87,26 @@ const QueryFilterOperators = z.object({
   mode: z.enum(['default', 'insensitive']).optional(),
 });
 
+const NumericQueryValue = zod.preprocess((value) => {
+  if (typeof value === 'string' && value.trim() !== '') {
+    return Number(value);
+  }
+
+  return value;
+}, zod.number().int().nonnegative().finite());
+
+const SortDirectionSchema = zod.preprocess((value) => {
+  if (typeof value === 'string') {
+    return value.trim().toLowerCase();
+  }
+
+  return value;
+}, zod.enum(['asc', 'desc']));
+
 const QueryWhereSchema = z.lazy(() =>
   z.object({
-    AND: z.array(QueryWhereSchema).optional(),
-    OR: z.array(QueryWhereSchema).optional(),
+    AND: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
+    OR: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
     NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
     id: QueryFilterOperators.optional(),
     key: QueryFilterOperators.optional(),
@@ -101,11 +117,11 @@ const QueryWhereSchema = z.lazy(() =>
 );
 
 export const Query = z.object({
-  skip: z.number().default(0).optional(),
-  take: z.number().default(10).optional(),
+  skip: NumericQueryValue.default(0).optional(),
+  take: NumericQueryValue.default(10).optional(),
   cursor: z.record(z.any()).optional(),
   where: QueryWhereSchema.optional(),
-  orderBy: z.record(z.enum(['asc', 'desc'])).optional(),
+  orderBy: z.record(SortDirectionSchema).optional(),
   include: z.record(z.boolean()).optional(),
   select: z.record(z.boolean()).optional(),
 });
@@ -251,8 +267,8 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
   const recursiveWhere = zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1));
 
   return zod.object({
-    AND: zod.array(recursiveWhere).optional(),
-    OR: zod.array(recursiveWhere).optional(),
+    AND: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
+    OR: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
     NOT: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
     ...fieldFilters,
   });
@@ -264,14 +280,6 @@ export const getQueryOutput = <T extends zod.ZodTypeAny>(data: T) => {
 
 export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { partialData?: boolean } = {}) => {
   const { partialData = true } = options;
-
-  const numericQueryValue = zod.preprocess((value) => {
-    if (typeof value === 'string' && value.trim() !== '') {
-      return Number(value);
-    }
-
-    return value;
-  }, zod.number().int().nonnegative().finite());
 
   // Only object schemas get "where" support.
   const isObjectSchema = schema instanceof zod.ZodObject;
@@ -291,15 +299,15 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       data: dataSchema,
 
       // keep your query envelope fields
-      skip: numericQueryValue.default(0).optional(),
-      limit: numericQueryValue.default(10).optional(),
-      take: numericQueryValue.optional(),
+      skip: NumericQueryValue.default(0).optional(),
+      limit: NumericQueryValue.default(10).optional(),
+      take: NumericQueryValue.optional(),
       cursor: zod.record(zod.any()).optional(),
 
       // only valid for object schemas
       where: isObjectSchema ? whereSchema.optional() : zod.undefined().optional(),
 
-      orderBy: zod.record(zod.enum(['asc', 'desc'])).optional(),
+      orderBy: zod.record(SortDirectionSchema).optional(),
       include: zod.record(zod.boolean()).optional(),
       select: zod.record(zod.boolean()).optional(),
     })

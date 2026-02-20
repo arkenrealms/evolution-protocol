@@ -8,3 +8,9 @@ Shared schema helpers for protocol routers.
 - Pagination values are constrained to finite, non-negative integers to avoid invalid/overflow query envelopes.
 - Prisma-style `where.<field>.not` now supports both scalar values and nested operator objects (e.g. `{ not: { in: [...] } }`) for compatibility with richer filter expressions.
 - Top-level `where.NOT` now accepts either a single filter object or an array of filter objects, matching Prisma-style semantics.
+
+## 2026-02-19 maintenance update
+
+- `AND` / `OR` now accept either a single filter object or an array in both recursive where builders and exported `Query` schema.
+- `orderBy` directions are normalized with `trim().toLowerCase()` before enum validation.
+- Shared numeric query parsing (`skip` / `take` / `limit`) remains finite, non-negative integer constrained for both `getQueryInput` and exported `Query`.

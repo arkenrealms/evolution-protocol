@@ -1,7 +1,7 @@
 // arken/packages/evolution/packages/protocol/test/schema.test.ts
 //
 import { z } from 'zod';
-import { getQueryInput } from '../util/schema';
+import { getQueryInput, Query } from '../util/schema';
 
 describe('util/schema getQueryInput pagination aliases', () => {
   const queryInput = getQueryInput(
@@ -98,5 +98,94 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
         },
       },
     });
+  });
+});
+
+describe('util/schema logical operator + orderBy normalization parity', () => {
+  const queryInput = getQueryInput(
+    z.object({
+      status: z.string().optional(),
+    })
+  );
+
+  it('accepts top-level AND/OR as a single object for getQueryInput', () => {
+    const parsed = queryInput.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+        OR: {
+          status: {
+            equals: 'Paused',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+        OR: {
+          status: {
+            equals: 'Paused',
+          },
+        },
+      },
+    });
+  });
+
+  it('normalizes orderBy direction casing/whitespace for getQueryInput', () => {
+    const parsed = queryInput.parse({ orderBy: { createdDate: ' DESC ' } });
+
+    expect(parsed).toMatchObject({ orderBy: { createdDate: 'desc' } });
+  });
+
+  it('accepts top-level AND/OR as a single object for exported Query schema', () => {
+    const parsed = Query.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+        OR: {
+          status: {
+            equals: 'Paused',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+        OR: {
+          status: {
+            equals: 'Paused',
+          },
+        },
+      },
+    });
+  });
+
+  it('normalizes orderBy direction casing/whitespace for exported Query schema', () => {
+    const parsed = Query.parse({ orderBy: { createdDate: ' DESC ' } });
+
+    expect(parsed).toMatchObject({ orderBy: { createdDate: 'desc' } });
+  });
+
+  it('rejects invalid orderBy direction values', () => {
+    expect(() => queryInput.parse({ orderBy: { createdDate: 'descending' } })).toThrow();
+    expect(() => Query.parse({ orderBy: { createdDate: 'descending' } })).toThrow();
   });
 });

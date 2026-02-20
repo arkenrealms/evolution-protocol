@@ -8,3 +8,10 @@ Current coverage includes:
 - Pagination bounds validation (reject negative and infinite/overflow values).
 - Prisma-compatible `where.<field>.not` handling for both scalar and nested-operator object forms.
 - Top-level `where.NOT` compatibility for both single-object and array forms.
+
+## 2026-02-19 maintenance update
+
+Added regression coverage for:
+- Single-object logical operands on top-level `where.AND` and `where.OR` (both `getQueryInput` and exported `Query`).
+- `orderBy` direction normalization (`trim` + lowercase) for both query schema entry points.
+- Invalid `orderBy` direction rejection parity across both schema paths.

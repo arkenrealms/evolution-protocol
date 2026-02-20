@@ -53,3 +53,12 @@ Under the source-change test gate, source edits were not retained this run.
 - Tightened pagination validation in `util/schema.ts`: pagination fields now require finite, non-negative integers.
 - Added regression tests for negative and infinite/overflow pagination inputs.
 - Verified tests: `npm test` ✅ (6/6).
+
+## 2026-02-19 flattened-slot-9 maintenance (logical-operator parity finalization)
+
+- Ran branch hygiene before edits: `git fetch origin` + merge `origin/main`.
+- Completed parity hardening in `util/schema.ts`:
+  - `AND` / `OR` now accept single-object operands in recursive where builder and exported `Query`.
+  - `orderBy` normalization now applies consistently across `getQueryInput` and exported `Query`.
+  - Shared numeric parser now drives pagination values used by both query schema entry points.
+- Added matching regression tests in `test/schema.test.ts` and updated util/test docs.

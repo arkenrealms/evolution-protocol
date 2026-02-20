@@ -13,3 +13,11 @@
   - scalar `not` values remain valid.
   - nested operator-object `not` values (e.g. `{ not: { in: [...] } }`) are accepted.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).
+
+## 2026-02-19 follow-up
+
+- Expanded `schema.test.ts` to verify logical operator shape parity:
+  - `where.AND` and `where.OR` accept single-object forms via both `getQueryInput` and exported `Query`.
+- Added order-direction parity tests:
+  - `' DESC '` normalizes to `'desc'` in both schema paths.
+  - Invalid values such as `'descending'` are rejected in both schema paths.
