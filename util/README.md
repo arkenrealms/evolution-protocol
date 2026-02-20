@@ -10,3 +10,4 @@ Shared schema helpers for protocol routers.
 - Top-level `where.NOT` now accepts either a single filter object or an array of filter objects, matching Prisma-style semantics.
 - Top-level `where.AND` and `where.OR` accept either a single object or an array; single objects are normalized to arrays for safer downstream handling.
 - Prisma-style string filter `mode` is now restricted to supported values (`default` or `insensitive`) to prevent silently accepting invalid case-sensitivity flags.
+- Query envelopes now reject empty `orderBy` objects to avoid ambiguous no-op sort clauses (`{}`), while preserving non-empty map support.
