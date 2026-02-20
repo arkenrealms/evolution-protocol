@@ -53,3 +53,10 @@ Under the source-change test gate, source edits were not retained this run.
 - Tightened pagination validation in `util/schema.ts`: pagination fields now require finite, non-negative integers.
 - Added regression tests for negative and infinite/overflow pagination inputs.
 - Verified tests: `npm test` ✅ (6/6).
+
+## 2026-02-19 late slot-9 hardening pass
+
+- Added an explicit guard in `getQueryInput` to reject empty `orderBy` maps.
+- Rationale: `{ orderBy: {} }` previously validated but represents an ambiguous no-op sort envelope and can mask caller bugs.
+- Added regression tests to verify empty `orderBy` rejection and non-empty acceptance.
+- Verified tests: `rushx test` ✅ (15/15).

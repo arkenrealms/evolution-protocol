@@ -307,7 +307,12 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       // only valid for object schemas
       where: isObjectSchema ? whereSchema.optional() : zod.undefined().optional(),
 
-      orderBy: zod.record(zod.enum(['asc', 'desc'])).optional(),
+      orderBy: zod
+        .record(zod.enum(['asc', 'desc']))
+        .refine((value) => Object.keys(value).length > 0, {
+          message: 'orderBy must include at least one field',
+        })
+        .optional(),
       include: zod.record(zod.boolean()).optional(),
       select: zod.record(zod.boolean()).optional(),
     })

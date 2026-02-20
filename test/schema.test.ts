@@ -41,6 +41,16 @@ describe('util/schema getQueryInput pagination aliases', () => {
     expect(() => queryInput.parse({ limit: Number.POSITIVE_INFINITY })).toThrow();
     expect(() => queryInput.parse({ take: '1e309' })).toThrow();
   });
+
+  it('rejects empty orderBy objects', () => {
+    expect(() => queryInput.parse({ orderBy: {} })).toThrow('orderBy must include at least one field');
+  });
+
+  it('accepts non-empty orderBy objects', () => {
+    const parsed = queryInput.parse({ orderBy: { createdDate: 'desc' } });
+
+    expect(parsed).toMatchObject({ orderBy: { createdDate: 'desc' } });
+  });
 });
 
 describe('util/schema getQueryInput where not-operator compatibility', () => {
