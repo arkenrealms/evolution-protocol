@@ -25,3 +25,5 @@
 - Rationale: these protections already existed in `getQueryInput`; bringing them to `Query` removes a mismatch where direct `Query.parse(...)` consumers could bypass validation expected by router-backed callers.
 - Rationale (limit alias): some callers still send legacy `limit`; normalizing to `take` in `Query.parse(...)` keeps direct-schema consumers aligned with `getQueryInput` and avoids silent pagination drops.
 - Rationale (include/select guards): empty or blank-key projection maps are almost always caller-shape mistakes and can silently degrade fetch paths, so validation now fails fast with explicit errors.
+- Added truthy-projection guard for `include`/`select` maps (`at least one true field` required).
+- Rationale: all-false projection envelopes are effectively no-op/misconfigured and usually indicate inverted caller logic; rejecting them avoids silent data-shape surprises and keeps projection intent explicit.

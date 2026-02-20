@@ -126,6 +126,9 @@ const NonEmptyBooleanMap = z
   })
   .refine((value) => hasNonBlankKeys(value), {
     message: 'map field names must be non-empty',
+  })
+  .refine((value) => Object.values(value).some((entry) => entry === true), {
+    message: 'map must include at least one true field',
   });
 
 export const Query = z

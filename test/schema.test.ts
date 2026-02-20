@@ -91,6 +91,11 @@ describe('util/schema Query pagination and sort envelope validation', () => {
     expect(() => Query.parse({ include: { '': true } })).toThrow('map field names must be non-empty');
     expect(() => Query.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty');
   });
+
+  it('rejects include/select maps with only false values', () => {
+    expect(() => Query.parse({ include: { profile: false } })).toThrow('map must include at least one true field');
+    expect(() => Query.parse({ select: { id: false, status: false } })).toThrow('map must include at least one true field');
+  });
 });
 
 describe('util/schema getQueryInput pagination aliases', () => {
@@ -155,6 +160,11 @@ describe('util/schema getQueryInput pagination aliases', () => {
   it('rejects blank include/select field names', () => {
     expect(() => queryInput.parse({ include: { '': true } })).toThrow('map field names must be non-empty');
     expect(() => queryInput.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty');
+  });
+
+  it('rejects include/select maps with only false values', () => {
+    expect(() => queryInput.parse({ include: { profile: false } })).toThrow('map must include at least one true field');
+    expect(() => queryInput.parse({ select: { id: false, status: false } })).toThrow('map must include at least one true field');
   });
 });
 

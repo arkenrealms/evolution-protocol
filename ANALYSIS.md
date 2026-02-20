@@ -92,3 +92,10 @@ Under the source-change test gate, source edits were not retained this run.
   - blank or whitespace-only projection keys.
 - Added regression tests in `test/schema.test.ts` for both parser paths (`Query.parse` and `getQueryInput(...).parse`).
 - Rationale: projection envelopes with empty/blank keys are caller-shape bugs that previously passed silently and could produce no-op or confusing query behavior; fail-fast parity reduces debugging time and keeps direct schema callers aligned with router input semantics.
+
+## 2026-02-20 slot-9 projection truthiness follow-up
+
+- Extended shared projection-map guards so `include`/`select` now require at least one `true` value (all-false maps are rejected).
+- Applied consistently to both exported `Query` and `getQueryInput` in `util/schema.ts`.
+- Added regressions in `test/schema.test.ts` for both parser paths to lock this behavior.
+- Rationale: all-false projection maps are effectively no-op envelopes and usually indicate inverted caller logic; rejecting them early avoids silent data-shape surprises.
