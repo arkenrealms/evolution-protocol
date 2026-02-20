@@ -15,3 +15,9 @@
 - Hardened `createPrismaWhereSchema` string filter `mode` validation to the Prisma-compatible enum (`default` | `insensitive`) instead of permissive free-form strings.
 - Tightened `getQueryInput` `orderBy` handling: empty objects are now rejected with a clear validation message so callers cannot send ambiguous no-op ordering envelopes.
 - Added field-name validation for `orderBy`: blank or whitespace-only keys are now rejected (`orderBy field names must be non-empty`) to avoid malformed sort envelopes that can bypass downstream assumptions.
+
+## 2026-02-20
+
+- Extended exported `Query` pagination handling to match `getQueryInput` by coercing numeric-string `skip`/`take` values and enforcing finite, non-negative integers.
+- Added exported `Query` `orderBy` guards for empty map rejection and blank-key rejection.
+- Rationale: these protections already existed in `getQueryInput`; bringing them to `Query` removes a mismatch where direct `Query.parse(...)` consumers could bypass validation expected by router-backed callers.

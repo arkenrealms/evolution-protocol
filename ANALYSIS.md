@@ -66,3 +66,13 @@ Under the source-change test gate, source edits were not retained this run.
 - Aligned exported `Query` schema logical operator behavior with `getQueryInput` by normalizing object-form `where.AND`/`where.OR` to array form.
 - Rationale: `getQueryInput` already normalized these shapes via `createPrismaWhereSchema`, but direct callers of `Query.parse(...)` still required arrays; this inconsistency caused avoidable client-shape mismatches.
 - Added focused tests in `test/schema.test.ts` to verify `Query`-level normalization for both `AND` and `OR`.
+
+## 2026-02-20 slot-9 validation-parity hardening pass
+
+- Re-ran branch hygiene (`git fetch origin` + merge `origin/main`) before edits and kept work on the active direct-repo branch with open PR.
+- Hardened exported `Query` envelope validation to match `getQueryInput` expectations:
+  - `skip`/`take` now coerce numeric-string inputs and enforce finite, non-negative integers.
+  - `orderBy` now rejects empty maps and blank/whitespace field names.
+- Rationale: `getQueryInput` already enforced these constraints, but direct `Query.parse(...)` callers could still pass malformed envelopes; this created avoidable behavior drift between two public entry paths.
+- Added focused tests in `test/schema.test.ts` to lock `Query` pagination coercion and `orderBy` guard behavior.
+- Verified with `rushx test` (Node `20.11.1`) ✅ (1 suite, 21 tests).

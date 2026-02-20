@@ -53,6 +53,24 @@ describe('util/schema Query logical-operator normalization', () => {
   });
 });
 
+
+describe('util/schema Query pagination and sort envelope validation', () => {
+  it('coerces numeric string pagination values', () => {
+    const parsed = Query.parse({ skip: '2', take: '5' });
+
+    expect(parsed).toMatchObject({ skip: 2, take: 5 });
+  });
+
+  it('rejects empty orderBy objects', () => {
+    expect(() => Query.parse({ orderBy: {} })).toThrow('orderBy must include at least one field');
+  });
+
+  it('rejects blank orderBy field names', () => {
+    expect(() => Query.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
+    expect(() => Query.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
+  });
+});
+
 describe('util/schema getQueryInput pagination aliases', () => {
   const queryInput = getQueryInput(
     z.object({

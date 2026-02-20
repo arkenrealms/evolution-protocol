@@ -22,3 +22,12 @@
 - Added `orderBy` envelope coverage to ensure empty sort maps are rejected and non-empty sort maps continue to pass.
 - Expanded `orderBy` coverage to reject blank/whitespace-only field names so malformed sort maps fail fast with an explicit validation error.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).
+
+## 2026-02-20
+
+- Added exported `Query` regression coverage for numeric-string pagination coercion (`skip`/`take`) and `orderBy` guard behavior.
+- New tests verify parity expectations shared with `getQueryInput`:
+  - rejects empty `orderBy` envelopes,
+  - rejects blank/whitespace `orderBy` keys,
+  - accepts numeric-string pagination by coercing to validated integers.
+- Rationale: direct `Query.parse(...)` callers previously had a looser envelope contract than router query inputs, so parity tests now lock the stricter shared behavior.

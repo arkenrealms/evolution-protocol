@@ -109,12 +109,28 @@ const QueryWhereSchema = z.lazy(() =>
   })
 );
 
+const QueryPaginationValue = z.preprocess((value) => {
+  if (typeof value === 'string' && value.trim() !== '') {
+    return Number(value);
+  }
+
+  return value;
+}, z.number().int().nonnegative().finite());
+
 export const Query = z.object({
-  skip: z.number().default(0).optional(),
-  take: z.number().default(10).optional(),
+  skip: QueryPaginationValue.default(0).optional(),
+  take: QueryPaginationValue.default(10).optional(),
   cursor: z.record(z.any()).optional(),
   where: QueryWhereSchema.optional(),
-  orderBy: z.record(z.enum(['asc', 'desc'])).optional(),
+  orderBy: z
+    .record(z.enum(['asc', 'desc']))
+    .refine((value) => Object.keys(value).length > 0, {
+      message: 'orderBy must include at least one field',
+    })
+    .refine((value) => Object.keys(value).every((key) => key.trim().length > 0), {
+      message: 'orderBy field names must be non-empty',
+    })
+    .optional(),
   include: z.record(z.boolean()).optional(),
   select: z.record(z.boolean()).optional(),
 });
