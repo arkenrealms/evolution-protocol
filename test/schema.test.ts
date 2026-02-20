@@ -100,6 +100,54 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
     });
   });
 
+  it('normalizes top-level AND single objects to arrays', () => {
+    const parsed = queryInput.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: [
+          {
+            status: {
+              equals: 'Active',
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('normalizes top-level OR single objects to arrays', () => {
+    const parsed = queryInput.parse({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        OR: [
+          {
+            status: {
+              equals: 'Pending',
+            },
+          },
+        ],
+      },
+    });
+  });
+
   it('accepts valid case-sensitivity mode values', () => {
     const parsed = queryInput.parse({
       where: {
