@@ -108,13 +108,21 @@ describe('util/schema Query pagination and sort envelope validation', () => {
   });
 
   it('rejects blank cursor field names', () => {
-    expect(() => Query.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty');
-    expect(() => Query.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty');
+    expect(() => Query.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+    expect(() => Query.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed cursor field names', () => {
+    expect(() => Query.parse({ cursor: { ' id ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
   });
 
   it('rejects blank orderBy field names', () => {
-    expect(() => Query.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
-    expect(() => Query.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
+    expect(() => Query.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+    expect(() => Query.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed orderBy field names', () => {
+    expect(() => Query.parse({ orderBy: { ' status ': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
   });
 
   it('rejects empty include/select maps', () => {
@@ -123,8 +131,13 @@ describe('util/schema Query pagination and sort envelope validation', () => {
   });
 
   it('rejects blank include/select field names', () => {
-    expect(() => Query.parse({ include: { '': true } })).toThrow('map field names must be non-empty');
-    expect(() => Query.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty');
+    expect(() => Query.parse({ include: { '': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => Query.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed include/select field names', () => {
+    expect(() => Query.parse({ include: { ' profile ': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => Query.parse({ select: { ' id ': true } })).toThrow('map field names must be non-empty and trimmed');
   });
 
   it('rejects include/select maps with only false values', () => {
@@ -193,13 +206,21 @@ describe('util/schema getQueryInput pagination aliases', () => {
   });
 
   it('rejects blank cursor field names', () => {
-    expect(() => queryInput.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty');
-    expect(() => queryInput.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty');
+    expect(() => queryInput.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed cursor field names', () => {
+    expect(() => queryInput.parse({ cursor: { ' id ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
   });
 
   it('rejects blank orderBy field names', () => {
-    expect(() => queryInput.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
-    expect(() => queryInput.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
+    expect(() => queryInput.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed orderBy field names', () => {
+    expect(() => queryInput.parse({ orderBy: { ' status ': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
   });
 
   it('rejects empty include/select maps', () => {
@@ -208,8 +229,13 @@ describe('util/schema getQueryInput pagination aliases', () => {
   });
 
   it('rejects blank include/select field names', () => {
-    expect(() => queryInput.parse({ include: { '': true } })).toThrow('map field names must be non-empty');
-    expect(() => queryInput.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty');
+    expect(() => queryInput.parse({ include: { '': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed include/select field names', () => {
+    expect(() => queryInput.parse({ include: { ' profile ': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ select: { ' id ': true } })).toThrow('map field names must be non-empty and trimmed');
   });
 
   it('rejects include/select maps with only false values', () => {

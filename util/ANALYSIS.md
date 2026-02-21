@@ -54,3 +54,9 @@
 - Added shared `cursor` map validation in `util/schema.ts` and applied it to both exported `Query` and `getQueryInput`.
 - Validation now rejects empty cursor objects and blank/whitespace cursor field names.
 - Rationale: `{ cursor: {} }` and blank cursor keys are ambiguous/no-op cursor envelopes that can mask broken pagination callers; fail-fast keeps cursor intent explicit across both parser entry points.
+
+## 2026-02-21 slot-9 key-whitespace normalization hardening
+
+- Tightened map-key validation for `orderBy`, `cursor`, `include`, and `select` in `util/schema.ts` by requiring field names to be both non-empty and already trimmed.
+- This now rejects keys with leading/trailing whitespace (for example `' status '`), not just all-whitespace keys.
+- Rationale: padded keys are malformed caller envelopes that can survive parsing but fail downstream lookups unpredictably; fail-fast validation improves reliability and keeps parser behavior deterministic across both `Query` and `getQueryInput` paths.

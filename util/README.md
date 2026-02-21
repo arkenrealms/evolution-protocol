@@ -13,11 +13,11 @@ Shared schema helpers for protocol routers.
 - Top-level logical arrays (`where.AND`/`where.OR`/`where.NOT` array form) must be non-empty; empty arrays are rejected as invalid no-op filter envelopes.
 - Prisma-style string filter `mode` is now restricted to supported values (`default` or `insensitive`) to prevent silently accepting invalid case-sensitivity flags.
 - Query envelopes now reject empty `orderBy` objects to avoid ambiguous no-op sort clauses (`{}`), while preserving non-empty map support.
-- `orderBy` now also rejects blank/whitespace field names to prevent malformed sort maps from slipping through validation.
+- `orderBy` now also rejects blank or untrimmed field names (leading/trailing whitespace) to prevent malformed sort maps from slipping through validation.
 - Exported `Query` now applies the same pagination coercion/validation and `orderBy` guards (`non-empty`, non-blank keys) as `getQueryInput` so direct `Query.parse(...)` callers behave consistently.
 - Exported `Query` also accepts `limit` as a pagination alias and normalizes it to `take` when `take` is absent (keeping explicit `take` authoritative when both are provided).
-- `include` and `select` maps now reject empty objects and blank field names in both `Query` and `getQueryInput` to avoid silent no-op projection envelopes.
+- `include` and `select` maps now reject empty objects plus blank or untrimmed field names in both `Query` and `getQueryInput` to avoid silent no-op projection envelopes.
 - `include` and `select` maps now also require at least one `true` field; all-false projection maps are rejected as caller-shape errors.
 - Query envelopes now reject sending `include` and `select` together; callers must choose one projection mode per request.
 - Field-level `where` operator objects must include at least one operator key (for example `{ equals: ... }`); empty objects like `{ status: {} }` are rejected to avoid silent no-op filters.
-- `cursor` maps now reject empty objects and blank/whitespace field names in both `Query` and `getQueryInput`, preventing ambiguous no-op cursor envelopes.
+- `cursor` maps now reject empty objects and blank/untrimmed field names in both `Query` and `getQueryInput`, preventing ambiguous no-op cursor envelopes.

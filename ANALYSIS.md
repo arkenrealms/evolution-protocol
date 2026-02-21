@@ -139,3 +139,9 @@ Under the source-change test gate, source edits were not retained this run.
   - `cursor` now rejects blank/whitespace field names.
 - Added parity regressions in `test/schema.test.ts` for both parser paths.
 - Rationale: malformed cursor envelopes are pagination no-ops that can hide caller bugs; strict parity keeps direct schema and router input behavior aligned.
+
+## 2026-02-21 slot-9 key-whitespace map guard parity
+
+- Tightened map-key validation in `util/schema.ts` so `orderBy`, `cursor`, `include`, and `select` reject leading/trailing whitespace in field names (in addition to empty keys).
+- Added regression coverage in `test/schema.test.ts` for both parser entry points (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: padded field names are malformed map envelopes that can parse but fail at downstream lookups; fail-fast parser parity improves protocol reliability.

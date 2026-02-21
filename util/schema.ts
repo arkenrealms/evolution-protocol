@@ -137,15 +137,16 @@ const QueryPaginationValue = z.preprocess((value) => {
   return value;
 }, z.number().int().nonnegative().finite());
 
-const hasNonBlankKeys = (value: Record<string, unknown>) => Object.keys(value).every((key) => key.trim().length > 0);
+const hasStrictFieldNames = (value: Record<string, unknown>) =>
+  Object.keys(value).every((key) => key.trim().length > 0 && key === key.trim());
 
 const NonEmptyBooleanMap = z
   .record(z.boolean())
   .refine((value) => Object.keys(value).length > 0, {
     message: 'map must include at least one field',
   })
-  .refine((value) => hasNonBlankKeys(value), {
-    message: 'map field names must be non-empty',
+  .refine((value) => hasStrictFieldNames(value), {
+    message: 'map field names must be non-empty and trimmed',
   })
   .refine((value) => Object.values(value).some((entry) => entry === true), {
     message: 'map must include at least one true field',
@@ -156,8 +157,8 @@ const NonEmptyCursorMap = z
   .refine((value) => Object.keys(value).length > 0, {
     message: 'cursor must include at least one field',
   })
-  .refine((value) => hasNonBlankKeys(value), {
-    message: 'cursor field names must be non-empty',
+  .refine((value) => hasStrictFieldNames(value), {
+    message: 'cursor field names must be non-empty and trimmed',
   });
 
 export const Query = z
@@ -172,8 +173,8 @@ export const Query = z
       .refine((value) => Object.keys(value).length > 0, {
         message: 'orderBy must include at least one field',
       })
-      .refine((value) => Object.keys(value).every((key) => key.trim().length > 0), {
-        message: 'orderBy field names must be non-empty',
+      .refine((value) => hasStrictFieldNames(value), {
+        message: 'orderBy field names must be non-empty and trimmed',
       })
       .optional(),
     include: NonEmptyBooleanMap.optional(),
@@ -404,8 +405,8 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
         .refine((value) => Object.keys(value).length > 0, {
           message: 'orderBy must include at least one field',
         })
-        .refine((value) => Object.keys(value).every((key) => key.trim().length > 0), {
-          message: 'orderBy field names must be non-empty',
+        .refine((value) => hasStrictFieldNames(value), {
+          message: 'orderBy field names must be non-empty and trimmed',
         })
         .optional(),
       include: NonEmptyBooleanMap.optional(),

@@ -44,3 +44,5 @@
 - Rationale: `where: { status: {} }` is a no-op envelope that can hide caller query-builder errors; explicit failure keeps filter intent strict and debuggable.
 - Added cursor-envelope parity regressions asserting both parser paths reject empty cursor maps and blank/whitespace cursor field names.
 - Rationale: malformed cursor objects are usually pagination-caller shape bugs; fail-fast tests prevent silent no-op cursor envelopes from reappearing.
+- Added key-whitespace regressions for both parser paths to reject leading/trailing whitespace in `orderBy`, `cursor`, `include`, and `select` field names.
+- Rationale: padded keys are malformed envelopes that can otherwise pass validation and create brittle downstream map lookups; tests lock strict, deterministic key-shape behavior.
