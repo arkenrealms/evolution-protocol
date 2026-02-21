@@ -46,3 +46,5 @@
 - Rationale: malformed cursor objects are usually pagination-caller shape bugs; fail-fast tests prevent silent no-op cursor envelopes from reappearing.
 - Added key-whitespace regressions for both parser paths to reject leading/trailing whitespace in `orderBy`, `cursor`, `include`, and `select` field names.
 - Rationale: padded keys are malformed envelopes that can otherwise pass validation and create brittle downstream map lookups; tests lock strict, deterministic key-shape behavior.
+- Added cursor-value regressions for both parser paths to reject cursor envelopes that contain only nullish values (`undefined`/`null`).
+- Rationale: nullish-only cursor maps are pagination no-ops that can hide caller cursor-construction defects; fail-fast tests keep cursor intent explicit.

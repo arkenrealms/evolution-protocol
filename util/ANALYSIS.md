@@ -60,3 +60,8 @@
 - Tightened map-key validation for `orderBy`, `cursor`, `include`, and `select` in `util/schema.ts` by requiring field names to be both non-empty and already trimmed.
 - This now rejects keys with leading/trailing whitespace (for example `' status '`), not just all-whitespace keys.
 - Rationale: padded keys are malformed caller envelopes that can survive parsing but fail downstream lookups unpredictably; fail-fast validation improves reliability and keeps parser behavior deterministic across both `Query` and `getQueryInput` paths.
+
+## 2026-02-21 slot-9 cursor-defined-value guard follow-up
+
+- Added a shared cursor-value refinement in `util/schema.ts` so cursor maps must include at least one non-nullish value (`!== undefined` and `!== null`) for both `Query` and `getQueryInput` parser paths.
+- Rationale: envelopes like `{ cursor: { id: undefined } }` or `{ cursor: { id: null } }` are silent no-op pagination shapes that previously passed schema validation and could mask caller-side cursor construction bugs.

@@ -159,6 +159,9 @@ const NonEmptyCursorMap = z
   })
   .refine((value) => hasStrictFieldNames(value), {
     message: 'cursor field names must be non-empty and trimmed',
+  })
+  .refine((value) => Object.values(value).some((entry) => entry !== undefined && entry !== null), {
+    message: 'cursor must include at least one defined value',
   });
 
 export const Query = z
