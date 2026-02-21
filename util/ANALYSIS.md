@@ -71,3 +71,9 @@
 - Added a second shared cursor-value refinement in `util/schema.ts` so cursor maps must include at least one non-empty value (blank strings like `''` or `'   '` no longer satisfy cursor validation).
 - Applied uniformly to both parser entry points (`Query` and `getQueryInput`) to keep pagination-envelope behavior aligned.
 - Rationale: blank-string cursor values are effectively no-op cursor payloads that can silently pass shape checks while breaking downstream pagination lookup intent; fail-fast validation surfaces caller bugs earlier.
+
+## 2026-02-21 slot-9 empty in/notIn operator-array guard
+
+- Hardened `QueryFilterOperators` in `util/schema.ts` so `in` and `notIn` require non-empty arrays.
+- Applied once in the shared operator schema so behavior is consistent for both parser entry points (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: empty `in`/`notIn` arrays are silent no-op or ambiguous filters that usually indicate caller query-builder bugs; fail-fast validation keeps filter intent explicit and prevents accidental broad queries.

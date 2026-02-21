@@ -77,6 +77,11 @@ describe('util/schema Query logical-operator normalization', () => {
   it('rejects empty where field-filter objects', () => {
     expect(() => Query.parse({ where: { status: {} } })).toThrow('where filter must include at least one operator');
   });
+
+  it('rejects empty `in` and `notIn` operator arrays', () => {
+    expect(() => Query.parse({ where: { status: { in: [] } } })).toThrow('in operator must include at least one value');
+    expect(() => Query.parse({ where: { status: { notIn: [] } } })).toThrow('notIn operator must include at least one value');
+  });
 });
 
 
@@ -383,6 +388,31 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
 
   it('rejects empty where field-filter objects', () => {
     expect(() => queryInput.parse({ where: { status: {} } })).toThrow('where filter must include at least one operator');
+  });
+
+  it('rejects empty `in` and `notIn` operator arrays', () => {
+    expect(() => queryInput.parse({ where: { status: { in: [] } } })).toThrow('in operator must include at least one value');
+    expect(() => queryInput.parse({ where: { status: { notIn: [] } } })).toThrow('notIn operator must include at least one value');
+  });
+
+  it('accepts non-empty `in` and `notIn` operator arrays', () => {
+    const parsed = queryInput.parse({
+      where: {
+        status: {
+          in: ['Active', 'Pending'],
+          notIn: ['Archived'],
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        status: {
+          in: ['Active', 'Pending'],
+          notIn: ['Archived'],
+        },
+      },
+    });
   });
 
   it('accepts valid case-sensitivity mode values', () => {

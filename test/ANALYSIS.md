@@ -50,3 +50,7 @@
 - Rationale: nullish-only cursor maps are pagination no-ops that can hide caller cursor-construction defects; fail-fast tests keep cursor intent explicit.
 - Added cursor-value regressions for both parser paths to reject blank-string-only cursor values (`''`, `'   '`).
 - Rationale: blank-string cursor payloads are another no-op pagination shape; parity tests ensure both parser entry points fail fast with the same message.
+- Added `in`/`notIn` operator regressions for both parser paths:
+  - empty arrays are rejected (`in: []`, `notIn: []`),
+  - non-empty arrays continue to pass.
+- Rationale: empty inclusion/exclusion arrays are malformed no-op filters that can hide caller query-construction bugs; parity coverage locks fail-fast behavior consistently across `Query.parse` and `getQueryInput(...).parse`.

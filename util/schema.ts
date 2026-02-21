@@ -88,8 +88,8 @@ const QueryFilterOperators = z.preprocess(
     .object({
       equals: z.any().optional(),
       not: z.any().optional(),
-      in: z.array(z.any()).optional(),
-      notIn: z.array(z.any()).optional(),
+      in: z.array(z.any()).nonempty('in operator must include at least one value').optional(),
+      notIn: z.array(z.any()).nonempty('notIn operator must include at least one value').optional(),
       lt: z.any().optional(),
       lte: z.any().optional(),
       gt: z.any().optional(),
@@ -313,8 +313,8 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
       .object({
         equals: value.optional(),
         not: zod.union([value, zod.lazy(() => opsSchema)]).optional(),
-        in: zod.array(value).optional(),
-        notIn: zod.array(value).optional(),
+        in: zod.array(value).nonempty('in operator must include at least one value').optional(),
+        notIn: zod.array(value).nonempty('notIn operator must include at least one value').optional(),
         lt: value.optional(),
         lte: value.optional(),
         gt: value.optional(),
