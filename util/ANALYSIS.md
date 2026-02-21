@@ -42,3 +42,9 @@
 - Extended exported `Query` field-filter parsing so scalar shorthand values are accepted and normalized to `{ equals: ... }`.
 - Example: `Query.parse({ where: { status: 'Active' } })` now yields `where.status.equals === 'Active'`.
 - Rationale: `getQueryInput` already supported this shorthand through `createPrismaWhereSchema`; bringing the same behavior to direct `Query.parse(...)` closes another caller-path mismatch and reduces avoidable validation friction.
+
+## 2026-02-20 slot-9 empty filter-object rejection follow-up
+
+- Added fail-fast validation so field-level `where` operator objects must include at least one operator in both exported `Query` and recursive `createPrismaWhereSchema` paths.
+- Example now rejected: `{ where: { status: {} } }`.
+- Rationale: empty operator objects are no-op filters that can silently hide caller query-construction bugs; explicit rejection improves reliability and keeps both parser entry points behaviorally aligned.

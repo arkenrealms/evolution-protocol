@@ -124,3 +124,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Tightened logical filter validation parity in `util/schema.ts` by enforcing non-empty arrays for `where.NOT` (array form) in both `Query` and `getQueryInput` recursive schemas.
 - Added focused regression updates in `test/schema.test.ts` to verify empty `NOT` arrays now fail in both parser paths.
 - Rationale: this closes a no-op logical-envelope gap that still existed for `NOT` after prior `AND`/`OR` hardening.
+
+## 2026-02-20 slot-9 empty field-filter guard follow-up
+
+- Added shared fail-fast validation for field-level filter operator objects so empty objects are rejected in both parser paths (`Query` and `getQueryInput` via `createPrismaWhereSchema`).
+- Added focused regressions in `test/schema.test.ts` for `where: { status: {} }` on both parser entry points.
+- Rationale: empty operator objects are silent no-op filters that usually indicate broken caller query-builder output; rejecting them early improves reliability and debugging clarity.

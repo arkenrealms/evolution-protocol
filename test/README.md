@@ -18,3 +18,4 @@ Current coverage includes:
 - `orderBy` validation behavior (empty object rejected; non-empty object accepted; blank/whitespace field names rejected) across both `Query` and `getQueryInput`.
 - `include`/`select` validation parity across both `Query` and `getQueryInput` (empty maps rejected; blank field names rejected; all-false maps rejected).
 - Projection exclusivity parity (`include` + `select` together is rejected in both parser paths).
+- Field-level `where` filter validation parity (empty operator objects like `{ status: {} }` are rejected in both parser paths).

@@ -19,3 +19,4 @@ Shared schema helpers for protocol routers.
 - `include` and `select` maps now reject empty objects and blank field names in both `Query` and `getQueryInput` to avoid silent no-op projection envelopes.
 - `include` and `select` maps now also require at least one `true` field; all-false projection maps are rejected as caller-shape errors.
 - Query envelopes now reject sending `include` and `select` together; callers must choose one projection mode per request.
+- Field-level `where` operator objects must include at least one operator key (for example `{ equals: ... }`); empty objects like `{ status: {} }` are rejected to avoid silent no-op filters.

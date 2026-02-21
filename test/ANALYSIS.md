@@ -40,3 +40,5 @@
 - Rationale: empty `NOT` arrays are semantic no-ops and often indicate upstream filter-construction defects; explicit validation failure preserves fail-fast behavior.
 - Added regression coverage that exported `Query` accepts scalar where-filter shorthand (`where: { status: 'Active' }`) and normalizes to `{ equals: ... }`.
 - Rationale: `getQueryInput` already supported scalar shorthand via `createPrismaWhereSchema`; this test locks direct-schema parity and prevents reintroducing caller-path shape drift.
+- Added parity regressions asserting empty field-level where operator objects are rejected in both parser paths (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: `where: { status: {} }` is a no-op envelope that can hide caller query-builder errors; explicit failure keeps filter intent strict and debuggable.

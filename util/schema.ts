@@ -84,20 +84,24 @@ const QueryFilterOperators = z.preprocess(
 
     return { equals: input };
   },
-  z.object({
-    equals: z.any().optional(),
-    not: z.any().optional(),
-    in: z.array(z.any()).optional(),
-    notIn: z.array(z.any()).optional(),
-    lt: z.any().optional(),
-    lte: z.any().optional(),
-    gt: z.any().optional(),
-    gte: z.any().optional(),
-    contains: z.string().optional(),
-    startsWith: z.string().optional(),
-    endsWith: z.string().optional(),
-    mode: z.enum(['default', 'insensitive']).optional(),
-  })
+  z
+    .object({
+      equals: z.any().optional(),
+      not: z.any().optional(),
+      in: z.array(z.any()).optional(),
+      notIn: z.array(z.any()).optional(),
+      lt: z.any().optional(),
+      lte: z.any().optional(),
+      gt: z.any().optional(),
+      gte: z.any().optional(),
+      contains: z.string().optional(),
+      startsWith: z.string().optional(),
+      endsWith: z.string().optional(),
+      mode: z.enum(['default', 'insensitive']).optional(),
+    })
+    .refine((value) => Object.keys(value).length > 0, {
+      message: 'where filter must include at least one operator',
+    })
 );
 
 const normalizeLogicalArray = (schema: zod.ZodTypeAny) =>
@@ -294,7 +298,10 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
         endsWith: zod.string().optional(),
         mode: zod.enum(['default', 'insensitive']).optional(),
       })
-      .partial();
+      .partial()
+      .refine((entry) => Object.keys(entry).length > 0, {
+        message: 'where filter must include at least one operator',
+      });
 
     return zod
       .preprocess((input) => {

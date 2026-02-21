@@ -73,6 +73,10 @@ describe('util/schema Query logical-operator normalization', () => {
     expect(() => Query.parse({ where: { OR: [] } })).toThrow('logical filters must include at least one clause');
     expect(() => Query.parse({ where: { NOT: [] } })).toThrow('logical filters must include at least one clause');
   });
+
+  it('rejects empty where field-filter objects', () => {
+    expect(() => Query.parse({ where: { status: {} } })).toThrow('where filter must include at least one operator');
+  });
 });
 
 
@@ -311,6 +315,10 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
     expect(() => queryInput.parse({ where: { AND: [] } })).toThrow('logical filters must include at least one clause');
     expect(() => queryInput.parse({ where: { OR: [] } })).toThrow('logical filters must include at least one clause');
     expect(() => queryInput.parse({ where: { NOT: [] } })).toThrow('logical filters must include at least one clause');
+  });
+
+  it('rejects empty where field-filter objects', () => {
+    expect(() => queryInput.parse({ where: { status: {} } })).toThrow('where filter must include at least one operator');
   });
 
   it('accepts valid case-sensitivity mode values', () => {
