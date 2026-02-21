@@ -145,3 +145,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Tightened map-key validation in `util/schema.ts` so `orderBy`, `cursor`, `include`, and `select` reject leading/trailing whitespace in field names (in addition to empty keys).
 - Added regression coverage in `test/schema.test.ts` for both parser entry points (`Query.parse` and `getQueryInput(...).parse`).
 - Rationale: padded field names are malformed map envelopes that can parse but fail at downstream lookups; fail-fast parser parity improves protocol reliability.
+
+## 2026-02-21 slot-9 cursor non-empty value parity follow-up
+
+- Added shared cursor-value hardening in `util/schema.ts` so blank-string-only cursor values are rejected (`''`, `'   '`) for both `Query` and `getQueryInput` parser paths.
+- Added parity regressions in `test/schema.test.ts` to lock the behavior and error message in both entry points.
+- Rationale: blank-string cursor values are effectively pagination no-ops and frequently indicate caller serialization bugs; fail-fast keeps cursor intent explicit and avoids downstream lookup ambiguity.

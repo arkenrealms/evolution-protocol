@@ -48,3 +48,5 @@
 - Rationale: padded keys are malformed envelopes that can otherwise pass validation and create brittle downstream map lookups; tests lock strict, deterministic key-shape behavior.
 - Added cursor-value regressions for both parser paths to reject cursor envelopes that contain only nullish values (`undefined`/`null`).
 - Rationale: nullish-only cursor maps are pagination no-ops that can hide caller cursor-construction defects; fail-fast tests keep cursor intent explicit.
+- Added cursor-value regressions for both parser paths to reject blank-string-only cursor values (`''`, `'   '`).
+- Rationale: blank-string cursor payloads are another no-op pagination shape; parity tests ensure both parser entry points fail fast with the same message.

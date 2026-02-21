@@ -162,7 +162,20 @@ const NonEmptyCursorMap = z
   })
   .refine((value) => Object.values(value).some((entry) => entry !== undefined && entry !== null), {
     message: 'cursor must include at least one defined value',
-  });
+  })
+  .refine(
+    (value) =>
+      Object.values(value).some((entry) => {
+        if (entry === undefined || entry === null) {
+          return false;
+        }
+
+        return typeof entry !== 'string' || entry.trim().length > 0;
+      }),
+    {
+      message: 'cursor must include at least one non-empty value',
+    }
+  );
 
 export const Query = z
   .object({

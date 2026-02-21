@@ -121,6 +121,11 @@ describe('util/schema Query pagination and sort envelope validation', () => {
     expect(() => Query.parse({ cursor: { id: null } })).toThrow('cursor must include at least one defined value');
   });
 
+  it('rejects cursor maps with only blank string values', () => {
+    expect(() => Query.parse({ cursor: { id: '' } })).toThrow('cursor must include at least one non-empty value');
+    expect(() => Query.parse({ cursor: { id: '   ' } })).toThrow('cursor must include at least one non-empty value');
+  });
+
   it('rejects blank orderBy field names', () => {
     expect(() => Query.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
     expect(() => Query.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty and trimmed');
@@ -222,6 +227,11 @@ describe('util/schema getQueryInput pagination aliases', () => {
   it('rejects cursor maps without defined values', () => {
     expect(() => queryInput.parse({ cursor: { id: undefined } })).toThrow('cursor must include at least one defined value');
     expect(() => queryInput.parse({ cursor: { id: null } })).toThrow('cursor must include at least one defined value');
+  });
+
+  it('rejects cursor maps with only blank string values', () => {
+    expect(() => queryInput.parse({ cursor: { id: '' } })).toThrow('cursor must include at least one non-empty value');
+    expect(() => queryInput.parse({ cursor: { id: '   ' } })).toThrow('cursor must include at least one non-empty value');
   });
 
   it('rejects blank orderBy field names', () => {

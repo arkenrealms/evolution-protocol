@@ -65,3 +65,9 @@
 
 - Added a shared cursor-value refinement in `util/schema.ts` so cursor maps must include at least one non-nullish value (`!== undefined` and `!== null`) for both `Query` and `getQueryInput` parser paths.
 - Rationale: envelopes like `{ cursor: { id: undefined } }` or `{ cursor: { id: null } }` are silent no-op pagination shapes that previously passed schema validation and could mask caller-side cursor construction bugs.
+
+## 2026-02-21 slot-9 cursor non-empty string guard follow-up
+
+- Added a second shared cursor-value refinement in `util/schema.ts` so cursor maps must include at least one non-empty value (blank strings like `''` or `'   '` no longer satisfy cursor validation).
+- Applied uniformly to both parser entry points (`Query` and `getQueryInput`) to keep pagination-envelope behavior aligned.
+- Rationale: blank-string cursor values are effectively no-op cursor payloads that can silently pass shape checks while breaking downstream pagination lookup intent; fail-fast validation surfaces caller bugs earlier.

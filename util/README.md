@@ -21,3 +21,4 @@ Shared schema helpers for protocol routers.
 - Query envelopes now reject sending `include` and `select` together; callers must choose one projection mode per request.
 - Field-level `where` operator objects must include at least one operator key (for example `{ equals: ... }`); empty objects like `{ status: {} }` are rejected to avoid silent no-op filters.
 - `cursor` maps now reject empty objects, blank/untrimmed field names, and all-nullish value maps in both `Query` and `getQueryInput`, preventing ambiguous/no-op cursor envelopes.
+- `cursor` maps also reject blank-string-only values (e.g. `{ id: '' }`), requiring at least one non-empty cursor value to avoid no-op pagination envelopes.
