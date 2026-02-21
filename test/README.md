@@ -20,3 +20,4 @@ Current coverage includes:
 - `cursor` validation parity across both `Query` and `getQueryInput` (empty maps rejected; blank/whitespace field names rejected; all-nullish cursor maps rejected; blank-string-only cursor values rejected).
 - Projection exclusivity parity (`include` + `select` together is rejected in both parser paths).
 - Field-level `where` filter validation parity (empty operator objects like `{ status: {} }` are rejected in both parser paths).
+- Field-level `in` / `notIn` operator-array quality guards in both parser paths (arrays with only nullish/blank entries are rejected; arrays with at least one concrete value continue to pass).

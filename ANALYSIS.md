@@ -151,3 +151,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Added shared cursor-value hardening in `util/schema.ts` so blank-string-only cursor values are rejected (`''`, `'   '`) for both `Query` and `getQueryInput` parser paths.
 - Added parity regressions in `test/schema.test.ts` to lock the behavior and error message in both entry points.
 - Rationale: blank-string cursor values are effectively pagination no-ops and frequently indicate caller serialization bugs; fail-fast keeps cursor intent explicit and avoids downstream lookup ambiguity.
+
+## 2026-02-21 slot-9 in/notIn concrete-value parity follow-up
+
+- Hardened shared `QueryFilterOperators` in `util/schema.ts` so `in`/`notIn` arrays must include at least one concrete value (not only `undefined`, `null`, or blank strings).
+- Added parity regressions in `test/schema.test.ts` for both parser entry paths to ensure nullish/blank-only arrays fail while arrays with at least one concrete value pass.
+- Rationale: non-empty-but-nullish operator arrays still behave like no-op filters; explicit rejection reduces silent broad-query risk and keeps caller filter intent strict.

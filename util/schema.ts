@@ -72,6 +72,9 @@ export const Entity = z
 
 export type Entity = zod.infer<typeof Entity>;
 
+const hasAtLeastOneConcreteValue = (values: unknown[]) =>
+  values.some((entry) => entry !== undefined && entry !== null && (typeof entry !== 'string' || entry.trim().length > 0));
+
 const QueryFilterOperators = z.preprocess(
   (input) => {
     if (input === undefined) {
@@ -88,8 +91,16 @@ const QueryFilterOperators = z.preprocess(
     .object({
       equals: z.any().optional(),
       not: z.any().optional(),
-      in: z.array(z.any()).nonempty('in operator must include at least one value').optional(),
-      notIn: z.array(z.any()).nonempty('notIn operator must include at least one value').optional(),
+      in: z
+        .array(z.any())
+        .nonempty('in operator must include at least one value')
+        .refine((values) => hasAtLeastOneConcreteValue(values), 'in operator must include at least one non-empty value')
+        .optional(),
+      notIn: z
+        .array(z.any())
+        .nonempty('notIn operator must include at least one value')
+        .refine((values) => hasAtLeastOneConcreteValue(values), 'notIn operator must include at least one non-empty value')
+        .optional(),
       lt: z.any().optional(),
       lte: z.any().optional(),
       gt: z.any().optional(),
@@ -313,8 +324,16 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
       .object({
         equals: value.optional(),
         not: zod.union([value, zod.lazy(() => opsSchema)]).optional(),
-        in: zod.array(value).nonempty('in operator must include at least one value').optional(),
-        notIn: zod.array(value).nonempty('notIn operator must include at least one value').optional(),
+        in: zod
+          .array(value)
+          .nonempty('in operator must include at least one value')
+          .refine((values) => hasAtLeastOneConcreteValue(values), 'in operator must include at least one non-empty value')
+          .optional(),
+        notIn: zod
+          .array(value)
+          .nonempty('notIn operator must include at least one value')
+          .refine((values) => hasAtLeastOneConcreteValue(values), 'notIn operator must include at least one non-empty value')
+          .optional(),
         lt: value.optional(),
         lte: value.optional(),
         gt: value.optional(),

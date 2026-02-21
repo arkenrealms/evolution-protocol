@@ -54,3 +54,5 @@
   - empty arrays are rejected (`in: []`, `notIn: []`),
   - non-empty arrays continue to pass.
 - Rationale: empty inclusion/exclusion arrays are malformed no-op filters that can hide caller query-construction bugs; parity coverage locks fail-fast behavior consistently across `Query.parse` and `getQueryInput(...).parse`.
+- Added follow-up `in`/`notIn` regressions for both parser paths so arrays containing only nullish/blank values are rejected, while mixed arrays with at least one concrete value remain valid.
+- Rationale: nullish/blank-only operator arrays are still effectively no-op filters; this parity test closes a reliability gap where syntactically non-empty arrays could silently carry no filter intent.

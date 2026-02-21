@@ -82,6 +82,21 @@ describe('util/schema Query logical-operator normalization', () => {
     expect(() => Query.parse({ where: { status: { in: [] } } })).toThrow('in operator must include at least one value');
     expect(() => Query.parse({ where: { status: { notIn: [] } } })).toThrow('notIn operator must include at least one value');
   });
+
+  it('rejects `in` and `notIn` arrays with only nullish/blank entries', () => {
+    expect(() => Query.parse({ where: { status: { in: [undefined, null, '   '] } } })).toThrow(
+      'in operator must include at least one non-empty value'
+    );
+    expect(() => Query.parse({ where: { status: { notIn: [null, ''] } } })).toThrow(
+      'notIn operator must include at least one non-empty value'
+    );
+  });
+
+  it('accepts `in`/`notIn` arrays when at least one concrete value is present', () => {
+    const parsed = Query.parse({ where: { status: { in: [null, 'Active'], notIn: [undefined, 'Archived'] } } });
+
+    expect(parsed).toMatchObject({ where: { status: { in: [null, 'Active'], notIn: [undefined, 'Archived'] } } });
+  });
 });
 
 
@@ -393,6 +408,15 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
   it('rejects empty `in` and `notIn` operator arrays', () => {
     expect(() => queryInput.parse({ where: { status: { in: [] } } })).toThrow('in operator must include at least one value');
     expect(() => queryInput.parse({ where: { status: { notIn: [] } } })).toThrow('notIn operator must include at least one value');
+  });
+
+  it('rejects `in` and `notIn` arrays with only blank-string entries', () => {
+    expect(() => queryInput.parse({ where: { status: { in: ['', '   '] } } })).toThrow(
+      'in operator must include at least one non-empty value'
+    );
+    expect(() => queryInput.parse({ where: { status: { notIn: ['   ', ''] } } })).toThrow(
+      'notIn operator must include at least one non-empty value'
+    );
   });
 
   it('accepts non-empty `in` and `notIn` operator arrays', () => {

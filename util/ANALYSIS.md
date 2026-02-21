@@ -77,3 +77,9 @@
 - Hardened `QueryFilterOperators` in `util/schema.ts` so `in` and `notIn` require non-empty arrays.
 - Applied once in the shared operator schema so behavior is consistent for both parser entry points (`Query.parse` and `getQueryInput(...).parse`).
 - Rationale: empty `in`/`notIn` arrays are silent no-op or ambiguous filters that usually indicate caller query-builder bugs; fail-fast validation keeps filter intent explicit and prevents accidental broad queries.
+
+## 2026-02-21 slot-9 in/notIn concrete-value guard follow-up
+
+- Added a second shared refinement in `QueryFilterOperators` so `in`/`notIn` arrays must include at least one concrete value (not only `undefined`, `null`, or blank strings).
+- Applied at the shared operator schema level to keep behavior identical for direct `Query.parse(...)` and router-style `getQueryInput(...).parse` callers.
+- Rationale: arrays containing only nullish/blank tokens are still effectively no-op filter payloads; rejecting these envelopes reduces silent query broadening and surfaces caller serialization bugs earlier.
