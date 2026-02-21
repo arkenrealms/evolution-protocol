@@ -111,3 +111,10 @@ Under the source-change test gate, source edits were not retained this run.
 - Added shared projection-mode guard in `util/schema.ts` so envelopes that provide both `include` and `select` now fail validation for both direct `Query.parse(...)` and `getQueryInput(...).parse` paths.
 - Added focused regressions in `test/schema.test.ts` for both parser paths to lock the guard behavior and message.
 - Rationale: mixed projection modes are ambiguous and previously passed through both schemas; explicit rejection prevents precedence ambiguity and keeps request shape intent clear.
+
+## 2026-02-20 slot-9 NOT-array guard follow-up
+
+- Re-ran branch hygiene (`git fetch origin` + merge `origin/main`) before edits on the active direct-repo maintenance branch.
+- Tightened logical filter validation parity in `util/schema.ts` by enforcing non-empty arrays for `where.NOT` (array form) in both `Query` and `getQueryInput` recursive schemas.
+- Added focused regression updates in `test/schema.test.ts` to verify empty `NOT` arrays now fail in both parser paths.
+- Rationale: this closes a no-op logical-envelope gap that still existed for `NOT` after prior `AND`/`OR` hardening.

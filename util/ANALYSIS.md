@@ -31,3 +31,8 @@
 - Rationale: empty logical arrays are semantic no-ops that can hide caller-side query-builder bugs; rejecting them preserves fail-fast behavior and keeps logical filters intentional.
 - Added projection exclusivity guard in both exported `Query` and `getQueryInput`: envelopes that include both `include` and `select` are rejected with a clear validation error.
 - Rationale: mixed projection modes are ambiguous and can cause silent precedence assumptions across call paths; fail-fast keeps projection intent explicit and consistent.
+
+## 2026-02-20 slot-9 NOT-array non-empty parity follow-up
+
+- Hardened logical filter validation so array-form `where.NOT` must be non-empty in both exported `Query` and recursive `createPrismaWhereSchema` handling.
+- Rationale: empty `NOT` arrays are no-op filter envelopes that can hide caller query-builder bugs; rejecting them keeps logical-clause semantics fail-fast and consistent with existing `AND`/`OR` guards.

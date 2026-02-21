@@ -36,3 +36,5 @@
 - Added regressions asserting `where.AND`/`where.OR` reject empty arrays in both parser paths (`Query.parse` and `getQueryInput(...).parse`).
 - Added regressions asserting mixed projection envelopes (`include` + `select`) are rejected in both parser paths with the same explicit error message.
 - Rationale: direct `Query.parse(...)` callers previously had a looser envelope contract than router query inputs, so parity tests now lock the stricter shared behavior and prevent silent no-op projection envelopes, mixed projection ambiguity, and empty logical-clause envelopes.
+- Added parity regressions asserting array-form `where.NOT` rejects empty arrays in both parser paths (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: empty `NOT` arrays are semantic no-ops and often indicate upstream filter-construction defects; explicit validation failure preserves fail-fast behavior.

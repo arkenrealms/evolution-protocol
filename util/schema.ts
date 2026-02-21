@@ -103,7 +103,7 @@ const QueryWhereSchema = z.lazy(() =>
   z.object({
     AND: normalizeLogicalArray(QueryWhereSchema).optional(),
     OR: normalizeLogicalArray(QueryWhereSchema).optional(),
-    NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
+    NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema).nonempty('logical filters must include at least one clause')]).optional(),
     id: QueryFilterOperators.optional(),
     key: QueryFilterOperators.optional(),
     name: QueryFilterOperators.optional(),
@@ -324,7 +324,7 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
   return zod.object({
     AND: normalizeLogicalArray.optional(),
     OR: normalizeLogicalArray.optional(),
-    NOT: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
+    NOT: zod.union([recursiveWhere, zod.array(recursiveWhere).nonempty('logical filters must include at least one clause')]).optional(),
     ...fieldFilters,
   });
 };
