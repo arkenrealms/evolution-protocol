@@ -4,6 +4,22 @@ import { z } from 'zod';
 import { getQueryInput, Query } from '../util/schema';
 
 describe('util/schema Query logical-operator normalization', () => {
+  it('accepts scalar shorthand field filters by normalizing them to equals', () => {
+    const parsed = Query.parse({
+      where: {
+        status: 'Active',
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        status: {
+          equals: 'Active',
+        },
+      },
+    });
+  });
+
   it('normalizes top-level AND single objects to arrays', () => {
     const parsed = Query.parse({
       where: {

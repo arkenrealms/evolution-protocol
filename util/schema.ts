@@ -72,20 +72,33 @@ export const Entity = z
 
 export type Entity = zod.infer<typeof Entity>;
 
-const QueryFilterOperators = z.object({
-  equals: z.any().optional(),
-  not: z.any().optional(),
-  in: z.array(z.any()).optional(),
-  notIn: z.array(z.any()).optional(),
-  lt: z.any().optional(),
-  lte: z.any().optional(),
-  gt: z.any().optional(),
-  gte: z.any().optional(),
-  contains: z.string().optional(),
-  startsWith: z.string().optional(),
-  endsWith: z.string().optional(),
-  mode: z.enum(['default', 'insensitive']).optional(),
-});
+const QueryFilterOperators = z.preprocess(
+  (input) => {
+    if (input === undefined) {
+      return input;
+    }
+
+    if (typeof input === 'object' && input !== null && !Array.isArray(input)) {
+      return input;
+    }
+
+    return { equals: input };
+  },
+  z.object({
+    equals: z.any().optional(),
+    not: z.any().optional(),
+    in: z.array(z.any()).optional(),
+    notIn: z.array(z.any()).optional(),
+    lt: z.any().optional(),
+    lte: z.any().optional(),
+    gt: z.any().optional(),
+    gte: z.any().optional(),
+    contains: z.string().optional(),
+    startsWith: z.string().optional(),
+    endsWith: z.string().optional(),
+    mode: z.enum(['default', 'insensitive']).optional(),
+  })
+);
 
 const normalizeLogicalArray = (schema: zod.ZodTypeAny) =>
   z.preprocess(

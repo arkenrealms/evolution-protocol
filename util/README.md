@@ -9,6 +9,7 @@ Shared schema helpers for protocol routers.
 - Prisma-style `where.<field>.not` now supports both scalar values and nested operator objects (e.g. `{ not: { in: [...] } }`) for compatibility with richer filter expressions.
 - Top-level `where.NOT` now accepts either a single filter object or an array of filter objects, matching Prisma-style semantics.
 - Top-level `where.AND` and `where.OR` accept either a single object or an array; single objects are normalized to arrays for safer downstream handling (both in `getQueryInput` and the exported `Query` schema).
+- Exported `Query` now accepts scalar shorthand field filters (for example `where: { status: "Active" }`) and normalizes them to `{ equals: ... }`, matching `getQueryInput` shorthand behavior.
 - Top-level logical arrays (`where.AND`/`where.OR`/`where.NOT` array form) must be non-empty; empty arrays are rejected as invalid no-op filter envelopes.
 - Prisma-style string filter `mode` is now restricted to supported values (`default` or `insensitive`) to prevent silently accepting invalid case-sensitivity flags.
 - Query envelopes now reject empty `orderBy` objects to avoid ambiguous no-op sort clauses (`{}`), while preserving non-empty map support.

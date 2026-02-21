@@ -36,3 +36,9 @@
 
 - Hardened logical filter validation so array-form `where.NOT` must be non-empty in both exported `Query` and recursive `createPrismaWhereSchema` handling.
 - Rationale: empty `NOT` arrays are no-op filter envelopes that can hide caller query-builder bugs; rejecting them keeps logical-clause semantics fail-fast and consistent with existing `AND`/`OR` guards.
+
+## 2026-02-20 slot-9 scalar where-shorthand parity follow-up
+
+- Extended exported `Query` field-filter parsing so scalar shorthand values are accepted and normalized to `{ equals: ... }`.
+- Example: `Query.parse({ where: { status: 'Active' } })` now yields `where.status.equals === 'Active'`.
+- Rationale: `getQueryInput` already supported this shorthand through `createPrismaWhereSchema`; bringing the same behavior to direct `Query.parse(...)` closes another caller-path mismatch and reduces avoidable validation friction.

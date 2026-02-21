@@ -11,6 +11,7 @@ Current coverage includes:
 - Top-level `where.AND`/`where.OR` single-object normalization to array form.
 - Top-level logical-array guard behavior (`where.AND`/`where.OR`/array-form `where.NOT` reject empty arrays) across both `Query` and `getQueryInput`.
 - Exported `Query` schema logical-operator normalization parity (`AND`/`OR` object -> array).
+- Exported `Query` scalar where-filter shorthand parity (`where.<field>: value` normalizes to `{ equals: value }`).
 - Exported `Query` pagination coercion/validation parity (`skip`/`take` numeric-string coercion; non-negative finite integer constraints).
 - Exported `Query` pagination alias parity (`limit` accepted and normalized to `take` when `take` is absent; explicit `take` wins when both are supplied).
 - Query string-filter mode validation (`default`/`insensitive` accepted; invalid modes rejected).

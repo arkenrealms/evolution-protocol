@@ -112,6 +112,12 @@ Under the source-change test gate, source edits were not retained this run.
 - Added focused regressions in `test/schema.test.ts` for both parser paths to lock the guard behavior and message.
 - Rationale: mixed projection modes are ambiguous and previously passed through both schemas; explicit rejection prevents precedence ambiguity and keeps request shape intent clear.
 
+## 2026-02-20 slot-9 scalar where-shorthand parity follow-up
+
+- Updated exported `Query` filtering behavior so scalar field filters (for example `where: { status: 'Active' }`) are normalized to `{ equals: ... }`.
+- Added a direct `Query.parse(...)` regression in `test/schema.test.ts` to lock this normalization behavior.
+- Rationale: `getQueryInput` already supported scalar shorthand through `createPrismaWhereSchema`; aligning direct `Query` parsing closes a remaining query-shape mismatch and improves protocol caller compatibility.
+
 ## 2026-02-20 slot-9 NOT-array guard follow-up
 
 - Re-ran branch hygiene (`git fetch origin` + merge `origin/main`) before edits on the active direct-repo maintenance branch.
