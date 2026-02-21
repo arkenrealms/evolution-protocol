@@ -101,6 +101,12 @@ describe('util/schema Query pagination and sort envelope validation', () => {
     expect(() => Query.parse({ include: { profile: false } })).toThrow('map must include at least one true field');
     expect(() => Query.parse({ select: { id: false, status: false } })).toThrow('map must include at least one true field');
   });
+
+  it('rejects combining include and select in the same envelope', () => {
+    expect(() => Query.parse({ include: { profile: true }, select: { id: true } })).toThrow(
+      'include and select cannot be combined'
+    );
+  });
 });
 
 describe('util/schema getQueryInput pagination aliases', () => {
@@ -170,6 +176,12 @@ describe('util/schema getQueryInput pagination aliases', () => {
   it('rejects include/select maps with only false values', () => {
     expect(() => queryInput.parse({ include: { profile: false } })).toThrow('map must include at least one true field');
     expect(() => queryInput.parse({ select: { id: false, status: false } })).toThrow('map must include at least one true field');
+  });
+
+  it('rejects combining include and select in the same envelope', () => {
+    expect(() => queryInput.parse({ include: { profile: true }, select: { id: true } })).toThrow(
+      'include and select cannot be combined'
+    );
   });
 });
 

@@ -29,3 +29,5 @@
 - Rationale: all-false projection envelopes are effectively no-op/misconfigured and usually indicate inverted caller logic; rejecting them avoids silent data-shape surprises and keeps projection intent explicit.
 - Added non-empty logical-clause enforcement for top-level `where.AND`/`where.OR` arrays in both exported `Query` and recursive `createPrismaWhereSchema` paths.
 - Rationale: empty logical arrays are semantic no-ops that can hide caller-side query-builder bugs; rejecting them preserves fail-fast behavior and keeps logical filters intentional.
+- Added projection exclusivity guard in both exported `Query` and `getQueryInput`: envelopes that include both `include` and `select` are rejected with a clear validation error.
+- Rationale: mixed projection modes are ambiguous and can cause silent precedence assumptions across call paths; fail-fast keeps projection intent explicit and consistent.

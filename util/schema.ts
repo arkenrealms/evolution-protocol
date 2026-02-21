@@ -153,6 +153,15 @@ export const Query = z
     include: NonEmptyBooleanMap.optional(),
     select: NonEmptyBooleanMap.optional(),
   })
+  .superRefine((query, ctx) => {
+    if (query.include !== undefined && query.select !== undefined) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        message: 'include and select cannot be combined',
+        path: ['select'],
+      });
+    }
+  })
   .transform((query) => {
     if (query.limit !== undefined && query.take === undefined) {
       return { ...query, take: query.limit };
@@ -374,6 +383,15 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       select: NonEmptyBooleanMap.optional(),
     })
     .partial()
+    .superRefine((query, ctx) => {
+      if (query.include !== undefined && query.select !== undefined) {
+        ctx.addIssue({
+          code: zod.ZodIssueCode.custom,
+          message: 'include and select cannot be combined',
+          path: ['select'],
+        });
+      }
+    })
     .transform((query) => {
       if (query.take !== undefined && query.limit === undefined) {
         return { ...query, limit: query.take };

@@ -105,3 +105,9 @@ Under the source-change test gate, source edits were not retained this run.
 - Hardened logical filter validation by requiring non-empty `where.AND`/`where.OR` arrays in both exported `Query` and recursive `createPrismaWhereSchema` handling.
 - Added parity regressions in `test/schema.test.ts` to verify empty logical arrays are rejected for both direct `Query.parse(...)` and `getQueryInput(...).parse` paths.
 - Rationale: empty logical arrays are no-op filters that often mask upstream query-builder bugs; failing fast avoids silently degraded filtering semantics.
+
+## 2026-02-20 slot-9 projection-mode exclusivity guard
+
+- Added shared projection-mode guard in `util/schema.ts` so envelopes that provide both `include` and `select` now fail validation for both direct `Query.parse(...)` and `getQueryInput(...).parse` paths.
+- Added focused regressions in `test/schema.test.ts` for both parser paths to lock the guard behavior and message.
+- Rationale: mixed projection modes are ambiguous and previously passed through both schemas; explicit rejection prevents precedence ambiguity and keeps request shape intent clear.

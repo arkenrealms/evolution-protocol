@@ -34,4 +34,5 @@
 - Added parity regressions for `include`/`select` maps across both `Query` and `getQueryInput` (empty maps and blank field names now rejected consistently).
 - Added regressions asserting `include`/`select` maps with only `false` values are rejected in both parser paths.
 - Added regressions asserting `where.AND`/`where.OR` reject empty arrays in both parser paths (`Query.parse` and `getQueryInput(...).parse`).
-- Rationale: direct `Query.parse(...)` callers previously had a looser envelope contract than router query inputs, so parity tests now lock the stricter shared behavior and prevent silent no-op projection envelopes and empty logical-clause envelopes.
+- Added regressions asserting mixed projection envelopes (`include` + `select`) are rejected in both parser paths with the same explicit error message.
+- Rationale: direct `Query.parse(...)` callers previously had a looser envelope contract than router query inputs, so parity tests now lock the stricter shared behavior and prevent silent no-op projection envelopes, mixed projection ambiguity, and empty logical-clause envelopes.
