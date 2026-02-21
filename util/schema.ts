@@ -151,12 +151,21 @@ const NonEmptyBooleanMap = z
     message: 'map must include at least one true field',
   });
 
+const NonEmptyCursorMap = z
+  .record(z.any())
+  .refine((value) => Object.keys(value).length > 0, {
+    message: 'cursor must include at least one field',
+  })
+  .refine((value) => hasNonBlankKeys(value), {
+    message: 'cursor field names must be non-empty',
+  });
+
 export const Query = z
   .object({
     skip: QueryPaginationValue.default(0).optional(),
     take: QueryPaginationValue.default(10).optional(),
     limit: QueryPaginationValue.optional(),
-    cursor: z.record(z.any()).optional(),
+    cursor: NonEmptyCursorMap.optional(),
     where: QueryWhereSchema.optional(),
     orderBy: z
       .record(z.enum(['asc', 'desc']))
@@ -385,7 +394,7 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       skip: numericQueryValue.default(0).optional(),
       limit: numericQueryValue.default(10).optional(),
       take: numericQueryValue.optional(),
-      cursor: zod.record(zod.any()).optional(),
+      cursor: NonEmptyCursorMap.optional(),
 
       // only valid for object schemas
       where: isObjectSchema ? whereSchema.optional() : zod.undefined().optional(),

@@ -48,3 +48,9 @@
 - Added fail-fast validation so field-level `where` operator objects must include at least one operator in both exported `Query` and recursive `createPrismaWhereSchema` paths.
 - Example now rejected: `{ where: { status: {} } }`.
 - Rationale: empty operator objects are no-op filters that can silently hide caller query-construction bugs; explicit rejection improves reliability and keeps both parser entry points behaviorally aligned.
+
+## 2026-02-21 slot-9 cursor-envelope guard follow-up
+
+- Added shared `cursor` map validation in `util/schema.ts` and applied it to both exported `Query` and `getQueryInput`.
+- Validation now rejects empty cursor objects and blank/whitespace cursor field names.
+- Rationale: `{ cursor: {} }` and blank cursor keys are ambiguous/no-op cursor envelopes that can mask broken pagination callers; fail-fast keeps cursor intent explicit across both parser entry points.

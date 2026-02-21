@@ -130,3 +130,12 @@ Under the source-change test gate, source edits were not retained this run.
 - Added shared fail-fast validation for field-level filter operator objects so empty objects are rejected in both parser paths (`Query` and `getQueryInput` via `createPrismaWhereSchema`).
 - Added focused regressions in `test/schema.test.ts` for `where: { status: {} }` on both parser entry points.
 - Rationale: empty operator objects are silent no-op filters that usually indicate broken caller query-builder output; rejecting them early improves reliability and debugging clarity.
+
+## 2026-02-21 slot-9 cursor-envelope validation parity
+
+- Re-ran direct-repo branch hygiene (`git fetch origin` + merge `origin/main`) before edits and continued on the active maintenance branch.
+- Hardened query envelope validation in `util/schema.ts` by adding shared cursor-map guards used by both `Query` and `getQueryInput`.
+  - `cursor` now rejects empty maps.
+  - `cursor` now rejects blank/whitespace field names.
+- Added parity regressions in `test/schema.test.ts` for both parser paths.
+- Rationale: malformed cursor envelopes are pagination no-ops that can hide caller bugs; strict parity keeps direct schema and router input behavior aligned.

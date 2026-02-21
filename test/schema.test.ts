@@ -103,6 +103,15 @@ describe('util/schema Query pagination and sort envelope validation', () => {
     expect(() => Query.parse({ orderBy: {} })).toThrow('orderBy must include at least one field');
   });
 
+  it('rejects empty cursor objects', () => {
+    expect(() => Query.parse({ cursor: {} })).toThrow('cursor must include at least one field');
+  });
+
+  it('rejects blank cursor field names', () => {
+    expect(() => Query.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty');
+    expect(() => Query.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty');
+  });
+
   it('rejects blank orderBy field names', () => {
     expect(() => Query.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
     expect(() => Query.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
@@ -177,6 +186,15 @@ describe('util/schema getQueryInput pagination aliases', () => {
     const parsed = queryInput.parse({ orderBy: { createdDate: 'desc' } });
 
     expect(parsed).toMatchObject({ orderBy: { createdDate: 'desc' } });
+  });
+
+  it('rejects empty cursor objects', () => {
+    expect(() => queryInput.parse({ cursor: {} })).toThrow('cursor must include at least one field');
+  });
+
+  it('rejects blank cursor field names', () => {
+    expect(() => queryInput.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty');
+    expect(() => queryInput.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty');
   });
 
   it('rejects blank orderBy field names', () => {
