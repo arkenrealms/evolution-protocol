@@ -1,7 +1,186 @@
 // arken/packages/evolution/packages/protocol/test/schema.test.ts
 //
 import { z } from 'zod';
-import { getQueryInput } from '../util/schema';
+import { getQueryInput, Query } from '../util/schema';
+
+describe('util/schema Query logical-operator normalization', () => {
+  it('accepts scalar shorthand field filters by normalizing them to equals', () => {
+    const parsed = Query.parse({
+      where: {
+        status: 'Active',
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        status: {
+          equals: 'Active',
+        },
+      },
+    });
+  });
+
+  it('normalizes top-level AND single objects to arrays', () => {
+    const parsed = Query.parse({
+      where: {
+        AND: {
+          status: {
+            equals: 'Active',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        AND: [
+          {
+            status: {
+              equals: 'Active',
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('normalizes top-level OR single objects to arrays', () => {
+    const parsed = Query.parse({
+      where: {
+        OR: {
+          status: {
+            equals: 'Pending',
+          },
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        OR: [
+          {
+            status: {
+              equals: 'Pending',
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('rejects empty top-level logical arrays', () => {
+    expect(() => Query.parse({ where: { AND: [] } })).toThrow('logical filters must include at least one clause');
+    expect(() => Query.parse({ where: { OR: [] } })).toThrow('logical filters must include at least one clause');
+    expect(() => Query.parse({ where: { NOT: [] } })).toThrow('logical filters must include at least one clause');
+  });
+
+  it('rejects empty where field-filter objects', () => {
+    expect(() => Query.parse({ where: { status: {} } })).toThrow('where filter must include at least one operator');
+  });
+
+  it('rejects empty `in` and `notIn` operator arrays', () => {
+    expect(() => Query.parse({ where: { status: { in: [] } } })).toThrow('in operator must include at least one value');
+    expect(() => Query.parse({ where: { status: { notIn: [] } } })).toThrow('notIn operator must include at least one value');
+  });
+
+  it('rejects `in` and `notIn` arrays with only nullish/blank entries', () => {
+    expect(() => Query.parse({ where: { status: { in: [undefined, null, '   '] } } })).toThrow(
+      'in operator must include at least one non-empty value'
+    );
+    expect(() => Query.parse({ where: { status: { notIn: [null, ''] } } })).toThrow(
+      'notIn operator must include at least one non-empty value'
+    );
+  });
+
+  it('accepts `in`/`notIn` arrays when at least one concrete value is present', () => {
+    const parsed = Query.parse({ where: { status: { in: [null, 'Active'], notIn: [undefined, 'Archived'] } } });
+
+    expect(parsed).toMatchObject({ where: { status: { in: [null, 'Active'], notIn: [undefined, 'Archived'] } } });
+  });
+});
+
+
+describe('util/schema Query pagination and sort envelope validation', () => {
+  it('coerces numeric string pagination values', () => {
+    const parsed = Query.parse({ skip: '2', take: '5' });
+
+    expect(parsed).toMatchObject({ skip: 2, take: 5 });
+  });
+
+  it('maps limit to take when take is not provided', () => {
+    const parsed = Query.parse({ limit: '4', skip: '1' });
+
+    expect(parsed).toMatchObject({ skip: 1, limit: 4, take: 4 });
+  });
+
+  it('keeps explicit take when both limit and take are provided', () => {
+    const parsed = Query.parse({ limit: '4', take: '7' });
+
+    expect(parsed).toMatchObject({ limit: 4, take: 7 });
+  });
+
+  it('rejects empty orderBy objects', () => {
+    expect(() => Query.parse({ orderBy: {} })).toThrow('orderBy must include at least one field');
+  });
+
+  it('rejects empty cursor objects', () => {
+    expect(() => Query.parse({ cursor: {} })).toThrow('cursor must include at least one field');
+  });
+
+  it('rejects blank cursor field names', () => {
+    expect(() => Query.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+    expect(() => Query.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed cursor field names', () => {
+    expect(() => Query.parse({ cursor: { ' id ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+  });
+
+  it('rejects cursor maps without defined values', () => {
+    expect(() => Query.parse({ cursor: { id: undefined } })).toThrow('cursor must include at least one defined value');
+    expect(() => Query.parse({ cursor: { id: null } })).toThrow('cursor must include at least one defined value');
+  });
+
+  it('rejects cursor maps with only blank string values', () => {
+    expect(() => Query.parse({ cursor: { id: '' } })).toThrow('cursor must include at least one non-empty value');
+    expect(() => Query.parse({ cursor: { id: '   ' } })).toThrow('cursor must include at least one non-empty value');
+  });
+
+  it('rejects blank orderBy field names', () => {
+    expect(() => Query.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+    expect(() => Query.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed orderBy field names', () => {
+    expect(() => Query.parse({ orderBy: { ' status ': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+  });
+
+  it('rejects empty include/select maps', () => {
+    expect(() => Query.parse({ include: {} })).toThrow('map must include at least one field');
+    expect(() => Query.parse({ select: {} })).toThrow('map must include at least one field');
+  });
+
+  it('rejects blank include/select field names', () => {
+    expect(() => Query.parse({ include: { '': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => Query.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed include/select field names', () => {
+    expect(() => Query.parse({ include: { ' profile ': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => Query.parse({ select: { ' id ': true } })).toThrow('map field names must be non-empty and trimmed');
+  });
+
+  it('rejects include/select maps with only false values', () => {
+    expect(() => Query.parse({ include: { profile: false } })).toThrow('map must include at least one true field');
+    expect(() => Query.parse({ select: { id: false, status: false } })).toThrow('map must include at least one true field');
+  });
+
+  it('rejects combining include and select in the same envelope', () => {
+    expect(() => Query.parse({ include: { profile: true }, select: { id: true } })).toThrow(
+      'include and select cannot be combined'
+    );
+  });
+});
 
 describe('util/schema getQueryInput pagination aliases', () => {
   const queryInput = getQueryInput(
@@ -52,9 +231,62 @@ describe('util/schema getQueryInput pagination aliases', () => {
     expect(parsed).toMatchObject({ orderBy: { createdDate: 'desc' } });
   });
 
+  it('rejects empty cursor objects', () => {
+    expect(() => queryInput.parse({ cursor: {} })).toThrow('cursor must include at least one field');
+  });
+
+  it('rejects blank cursor field names', () => {
+    expect(() => queryInput.parse({ cursor: { '': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ cursor: { '   ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed cursor field names', () => {
+    expect(() => queryInput.parse({ cursor: { ' id ': 'abc' } })).toThrow('cursor field names must be non-empty and trimmed');
+  });
+
+  it('rejects cursor maps without defined values', () => {
+    expect(() => queryInput.parse({ cursor: { id: undefined } })).toThrow('cursor must include at least one defined value');
+    expect(() => queryInput.parse({ cursor: { id: null } })).toThrow('cursor must include at least one defined value');
+  });
+
+  it('rejects cursor maps with only blank string values', () => {
+    expect(() => queryInput.parse({ cursor: { id: '' } })).toThrow('cursor must include at least one non-empty value');
+    expect(() => queryInput.parse({ cursor: { id: '   ' } })).toThrow('cursor must include at least one non-empty value');
+  });
+
   it('rejects blank orderBy field names', () => {
-    expect(() => queryInput.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty');
-    expect(() => queryInput.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty');
+    expect(() => queryInput.parse({ orderBy: { '': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ orderBy: { '   ': 'desc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed orderBy field names', () => {
+    expect(() => queryInput.parse({ orderBy: { ' status ': 'asc' } })).toThrow('orderBy field names must be non-empty and trimmed');
+  });
+
+  it('rejects empty include/select maps', () => {
+    expect(() => queryInput.parse({ include: {} })).toThrow('map must include at least one field');
+    expect(() => queryInput.parse({ select: {} })).toThrow('map must include at least one field');
+  });
+
+  it('rejects blank include/select field names', () => {
+    expect(() => queryInput.parse({ include: { '': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ select: { '   ': true } })).toThrow('map field names must be non-empty and trimmed');
+  });
+
+  it('rejects untrimmed include/select field names', () => {
+    expect(() => queryInput.parse({ include: { ' profile ': true } })).toThrow('map field names must be non-empty and trimmed');
+    expect(() => queryInput.parse({ select: { ' id ': true } })).toThrow('map field names must be non-empty and trimmed');
+  });
+
+  it('rejects include/select maps with only false values', () => {
+    expect(() => queryInput.parse({ include: { profile: false } })).toThrow('map must include at least one true field');
+    expect(() => queryInput.parse({ select: { id: false, status: false } })).toThrow('map must include at least one true field');
+  });
+
+  it('rejects combining include and select in the same envelope', () => {
+    expect(() => queryInput.parse({ include: { profile: true }, select: { id: true } })).toThrow(
+      'include and select cannot be combined'
+    );
   });
 });
 
@@ -159,6 +391,50 @@ describe('util/schema getQueryInput where not-operator compatibility', () => {
             },
           },
         ],
+      },
+    });
+  });
+
+  it('rejects empty top-level logical arrays', () => {
+    expect(() => queryInput.parse({ where: { AND: [] } })).toThrow('logical filters must include at least one clause');
+    expect(() => queryInput.parse({ where: { OR: [] } })).toThrow('logical filters must include at least one clause');
+    expect(() => queryInput.parse({ where: { NOT: [] } })).toThrow('logical filters must include at least one clause');
+  });
+
+  it('rejects empty where field-filter objects', () => {
+    expect(() => queryInput.parse({ where: { status: {} } })).toThrow('where filter must include at least one operator');
+  });
+
+  it('rejects empty `in` and `notIn` operator arrays', () => {
+    expect(() => queryInput.parse({ where: { status: { in: [] } } })).toThrow('in operator must include at least one value');
+    expect(() => queryInput.parse({ where: { status: { notIn: [] } } })).toThrow('notIn operator must include at least one value');
+  });
+
+  it('rejects `in` and `notIn` arrays with only blank-string entries', () => {
+    expect(() => queryInput.parse({ where: { status: { in: ['', '   '] } } })).toThrow(
+      'in operator must include at least one non-empty value'
+    );
+    expect(() => queryInput.parse({ where: { status: { notIn: ['   ', ''] } } })).toThrow(
+      'notIn operator must include at least one non-empty value'
+    );
+  });
+
+  it('accepts non-empty `in` and `notIn` operator arrays', () => {
+    const parsed = queryInput.parse({
+      where: {
+        status: {
+          in: ['Active', 'Pending'],
+          notIn: ['Archived'],
+        },
+      },
+    });
+
+    expect(parsed).toMatchObject({
+      where: {
+        status: {
+          in: ['Active', 'Pending'],
+          notIn: ['Archived'],
+        },
       },
     });
   });

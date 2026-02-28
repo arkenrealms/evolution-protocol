@@ -18,6 +18,41 @@
 - Added normalization coverage for top-level logical operators:
   - accepts `where.AND` as a single object and normalizes to array form.
   - accepts `where.OR` as a single object and normalizes to array form.
+- Added parity tests for the exported `Query` schema so object-form `AND`/`OR` behavior matches `getQueryInput` behavior.
 - Added `orderBy` envelope coverage to ensure empty sort maps are rejected and non-empty sort maps continue to pass.
 - Expanded `orderBy` coverage to reject blank/whitespace-only field names so malformed sort maps fail fast with an explicit validation error.
 - Test runner wired through repo-defined `npm test` script using Jest (`ts-jest`).
+
+## 2026-02-20
+
+- Added exported `Query` regression coverage for numeric-string pagination coercion (`skip`/`take`) and `orderBy` guard behavior.
+- New tests verify parity expectations shared with `getQueryInput`:
+  - rejects empty `orderBy` envelopes,
+  - rejects blank/whitespace `orderBy` keys,
+  - accepts numeric-string pagination by coercing to validated integers,
+  - accepts `limit` alias and normalizes it to `take` when `take` is absent (while preserving explicit `take` precedence).
+- Added parity regressions for `include`/`select` maps across both `Query` and `getQueryInput` (empty maps and blank field names now rejected consistently).
+- Added regressions asserting `include`/`select` maps with only `false` values are rejected in both parser paths.
+- Added regressions asserting `where.AND`/`where.OR` reject empty arrays in both parser paths (`Query.parse` and `getQueryInput(...).parse`).
+- Added regressions asserting mixed projection envelopes (`include` + `select`) are rejected in both parser paths with the same explicit error message.
+- Rationale: direct `Query.parse(...)` callers previously had a looser envelope contract than router query inputs, so parity tests now lock the stricter shared behavior and prevent silent no-op projection envelopes, mixed projection ambiguity, and empty logical-clause envelopes.
+- Added parity regressions asserting array-form `where.NOT` rejects empty arrays in both parser paths (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: empty `NOT` arrays are semantic no-ops and often indicate upstream filter-construction defects; explicit validation failure preserves fail-fast behavior.
+- Added regression coverage that exported `Query` accepts scalar where-filter shorthand (`where: { status: 'Active' }`) and normalizes to `{ equals: ... }`.
+- Rationale: `getQueryInput` already supported scalar shorthand via `createPrismaWhereSchema`; this test locks direct-schema parity and prevents reintroducing caller-path shape drift.
+- Added parity regressions asserting empty field-level where operator objects are rejected in both parser paths (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: `where: { status: {} }` is a no-op envelope that can hide caller query-builder errors; explicit failure keeps filter intent strict and debuggable.
+- Added cursor-envelope parity regressions asserting both parser paths reject empty cursor maps and blank/whitespace cursor field names.
+- Rationale: malformed cursor objects are usually pagination-caller shape bugs; fail-fast tests prevent silent no-op cursor envelopes from reappearing.
+- Added key-whitespace regressions for both parser paths to reject leading/trailing whitespace in `orderBy`, `cursor`, `include`, and `select` field names.
+- Rationale: padded keys are malformed envelopes that can otherwise pass validation and create brittle downstream map lookups; tests lock strict, deterministic key-shape behavior.
+- Added cursor-value regressions for both parser paths to reject cursor envelopes that contain only nullish values (`undefined`/`null`).
+- Rationale: nullish-only cursor maps are pagination no-ops that can hide caller cursor-construction defects; fail-fast tests keep cursor intent explicit.
+- Added cursor-value regressions for both parser paths to reject blank-string-only cursor values (`''`, `'   '`).
+- Rationale: blank-string cursor payloads are another no-op pagination shape; parity tests ensure both parser entry points fail fast with the same message.
+- Added `in`/`notIn` operator regressions for both parser paths:
+  - empty arrays are rejected (`in: []`, `notIn: []`),
+  - non-empty arrays continue to pass.
+- Rationale: empty inclusion/exclusion arrays are malformed no-op filters that can hide caller query-construction bugs; parity coverage locks fail-fast behavior consistently across `Query.parse` and `getQueryInput(...).parse`.
+- Added follow-up `in`/`notIn` regressions for both parser paths so arrays containing only nullish/blank values are rejected, while mixed arrays with at least one concrete value remain valid.
+- Rationale: nullish/blank-only operator arrays are still effectively no-op filters; this parity test closes a reliability gap where syntactically non-empty arrays could silently carry no filter intent.

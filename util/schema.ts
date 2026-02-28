@@ -72,26 +72,66 @@ export const Entity = z
 
 export type Entity = zod.infer<typeof Entity>;
 
-const QueryFilterOperators = z.object({
-  equals: z.any().optional(),
-  not: z.any().optional(),
-  in: z.array(z.any()).optional(),
-  notIn: z.array(z.any()).optional(),
-  lt: z.any().optional(),
-  lte: z.any().optional(),
-  gt: z.any().optional(),
-  gte: z.any().optional(),
-  contains: z.string().optional(),
-  startsWith: z.string().optional(),
-  endsWith: z.string().optional(),
-  mode: z.enum(['default', 'insensitive']).optional(),
-});
+const hasAtLeastOneConcreteValue = (values: unknown[]) =>
+  values.some((entry) => entry !== undefined && entry !== null && (typeof entry !== 'string' || entry.trim().length > 0));
+
+const QueryFilterOperators = z.preprocess(
+  (input) => {
+    if (input === undefined) {
+      return input;
+    }
+
+    if (typeof input === 'object' && input !== null && !Array.isArray(input)) {
+      return input;
+    }
+
+    return { equals: input };
+  },
+  z
+    .object({
+      equals: z.any().optional(),
+      not: z.any().optional(),
+      in: z
+        .array(z.any())
+        .nonempty('in operator must include at least one value')
+        .refine((values) => hasAtLeastOneConcreteValue(values), 'in operator must include at least one non-empty value')
+        .optional(),
+      notIn: z
+        .array(z.any())
+        .nonempty('notIn operator must include at least one value')
+        .refine((values) => hasAtLeastOneConcreteValue(values), 'notIn operator must include at least one non-empty value')
+        .optional(),
+      lt: z.any().optional(),
+      lte: z.any().optional(),
+      gt: z.any().optional(),
+      gte: z.any().optional(),
+      contains: z.string().optional(),
+      startsWith: z.string().optional(),
+      endsWith: z.string().optional(),
+      mode: z.enum(['default', 'insensitive']).optional(),
+    })
+    .refine((value) => Object.keys(value).length > 0, {
+      message: 'where filter must include at least one operator',
+    })
+);
+
+const normalizeLogicalArray = (schema: zod.ZodTypeAny) =>
+  z.preprocess(
+    (input) => {
+      if (input === undefined) {
+        return input;
+      }
+
+      return Array.isArray(input) ? input : [input];
+    },
+    z.array(schema).nonempty('logical filters must include at least one clause')
+  );
 
 const QueryWhereSchema = z.lazy(() =>
   z.object({
-    AND: z.array(QueryWhereSchema).optional(),
-    OR: z.array(QueryWhereSchema).optional(),
-    NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema)]).optional(),
+    AND: normalizeLogicalArray(QueryWhereSchema).optional(),
+    OR: normalizeLogicalArray(QueryWhereSchema).optional(),
+    NOT: z.union([QueryWhereSchema, z.array(QueryWhereSchema).nonempty('logical filters must include at least one clause')]).optional(),
     id: QueryFilterOperators.optional(),
     key: QueryFilterOperators.optional(),
     name: QueryFilterOperators.optional(),
@@ -100,15 +140,89 @@ const QueryWhereSchema = z.lazy(() =>
   })
 );
 
-export const Query = z.object({
-  skip: z.number().default(0).optional(),
-  take: z.number().default(10).optional(),
-  cursor: z.record(z.any()).optional(),
-  where: QueryWhereSchema.optional(),
-  orderBy: z.record(z.enum(['asc', 'desc'])).optional(),
-  include: z.record(z.boolean()).optional(),
-  select: z.record(z.boolean()).optional(),
-});
+const QueryPaginationValue = z.preprocess((value) => {
+  if (typeof value === 'string' && value.trim() !== '') {
+    return Number(value);
+  }
+
+  return value;
+}, z.number().int().nonnegative().finite());
+
+const hasStrictFieldNames = (value: Record<string, unknown>) =>
+  Object.keys(value).every((key) => key.trim().length > 0 && key === key.trim());
+
+const NonEmptyBooleanMap = z
+  .record(z.boolean())
+  .refine((value) => Object.keys(value).length > 0, {
+    message: 'map must include at least one field',
+  })
+  .refine((value) => hasStrictFieldNames(value), {
+    message: 'map field names must be non-empty and trimmed',
+  })
+  .refine((value) => Object.values(value).some((entry) => entry === true), {
+    message: 'map must include at least one true field',
+  });
+
+const NonEmptyCursorMap = z
+  .record(z.any())
+  .refine((value) => Object.keys(value).length > 0, {
+    message: 'cursor must include at least one field',
+  })
+  .refine((value) => hasStrictFieldNames(value), {
+    message: 'cursor field names must be non-empty and trimmed',
+  })
+  .refine((value) => Object.values(value).some((entry) => entry !== undefined && entry !== null), {
+    message: 'cursor must include at least one defined value',
+  })
+  .refine(
+    (value) =>
+      Object.values(value).some((entry) => {
+        if (entry === undefined || entry === null) {
+          return false;
+        }
+
+        return typeof entry !== 'string' || entry.trim().length > 0;
+      }),
+    {
+      message: 'cursor must include at least one non-empty value',
+    }
+  );
+
+export const Query = z
+  .object({
+    skip: QueryPaginationValue.default(0).optional(),
+    take: QueryPaginationValue.default(10).optional(),
+    limit: QueryPaginationValue.optional(),
+    cursor: NonEmptyCursorMap.optional(),
+    where: QueryWhereSchema.optional(),
+    orderBy: z
+      .record(z.enum(['asc', 'desc']))
+      .refine((value) => Object.keys(value).length > 0, {
+        message: 'orderBy must include at least one field',
+      })
+      .refine((value) => hasStrictFieldNames(value), {
+        message: 'orderBy field names must be non-empty and trimmed',
+      })
+      .optional(),
+    include: NonEmptyBooleanMap.optional(),
+    select: NonEmptyBooleanMap.optional(),
+  })
+  .superRefine((query, ctx) => {
+    if (query.include !== undefined && query.select !== undefined) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        message: 'include and select cannot be combined',
+        path: ['select'],
+      });
+    }
+  })
+  .transform((query) => {
+    if (query.limit !== undefined && query.take === undefined) {
+      return { ...query, take: query.limit };
+    }
+
+    return query;
+  });
 
 // // Operators for filtering in a Prisma-like way
 // type PrismaFilterOperators<T extends ZodTypeAny> = zod.ZodObject<
@@ -210,8 +324,16 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
       .object({
         equals: value.optional(),
         not: zod.union([value, zod.lazy(() => opsSchema)]).optional(),
-        in: zod.array(value).optional(),
-        notIn: zod.array(value).optional(),
+        in: zod
+          .array(value)
+          .nonempty('in operator must include at least one value')
+          .refine((values) => hasAtLeastOneConcreteValue(values), 'in operator must include at least one non-empty value')
+          .optional(),
+        notIn: zod
+          .array(value)
+          .nonempty('notIn operator must include at least one value')
+          .refine((values) => hasAtLeastOneConcreteValue(values), 'notIn operator must include at least one non-empty value')
+          .optional(),
         lt: value.optional(),
         lte: value.optional(),
         gt: value.optional(),
@@ -221,7 +343,10 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
         endsWith: zod.string().optional(),
         mode: zod.enum(['default', 'insensitive']).optional(),
       })
-      .partial();
+      .partial()
+      .refine((entry) => Object.keys(entry).length > 0, {
+        message: 'where filter must include at least one operator',
+      });
 
     return zod
       .preprocess((input) => {
@@ -250,18 +375,21 @@ export const createPrismaWhereSchema = <T extends zod.ZodRawShape>(
 
   const recursiveWhere = zod.lazy(() => createPrismaWhereSchema(modelSchema, depth - 1));
 
-  const normalizeLogicalArray = zod.preprocess((input) => {
-    if (input === undefined) {
-      return input;
-    }
+  const normalizeLogicalArray = zod.preprocess(
+    (input) => {
+      if (input === undefined) {
+        return input;
+      }
 
-    return Array.isArray(input) ? input : [input];
-  }, zod.array(recursiveWhere));
+      return Array.isArray(input) ? input : [input];
+    },
+    zod.array(recursiveWhere).nonempty('logical filters must include at least one clause')
+  );
 
   return zod.object({
     AND: normalizeLogicalArray.optional(),
     OR: normalizeLogicalArray.optional(),
-    NOT: zod.union([recursiveWhere, zod.array(recursiveWhere)]).optional(),
+    NOT: zod.union([recursiveWhere, zod.array(recursiveWhere).nonempty('logical filters must include at least one clause')]).optional(),
     ...fieldFilters,
   });
 };
@@ -302,7 +430,7 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
       skip: numericQueryValue.default(0).optional(),
       limit: numericQueryValue.default(10).optional(),
       take: numericQueryValue.optional(),
-      cursor: zod.record(zod.any()).optional(),
+      cursor: NonEmptyCursorMap.optional(),
 
       // only valid for object schemas
       where: isObjectSchema ? whereSchema.optional() : zod.undefined().optional(),
@@ -312,14 +440,23 @@ export const getQueryInput = <S extends zod.ZodTypeAny>(schema: S, options: { pa
         .refine((value) => Object.keys(value).length > 0, {
           message: 'orderBy must include at least one field',
         })
-        .refine((value) => Object.keys(value).every((key) => key.trim().length > 0), {
-          message: 'orderBy field names must be non-empty',
+        .refine((value) => hasStrictFieldNames(value), {
+          message: 'orderBy field names must be non-empty and trimmed',
         })
         .optional(),
-      include: zod.record(zod.boolean()).optional(),
-      select: zod.record(zod.boolean()).optional(),
+      include: NonEmptyBooleanMap.optional(),
+      select: NonEmptyBooleanMap.optional(),
     })
     .partial()
+    .superRefine((query, ctx) => {
+      if (query.include !== undefined && query.select !== undefined) {
+        ctx.addIssue({
+          code: zod.ZodIssueCode.custom,
+          message: 'include and select cannot be combined',
+          path: ['select'],
+        });
+      }
+    })
     .transform((query) => {
       if (query.take !== undefined && query.limit === undefined) {
         return { ...query, limit: query.take };

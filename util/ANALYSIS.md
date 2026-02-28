@@ -11,6 +11,75 @@
 - `createPrismaWhereSchema` now accepts nested Prisma-style `not` operator objects (e.g. `{ not: { in: [...] } }`) in addition to scalar `not` values.
 - `createPrismaWhereSchema` and `QueryWhereSchema` now accept top-level `NOT` as either a single filter object or an array of filter objects for Prisma compatibility.
 - `createPrismaWhereSchema` now also accepts single-object forms for top-level `AND`/`OR` and normalizes them to arrays to reduce client-shape mismatch failures.
+- Exported `Query` schema now mirrors the same top-level `AND`/`OR` normalization behavior so direct `Query.parse(...)` callers and `getQueryInput(...)` callers share consistent logical-filter handling.
 - Hardened `createPrismaWhereSchema` string filter `mode` validation to the Prisma-compatible enum (`default` | `insensitive`) instead of permissive free-form strings.
 - Tightened `getQueryInput` `orderBy` handling: empty objects are now rejected with a clear validation message so callers cannot send ambiguous no-op ordering envelopes.
 - Added field-name validation for `orderBy`: blank or whitespace-only keys are now rejected (`orderBy field names must be non-empty`) to avoid malformed sort envelopes that can bypass downstream assumptions.
+
+## 2026-02-20
+
+- Extended exported `Query` pagination handling to match `getQueryInput` by coercing numeric-string `skip`/`take` values and enforcing finite, non-negative integers.
+- Added exported `Query` `orderBy` guards for empty map rejection and blank-key rejection.
+- Added exported `Query` pagination alias parity by accepting `limit` and normalizing it to `take` when `take` is absent.
+- Added shared include/select map guards (non-empty object + non-blank keys) and applied them to both `Query` and `getQueryInput`.
+- Rationale: these protections already existed in `getQueryInput`; bringing them to `Query` removes a mismatch where direct `Query.parse(...)` consumers could bypass validation expected by router-backed callers.
+- Rationale (limit alias): some callers still send legacy `limit`; normalizing to `take` in `Query.parse(...)` keeps direct-schema consumers aligned with `getQueryInput` and avoids silent pagination drops.
+- Rationale (include/select guards): empty or blank-key projection maps are almost always caller-shape mistakes and can silently degrade fetch paths, so validation now fails fast with explicit errors.
+- Added truthy-projection guard for `include`/`select` maps (`at least one true field` required).
+- Rationale: all-false projection envelopes are effectively no-op/misconfigured and usually indicate inverted caller logic; rejecting them avoids silent data-shape surprises and keeps projection intent explicit.
+- Added non-empty logical-clause enforcement for top-level `where.AND`/`where.OR` arrays in both exported `Query` and recursive `createPrismaWhereSchema` paths.
+- Rationale: empty logical arrays are semantic no-ops that can hide caller-side query-builder bugs; rejecting them preserves fail-fast behavior and keeps logical filters intentional.
+- Added projection exclusivity guard in both exported `Query` and `getQueryInput`: envelopes that include both `include` and `select` are rejected with a clear validation error.
+- Rationale: mixed projection modes are ambiguous and can cause silent precedence assumptions across call paths; fail-fast keeps projection intent explicit and consistent.
+
+## 2026-02-20 slot-9 NOT-array non-empty parity follow-up
+
+- Hardened logical filter validation so array-form `where.NOT` must be non-empty in both exported `Query` and recursive `createPrismaWhereSchema` handling.
+- Rationale: empty `NOT` arrays are no-op filter envelopes that can hide caller query-builder bugs; rejecting them keeps logical-clause semantics fail-fast and consistent with existing `AND`/`OR` guards.
+
+## 2026-02-20 slot-9 scalar where-shorthand parity follow-up
+
+- Extended exported `Query` field-filter parsing so scalar shorthand values are accepted and normalized to `{ equals: ... }`.
+- Example: `Query.parse({ where: { status: 'Active' } })` now yields `where.status.equals === 'Active'`.
+- Rationale: `getQueryInput` already supported this shorthand through `createPrismaWhereSchema`; bringing the same behavior to direct `Query.parse(...)` closes another caller-path mismatch and reduces avoidable validation friction.
+
+## 2026-02-20 slot-9 empty filter-object rejection follow-up
+
+- Added fail-fast validation so field-level `where` operator objects must include at least one operator in both exported `Query` and recursive `createPrismaWhereSchema` paths.
+- Example now rejected: `{ where: { status: {} } }`.
+- Rationale: empty operator objects are no-op filters that can silently hide caller query-construction bugs; explicit rejection improves reliability and keeps both parser entry points behaviorally aligned.
+
+## 2026-02-21 slot-9 cursor-envelope guard follow-up
+
+- Added shared `cursor` map validation in `util/schema.ts` and applied it to both exported `Query` and `getQueryInput`.
+- Validation now rejects empty cursor objects and blank/whitespace cursor field names.
+- Rationale: `{ cursor: {} }` and blank cursor keys are ambiguous/no-op cursor envelopes that can mask broken pagination callers; fail-fast keeps cursor intent explicit across both parser entry points.
+
+## 2026-02-21 slot-9 key-whitespace normalization hardening
+
+- Tightened map-key validation for `orderBy`, `cursor`, `include`, and `select` in `util/schema.ts` by requiring field names to be both non-empty and already trimmed.
+- This now rejects keys with leading/trailing whitespace (for example `' status '`), not just all-whitespace keys.
+- Rationale: padded keys are malformed caller envelopes that can survive parsing but fail downstream lookups unpredictably; fail-fast validation improves reliability and keeps parser behavior deterministic across both `Query` and `getQueryInput` paths.
+
+## 2026-02-21 slot-9 cursor-defined-value guard follow-up
+
+- Added a shared cursor-value refinement in `util/schema.ts` so cursor maps must include at least one non-nullish value (`!== undefined` and `!== null`) for both `Query` and `getQueryInput` parser paths.
+- Rationale: envelopes like `{ cursor: { id: undefined } }` or `{ cursor: { id: null } }` are silent no-op pagination shapes that previously passed schema validation and could mask caller-side cursor construction bugs.
+
+## 2026-02-21 slot-9 cursor non-empty string guard follow-up
+
+- Added a second shared cursor-value refinement in `util/schema.ts` so cursor maps must include at least one non-empty value (blank strings like `''` or `'   '` no longer satisfy cursor validation).
+- Applied uniformly to both parser entry points (`Query` and `getQueryInput`) to keep pagination-envelope behavior aligned.
+- Rationale: blank-string cursor values are effectively no-op cursor payloads that can silently pass shape checks while breaking downstream pagination lookup intent; fail-fast validation surfaces caller bugs earlier.
+
+## 2026-02-21 slot-9 empty in/notIn operator-array guard
+
+- Hardened `QueryFilterOperators` in `util/schema.ts` so `in` and `notIn` require non-empty arrays.
+- Applied once in the shared operator schema so behavior is consistent for both parser entry points (`Query.parse` and `getQueryInput(...).parse`).
+- Rationale: empty `in`/`notIn` arrays are silent no-op or ambiguous filters that usually indicate caller query-builder bugs; fail-fast validation keeps filter intent explicit and prevents accidental broad queries.
+
+## 2026-02-21 slot-9 in/notIn concrete-value guard follow-up
+
+- Added a second shared refinement in `QueryFilterOperators` so `in`/`notIn` arrays must include at least one concrete value (not only `undefined`, `null`, or blank strings).
+- Applied at the shared operator schema level to keep behavior identical for direct `Query.parse(...)` and router-style `getQueryInput(...).parse` callers.
+- Rationale: arrays containing only nullish/blank tokens are still effectively no-op filter payloads; rejecting these envelopes reduces silent query broadening and surfaces caller serialization bugs earlier.
